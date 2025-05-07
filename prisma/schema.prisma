@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Delivery {
+  id          String    @id @default(uuid())
+  itemId      String
+  vehicleId   String?   
+  driverId    String?
+  clientId    String?
+  sellerId    String?
+  type        String
+  plannedFrom DateTime?
+  plannedTo   DateTime?
+  actualFrom  DateTime?
+  actualTo    DateTime?
+  comment     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  item        Item      @relation(fields: [itemId], references: [id])
+  vehicle     Vehicle?  @relation(fields: [vehicleId], references: [id])
+  driver      Driver?   @relation(fields: [driverId], references: [id])
+  client      Client?   @relation(fields: [clientId], references: [id])
+  seller      Seller?   @relation(fields: [sellerId], references: [id])
+}
+
+model Item {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  buyPrice    Int
+  sellPrice   Int
+  currency    String
+  weight      Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  deliveries  Delivery[]
+}
+
+model Vehicle {
+  id        String      @id @default(uuid())
+  name      String
+  VINNumber String?
+  depotId   String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  depot      Depot      @relation(fields: [depotId], references: [id])
+  deliveries Delivery[]
+}
+
+model Depot {
+  id        String     @id @default(uuid())
+  name      String
+  address   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  vehicles  Vehicle[]
+}
+
+model Driver {
+  id        String     @id @default(uuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  deliveries Delivery[]
+}
+
+model Client {
+  id        String     @id @default(uuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  deliveries Delivery[]
+}
+
+model Seller {
+  id        String     @id @default(uuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  deliveries Delivery[]
+}
