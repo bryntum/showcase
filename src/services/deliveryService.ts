@@ -1,4 +1,4 @@
-import prisma from 'lib/prisma';
+import prisma, { createRelationUpdate } from 'lib/prisma';
 import type { Delivery } from '@prisma/client';
 
 export const deliveryService = {
@@ -33,11 +33,10 @@ export const deliveryService = {
     driverId?: string;
     clientId?: string;
     sellerId?: string;
+    durationInMinutes?: number;
     type: string;
     plannedFrom?: Date;
-    plannedTo?: Date;
     actualFrom?: Date;
-    actualTo?: Date;
     comment?: string;
   }): Promise<Delivery> {
     return await prisma.delivery.create({
@@ -56,21 +55,29 @@ export const deliveryService = {
     id: string,
     data: {
       itemId?: string;
-      vehicleId?: string;
-      driverId?: string;
-      clientId?: string;
-      sellerId?: string;
+      vehicleId?: string | null;
+      driverId?: string | null;
+      clientId?: string | null;
+      sellerId?: string | null;
+      durationInMinutes?: number;
       type?: string;
       plannedFrom?: Date;
-      plannedTo?: Date;
       actualFrom?: Date;
-      actualTo?: Date;
       comment?: string;
     }
   ): Promise<Delivery> {
+    const { itemId, vehicleId, driverId, clientId, sellerId, ...restData } = data;
+    
     return await prisma.delivery.update({
       where: { id },
-      data,
+      data: {
+        ...restData,
+        item: itemId ? { connect: { id: itemId } } : undefined,
+        vehicle: createRelationUpdate(vehicleId),
+        driver: createRelationUpdate(driverId),
+        client: createRelationUpdate(clientId),
+        seller: createRelationUpdate(sellerId),
+      },
       include: {
         item: true,
         vehicle: true,

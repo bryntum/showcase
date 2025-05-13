@@ -1,13 +1,19 @@
-import { DomHelper, DragHelper, Model, ScrollManager, Store, StringHelper } from '@bryntum/core-thin';
-import { DragHelperConfig } from '@bryntum/core-thin';
-import { Grid } from '@bryntum/grid-thin';
-import { EventModel, SchedulerPro } from '@bryntum/schedulerpro-thin';
+import {
+  DomHelper,
+  DragHelper,
+  Model,
+  ScrollManager,
+  StringHelper,
+} from "@bryntum/core-thin";
+import { DragHelperConfig } from "@bryntum/core-thin";
+import { Grid } from "@bryntum/grid-thin";
+import { EventModel, SchedulerPro } from "@bryntum/schedulerpro-thin";
 
 type DragConfig = DragHelperConfig & {
-  grid: Grid
-  schedule: SchedulerPro
-  constrain: boolean
-  outerElement: HTMLElement
+  grid: Grid;
+  schedule: SchedulerPro;
+  constrain: boolean;
+  outerElement: HTMLElement;
 };
 
 type DragContext = {
@@ -28,14 +34,14 @@ export class Drag extends DragHelper {
 
   constructor(config: DragConfig) {
     super({
+      ...config,
       callOnFunctions: true,
       autoSizeClonedTarget: false,
       unifiedProxy: true,
       removeProxyAfterDrop: false,
       cloneTarget: true,
-      dropTargetSelector: '.b-schedulerpro-1-normalSubgrid',
-      targetSelector: '.b-grid-row',
-      ...config,
+      dropTargetSelector: ".b-timeline-subgrid",
+      targetSelector: ".b-grid-row",
     });
     this.grid = config.grid;
     this.schedule = config.schedule;
@@ -45,25 +51,36 @@ export class Drag extends DragHelper {
   }
 
   override createProxy = (grabbedElement: HTMLElement): HTMLDivElement => {
-    const
-      { context, schedule, grid } = this,
+    const { context, schedule, grid } = this,
       delivery = grid.getRecordFromElement(grabbedElement) as EventModel,
-      durationInPixels = schedule.timeAxisViewModel.getDistanceForDuration(delivery.durationMS),
-      proxy = document.createElement('div');
+      durationInPixels = schedule.timeAxisViewModel.getDistanceForDuration(
+        delivery.durationMS
+      ),
+      durationInPx = schedule.timeAxisViewModel.getDistanceForDuration(
+        delivery.durationMS
+      ),
+      proxy = document.createElement("div");
 
-    proxy.style.cssText = '';
+    proxy.style.cssText = "";
 
     Object.assign(proxy.style, {
-      width: `150px`,
-      height: `${schedule.rowHeight - 2 * (schedule.resourceMargin as number)}px`
+      width: `${durationInPx}px`,
+      height: `${
+        schedule.rowHeight - 2 * (schedule.resourceMargin as number)
+      }px`,
     });
 
     if (schedule.timeAxisSubGrid.width < durationInPixels) {
-      proxy.classList.add('b-exceeds-axis-width');
+      proxy.classList.add("b-exceeds-axis-width");
     }
 
     // Fake an event bar
-    proxy.classList.add('b-sch-event-wrap', 'b-sch-style-border', 'b-unassigned-class', 'b-sch-horizontal');
+    proxy.classList.add(
+      "b-sch-event-wrap",
+      "b-sch-style-border",
+      "b-unassigned-class",
+      "b-sch-horizontal"
+    );
     proxy.innerHTML = StringHelper.xss`
             <div class="b-sch-event b-has-content b-sch-event-withicon">
                 <div class="b-sch-event-content">
@@ -76,7 +93,9 @@ export class Drag extends DragHelper {
         `;
 
     let totalDuration = 0;
-    (grid.selectedRecords as Model[]).forEach(delivery => totalDuration += (delivery as EventModel).durationMS);
+    (grid.selectedRecords as Model[]).forEach(
+      (delivery) => (totalDuration += (delivery as EventModel).durationMS)
+    );
     context.totalDuration = totalDuration;
 
     return proxy;
@@ -84,8 +103,7 @@ export class Drag extends DragHelper {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   override onDragStart = ({ context }: { context: any }): void => {
-    const
-      { grid } = this,
+    const { grid } = this,
       { selectedRecord } = grid as Grid;
 
     context.delivery = selectedRecord;
@@ -93,8 +111,7 @@ export class Drag extends DragHelper {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   override onDrag = ({ context }: { context: any }): void => {
-    const
-      { schedule } = this,
+    const { schedule } = this,
       driver = context.target && schedule.resolveResourceRecord(context.target);
 
     context.driver = driver;
@@ -104,23 +121,26 @@ export class Drag extends DragHelper {
   override onDrop = async ({ context }: { context: any }) => {
     const { schedule } = this;
 
-    const
-      { delivery, element, driver } = context,
-      coordinate = DomHelper.getTranslateX(element),
-      dropDate = schedule.getDateFromCoordinate(coordinate, 'round', false);
+    if (context.valid) {
+      const { element, driver } = context,
+        delivery = context.delivery as EventModel,
+        coordinate = DomHelper.getTranslateX(element),
+        dropDate = schedule.getDateFromCoordinate(coordinate, "round", false);
 
-    const plannedFrom = delivery.getData("plannedFrom");
-    const plannedTo = delivery.getData("plannedTo");
+      if (delivery && dropDate && driver) {
+        delivery.set("actualFrom", dropDate);
+        delivery.set("driverId", driver.id);
+        delivery.assign(driver);
 
-    const duration = plannedTo.getTime() - plannedFrom.getTime();
-    delivery.durationUnit = "minutes";
-    delivery.duration = duration / 1000 / 60;
+        await schedule.scheduleEvent({
+          eventRecord: delivery,
+          startDate: dropDate,
+          resourceRecord: driver,
+          element,
+        });
+      }
 
-    await schedule.scheduleEvent({
-      eventRecord: delivery,
-      startDate: dropDate,
-      resourceRecord: driver,
-      element,
-    });
+      schedule.unhighlightTimeSpans();
+    }
   };
 }

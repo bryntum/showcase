@@ -53,15 +53,6 @@ export const Navbar = () => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <div className="relative w-64">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="w-full pl-8 rounded-full bg-muted/50 border-none"
-          />
-        </div>
-
         <Button
           size="icon"
           variant="ghost"

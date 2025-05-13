@@ -19,51 +19,50 @@ model User {
 }
 
 model Delivery {
-  id          String    @id @default(uuid())
-  itemId      String
-  vehicleId   String?   
-  driverId    String?
-  clientId    String?
-  sellerId    String?
-  type        String
-  plannedFrom DateTime?
-  plannedTo   DateTime?
-  actualFrom  DateTime?
-  actualTo    DateTime?
-  comment     String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                String    @id @default(uuid())
+  itemId            String
+  vehicleId         String?
+  driverId          String?
+  clientId          String?
+  sellerId          String?
+  type              String
+  plannedFrom       DateTime?
+  actualFrom        DateTime?
+  durationInMinutes Int?
+  comment           String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   // Relations
-  item        Item      @relation(fields: [itemId], references: [id])
-  vehicle     Vehicle?  @relation(fields: [vehicleId], references: [id])
-  driver      Driver?   @relation(fields: [driverId], references: [id])
-  client      Client?   @relation(fields: [clientId], references: [id])
-  seller      Seller?   @relation(fields: [sellerId], references: [id])
+  item    Item     @relation(fields: [itemId], references: [id])
+  vehicle Vehicle? @relation(fields: [vehicleId], references: [id])
+  driver  Driver?  @relation(fields: [driverId], references: [id])
+  client  Client?  @relation(fields: [clientId], references: [id])
+  seller  Seller?  @relation(fields: [sellerId], references: [id])
 }
 
 model Item {
-  id          String     @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String?
   buyPrice    Int
   sellPrice   Int
   currency    String
   weight      Int
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
-  deliveries  Delivery[]
+  deliveries Delivery[]
 }
 
 model Vehicle {
-  id        String      @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
   VINNumber String?
   depotId   String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   depot      Depot      @relation(fields: [depotId], references: [id])
@@ -71,41 +70,41 @@ model Vehicle {
 }
 
 model Depot {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
   address   String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  vehicles  Vehicle[]
+  vehicles Vehicle[]
 }
 
 model Driver {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   deliveries Delivery[]
 }
 
 model Client {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   deliveries Delivery[]
 }
 
 model Seller {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   deliveries Delivery[]

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  EventModel,
   EventStore,
   ResourceModel,
   ResourceStore,
@@ -30,9 +31,10 @@ import { isSameDay } from "date-fns";
 import { Input } from "components/ui/forms/input";
 import { Grid } from "@bryntum/grid-thin";
 import { Drag } from "./drag";
+import { useDate } from "../../../../contexts/date-context";
 
 const Planning = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { selectedDate, setSelectedDate } = useDate();
   const [metrics, setMetrics] = useState<
     { label: string; value: string | number }[]
   >([]);
@@ -67,8 +69,10 @@ const Planning = () => {
       {
         label: "On-Time Rate",
         value: !isEmpty(
-          eventStore.query((event: Delivery) =>
-            isSameDay(event.actualFrom as Date, selectedDate)
+          eventStore.query(
+            (event: Delivery) =>
+              isSameDay(event.actualFrom as Date, selectedDate) &&
+              event.driverId
           )
         )
           ? `${Math.round(
@@ -76,9 +80,9 @@ const Planning = () => {
                 (event: Delivery) =>
                   isSameDay(event.actualFrom as Date, selectedDate) &&
                   event.driverId &&
-                  event.actualTo &&
-                  event.plannedTo &&
-                  event.actualTo <= event.plannedTo
+                  event.actualFrom &&
+                  event.plannedFrom &&
+                  event.actualFrom <= event.plannedFrom
               ).length /
                 eventStore.query(
                   (event: Delivery) =>
@@ -89,7 +93,34 @@ const Planning = () => {
             )}%`
           : "0%",
       },
-      { label: "Avg Delivery Time", value: "28m" },
+      {
+        label: "Avg Delivery Time",
+        value: !isEmpty(
+          eventStore.query(
+            (event: Delivery) =>
+              isSameDay(event.actualFrom as Date, selectedDate) &&
+              event.driverId
+          )
+        )
+          ? `${
+              eventStore
+                .query(
+                  (event: Delivery) =>
+                    isSameDay(event.actualFrom as Date, selectedDate) &&
+                    event.driverId
+                )
+                .reduce(
+                  (sum, event) => sum + ((event as EventModel)?.duration ?? 0),
+                  0
+                ) /
+              eventStore.query(
+                (event: Delivery) =>
+                  isSameDay(event.actualFrom as Date, selectedDate) &&
+                  event.driverId
+              ).length
+            }m`
+          : "Not Applicable",
+      },
     ]);
   };
 
@@ -108,11 +139,10 @@ const Planning = () => {
             ...delivery,
             resourceId: delivery.driverId,
             startDate: delivery.actualFrom,
-            endDate: delivery.actualTo,
+            duration: delivery.durationInMinutes,
+            durationUnit: "m",
             plannedFrom: new Date(delivery.plannedFrom as Date),
-            plannedTo: new Date(delivery.plannedTo as Date),
             actualFrom: new Date(delivery.actualFrom as Date),
-            actualTo: new Date(delivery.actualTo as Date),
           })),
         autoCommit: true,
         onLoad: updateMetrics,
@@ -124,10 +154,9 @@ const Planning = () => {
 
           if (!isEmpty(modified)) {
             forEach(modified, (eventRecord) => {
-              const { id, startDate, endDate, resourceId } = eventRecord;
+              const { id, startDate, resourceId } = eventRecord;
 
               eventRecord.actualFrom = new Date(startDate);
-              eventRecord.actualTo = new Date(endDate);
 
               promises.push(
                 fetch(`/api/deliveries/${id}`, {
@@ -135,7 +164,7 @@ const Planning = () => {
                   body: JSON.stringify({
                     driverId: resourceId,
                     actualFrom: startDate.toISOString(),
-                    actualTo: endDate.toISOString(),
+                    durationInMinutes: eventRecord.getData("duration"),
                   }),
                 })
               );
@@ -217,6 +246,34 @@ const Planning = () => {
     zoomOnMouseWheel: false,
     zoomKeepsOriginalTimespan: true,
 
+    eventDragFeature: {
+      constrainDragToTimeline: false,
+      dragHelperConfig: {
+        constrain: false,
+        dropTargetCls: "b-drop-target",
+        dropTargetSelector: ".b-grid-subgrid",
+        listeners: {
+          drop: ({ context }) => {
+            if (context.target.id === "unplannedGrid-normalSubgrid") {
+              const eventId = context.grabbed.dataset["eventId"];
+              const resourceId = context.grabbed.dataset["resourceId"];
+
+              if (!eventId || !resourceId) return;
+
+              const event = eventStore.getById(eventId) as EventModel;
+              const resource = resourceStore.getById(
+                resourceId
+              ) as ResourceModel;
+
+              event.unassign(resource);
+              event.set("driverId", null);
+              event.set("actualFrom", null);
+            }
+          },
+        },
+      },
+    },
+
     stripeFeature: true,
     columnLinesFeature: true,
     timeSpanHighlightFeature: true,
@@ -270,8 +327,11 @@ const Planning = () => {
             animationId: "deliveryWindow",
             surround: true,
             name: "Outside Delivery Window",
-            startDate: new Date(selectedEvent.getData("plannedFrom")),
-            endDate: new Date(selectedEvent.getData("plannedTo")),
+            startDate: selectedEvent.getData("plannedFrom"),
+            endDate: new Date(
+              selectedEvent.getData("plannedFrom").getTime() +
+                selectedEvent.getData("duration") * 60 * 1000
+            ),
           });
         } else {
           scheduler.unhighlightTimeSpans();
@@ -327,6 +387,9 @@ const Planning = () => {
         value: eventFilter,
         caseSensitive: false,
       });
+      if (scheduler?.selectedEvents?.length ?? 0 > 0) {
+        scheduler?.deselectAll();
+      }
     } else {
       eventStore.removeFilter("eventFilter");
     }
@@ -362,14 +425,14 @@ const Planning = () => {
                   placeholder="Filter drivers..."
                   value={resourceFilter}
                   onChange={(e) => setResourceFilter(e.target.value)}
-                  className="h-9 w-[150px] text-gray-600 border-gray-200 focus:ring-gray-200"
+                  className="h-9 w-[150px] text-gray-600 bg-white border-gray-200 focus:ring-gray-200"
                 />
                 <Input
                   type="text"
                   placeholder="Filter deliveries..."
                   value={eventFilter}
                   onChange={(e) => setEventFilter(e.target.value)}
-                  className="h-9 w-[150px] text-gray-600 border-gray-200 focus:ring-gray-200"
+                  className="h-9 w-[150px] text-gray-600 bg-white border-gray-200 focus:ring-gray-200"
                 />
               </div>
               <DropdownMenu>
@@ -405,13 +468,33 @@ const Planning = () => {
               </DropdownMenu>
             </div>
           </div>
-          <div className="flex flex-1">
+          <div id="planning-container" className="flex flex-1">
             <SchedulerWrapper flex={3} {...schedulerConfig} />
             <BryntumSplitter />
             <BryntumGrid
               flex={1}
+              id="unplannedGrid"
               store={eventStore.chain((event: Delivery) => !event.driverId)}
               ref={$unplannedGridRef}
+              onSelectionChange={({ selected }) => {
+                if (selected.length > 0) {
+                  const event = selected[0];
+
+                  if (!event || !scheduler) return;
+
+                  scheduler.highlightTimeSpan({
+                    name: "Ideal Delivery Window",
+                    startDate: event.getData("plannedFrom"),
+                    endDate: new Date(
+                      event.getData("plannedFrom").getTime() +
+                        event.getData("duration") * 60 * 1000
+                    ),
+                  });
+                }
+              }}
+              selectionMode={{
+                multiSelect: false,
+              }}
               {...unplannedGridConfig}
             />
           </div>

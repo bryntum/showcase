@@ -4,39 +4,42 @@ import { GridColumnConfig } from "@bryntum/grid-thin";
 
 const unplannedGridConfig: BryntumGridProps = {
   selectionMode: {
-    cell: false
+    cell: false,
   },
   stripeFeature: true,
   collapsible: true,
-  collapsed: true,
   header: "Unplanned Deliveries",
-  sortFeature: 'name',
+  sortFeature: "name",
   columns: [
     {
-      text: 'Type',
+      text: "Comment",
+      field: "comment",
+      flex: 1,
+    },
+    {
+      text: "Type",
       editor: false,
       renderer: ({ record }: { record: Model }) => {
         return record.getData("type");
-      }
+      },
     },
     {
       type: "time",
       editor: false,
-      text: "From",
+      text: "Planned Start",
       field: "plannedFrom",
-      format: "HH:mm"
+      format: "HH:mm",
     },
     {
-      type: "time",
+      type: "duration",
       editor: false,
-      text: "To",
-      field: "plannedTo",
-      format: "HH:mm"
+      text: "Duration",
+      field: "duration",
     },
   ] as GridColumnConfig[],
 
   rowHeight: 65,
-  disableGridRowModelWarning: true
+  disableGridRowModelWarning: true,
 };
 
 export default unplannedGridConfig;
