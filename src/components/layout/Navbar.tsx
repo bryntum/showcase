@@ -1,9 +1,8 @@
 "use client";
 
-import { Bell, Search, Moon, Sun } from "lucide-react";
+import { Bell, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "components/ui/actions/button";
-import { Input } from "components/ui/forms/input";
 import { usePathname } from "next/navigation";
 import {
   DropdownMenu,
@@ -11,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "components/ui/overlays/dropdown-menu";
+import { DomHelper } from "@bryntum/core-thin";
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -38,10 +38,13 @@ export const Navbar = () => {
   }, [pathname]);
 
   const toggleDarkMode = () => {
+    console.log(isDarkMode);
     if (isDarkMode) {
       document.documentElement.classList.remove("dark");
+      DomHelper.setTheme("stockholm");
     } else {
       document.documentElement.classList.add("dark");
+      DomHelper.setTheme("classic-dark");
     }
     setIsDarkMode(!isDarkMode);
   };
@@ -61,7 +64,6 @@ export const Navbar = () => {
         >
           {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
         </Button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

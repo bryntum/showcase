@@ -211,6 +211,7 @@ const Planning = () => {
     rowHeight: 80,
     barMargin: 10,
     minHeight: 500,
+    width: "100%",
     height: "100%",
     eventStyle: "border",
     eventColor: "indigo",
@@ -223,7 +224,7 @@ const Planning = () => {
         type: ResourceInfoColumn.type,
         field: "name",
         text: "Driver",
-        width: 220,
+        width: 180,
       },
     ] as SchedulerProColumnConfig[],
     viewPreset: {
@@ -274,7 +275,6 @@ const Planning = () => {
       },
     },
 
-    stripeFeature: true,
     columnLinesFeature: true,
     timeSpanHighlightFeature: true,
     eventMenuFeature: {
@@ -468,12 +468,10 @@ const Planning = () => {
               </DropdownMenu>
             </div>
           </div>
-          <div id="planning-container" className="flex flex-1">
+          <div id="planning-container" className="flex flex-1 border-[1px] border-[#e5e5e8] rounded-md overflow-hidden">
             <SchedulerWrapper flex={3} {...schedulerConfig} />
-            <BryntumSplitter />
+            <BryntumSplitter showButtons />
             <BryntumGrid
-              flex={1}
-              id="unplannedGrid"
               store={eventStore.chain((event: Delivery) => !event.driverId)}
               ref={$unplannedGridRef}
               onSelectionChange={({ selected }) => {
@@ -491,9 +489,6 @@ const Planning = () => {
                     ),
                   });
                 }
-              }}
-              selectionMode={{
-                multiSelect: false,
               }}
               {...unplannedGridConfig}
             />

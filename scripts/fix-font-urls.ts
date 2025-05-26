@@ -16,7 +16,7 @@ async function fixFontUrls() {
             // Replace @bryntum/core-thin/fonts/ with ~@bryntum/core-thin/fonts/
             const updatedContent = content.replace(
                 /@bryntum\/core-thin\/fonts\//g,
-                '~@bryntum/core-thin/fonts/'
+                'fonts/'
             );
 
             // Only write if changes were made

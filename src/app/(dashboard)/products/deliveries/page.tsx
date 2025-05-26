@@ -19,7 +19,7 @@ import { Delivery, Driver, Item } from "@prisma/client";
 import { map, toLower } from "lodash";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
-import { AjaxStore, DateHelper, Model } from "@bryntum/core-thin";
+import { AjaxStore, DateHelper, Model, TextField } from "@bryntum/core-thin";
 import { Button } from "../../../../components/ui/actions/button";
 import {
   Dialog,
@@ -69,6 +69,7 @@ import {
 } from "components/ui/overlays/dropdown-menu";
 import { useDate } from "../../../../contexts/date-context";
 import { isSameDay } from "date-fns";
+import { BryntumCombo, BryntumTextField } from "@bryntum/core-react-thin";
 
 const deliveryFormSchema = z.object({
   comment: z.string().min(1, "Comment is required"),
@@ -189,9 +190,9 @@ const Scheduler = () => {
   const gridConfig: BryntumGridProps = {
     cellEditFeature: true,
     sortFeature: "name",
-    stripeFeature: true,
     showDirty: true,
     store,
+    height: "100%",
     columns: [
       {
         text: "Comment",
@@ -300,7 +301,10 @@ const Scheduler = () => {
                   />
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <Dialog
+                open={isOpen}
+                onOpenChange={setIsOpen}
+              >
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4" />
@@ -323,15 +327,14 @@ const Scheduler = () => {
                         name="comment"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                              <MessageSquare className="h-4 w-4" />
-                              Comment
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter delivery comment"
+                            <FormControl className="w-full">
+                              <BryntumTextField
+                                cls="w-full"
+                                labelCls="b-fa b-fa-comment flex gap-2 items-center"
+                                label="Comment"
+                                labelPosition="above"
                                 {...field}
-                                className="h-11"
+                                onChange={({ event }) => field.onChange(event)}
                               />
                             </FormControl>
                             <FormMessage className="text-xs" />
@@ -343,25 +346,16 @@ const Scheduler = () => {
                         name="type"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                              <Truck className="h-4 w-4" />
-                              Type
-                            </FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger className="h-11">
-                                  <SelectValue placeholder="Select delivery type" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="URGENT">Urgent</SelectItem>
-                                <SelectItem value="REGULAR">Regular</SelectItem>
-                                <SelectItem value="SPECIAL">Special</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            <FormControl className="w-full">
+                              <BryntumCombo
+                                cls="w-full"
+                                labelCls="b-fa b-fa-truck flex gap-2 items-center"
+                                label="Type"
+                                labelPosition="above"
+                                // onChange={({ event }) => field.onChange(event)}
+                                items={["URGENT", "REGULAR", "SPECIAL"]}
+                              />
+                            </FormControl>
                             <FormMessage className="text-xs" />
                           </FormItem>
                         )}
@@ -506,7 +500,9 @@ const Scheduler = () => {
               </Dialog>
             </div>
           </div>
-          <BryntumGrid ref={$gridRef} {...gridConfig} />
+          <div className="flex-1 border-[1px] border-[#e5e5e8] rounded-md overflow-hidden">
+            <BryntumGrid ref={$gridRef} {...gridConfig} />
+          </div>
         </div>
       </div>
     </div>

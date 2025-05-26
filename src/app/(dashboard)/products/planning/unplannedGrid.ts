@@ -8,13 +8,15 @@ const unplannedGridConfig: BryntumGridProps = {
   },
   stripeFeature: true,
   collapsible: true,
-  header: "Unplanned Deliveries",
+  header: false,
+  flex: 1,
+  id: "unplannedGrid",
+  height: "100%",
   sortFeature: "name",
   columns: [
     {
       text: "Comment",
       field: "comment",
-      flex: 1,
     },
     {
       text: "Type",
@@ -26,9 +28,10 @@ const unplannedGridConfig: BryntumGridProps = {
     {
       type: "time",
       editor: false,
-      text: "Planned Start",
+      text: "Start",
       field: "plannedFrom",
       format: "HH:mm",
+      minWidth: 100,
     },
     {
       type: "duration",
@@ -38,7 +41,7 @@ const unplannedGridConfig: BryntumGridProps = {
     },
   ] as GridColumnConfig[],
 
-  rowHeight: 65,
+  rowHeight: 50,
   disableGridRowModelWarning: true,
 };
 
