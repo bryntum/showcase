@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import cn from "lib/utils";
+import Image from "next/image";
 import {
   LayoutDashboard,
   GanttChart,
@@ -62,14 +63,30 @@ export const Sidebar = () => {
         isCollapsed ? "w-[70px]" : "w-[250px]"
       )}
     >
-      <div className={cn(
-        "flex items-center h-16 px-4 py-2 border-b border-border",
-        isCollapsed ? "justify-center" : "justify-between"
-      )}>
-        <Link href="/" className={cn("flex items-center space-x-2", isCollapsed && "hidden")}>
-          <span className="text-xl font-semibold text-sidebar-foreground tracking-tight whitespace-nowrap">
-            Bryntum Showcase
-          </span>
+      <div
+        className={cn(
+          "flex items-center h-16 px-1 py-2 border-b border-border",
+          isCollapsed ? "justify-center" : "justify-between"
+        )}
+      >
+        <Link href="/" className={cn("flex items-center space-x-2")}>
+          {isCollapsed ? (
+            <Image
+              src="/logo/logo_small.svg"
+              alt="Showcase Logo"
+              width={32}
+              height={32}
+              className="h-8 w-auto"
+            />
+          ) : (
+            <Image
+              src="/logo/logo_full.svg"
+              alt="Showcase Logo"
+              width={100}
+              height={24}
+              className="h-6 w-auto translate-y-1"
+            />
+          )}
         </Link>
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -110,7 +127,12 @@ export const Sidebar = () => {
                   )}
                   title={isCollapsed ? item.name : undefined}
                 >
-                  <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
+                  <div
+                    className={cn(
+                      "flex items-center gap-3",
+                      isCollapsed && "justify-center"
+                    )}
+                  >
                     <item.icon size={20} />
                     {!isCollapsed && <span>{item.name}</span>}
                   </div>
@@ -126,10 +148,14 @@ export const Sidebar = () => {
                 </button>
 
                 {expandedGroups[item.name] && (
-                  <div className={cn(
-                    "animate-fade-in",
-                    isCollapsed ? "mt-2 ml-5 border-l border-border/70" : "pl-9"
-                  )}>
+                  <div
+                    className={cn(
+                      "animate-fade-in",
+                      isCollapsed
+                        ? "mt-2 ml-5 border-l border-border/70"
+                        : "pl-9"
+                    )}
+                  >
                     {item.children.map((child) => (
                       <Link
                         key={child.name}
@@ -156,7 +182,12 @@ export const Sidebar = () => {
       </div>
 
       <div className={cn("p-4 border-t border-border", isCollapsed && "p-2")}>
-        <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
+        <div
+          className={cn(
+            "flex items-center gap-3",
+            isCollapsed && "justify-center"
+          )}
+        >
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
             <User size={18} />
           </div>

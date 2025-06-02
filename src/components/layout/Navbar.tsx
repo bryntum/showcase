@@ -11,11 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "components/ui/overlays/dropdown-menu";
 import { DomHelper } from "@bryntum/core-thin";
+import { useDarkMode } from "contexts/dark-mode";
 
 export const Navbar = () => {
   const pathname = usePathname();
   const [pageTitle, setPageTitle] = useState("Dashboard");
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDarkMode, setIsDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (pathname === "/" || pathname === "/dashboard") {
@@ -38,7 +39,6 @@ export const Navbar = () => {
   }, [pathname]);
 
   const toggleDarkMode = () => {
-    console.log(isDarkMode);
     if (isDarkMode) {
       document.documentElement.classList.remove("dark");
       DomHelper.setTheme("stockholm");

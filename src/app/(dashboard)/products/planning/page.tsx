@@ -21,17 +21,19 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "components/ui/overlays/dropdown-menu";
-import { Delivery } from "@prisma/client";
-import { Scheduler } from "@bryntum/scheduler-thin";
+import { Client, Delivery } from "@prisma/client";
+import { Scheduler, TimeAxis } from "@bryntum/scheduler-thin";
 import { ResourceInfoColumn } from "@bryntum/scheduler-thin";
 import { BryntumSplitter } from "@bryntum/core-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
-import unplannedGridConfig from "./unplannedGrid";
+import { eventPalette, unplannedGridConfig } from "./unplannedGrid";
 import { isSameDay } from "date-fns";
 import { Input } from "components/ui/forms/input";
 import { Grid } from "@bryntum/grid-thin";
 import { Drag } from "./drag";
 import { useDate } from "../../../../contexts/date-context";
+import MapPanel from "./mapPanel";
+import { SlideToggle, Splitter } from "@bryntum/core-thin";
 
 const Planning = () => {
   const { selectedDate, setSelectedDate } = useDate();
@@ -40,12 +42,11 @@ const Planning = () => {
   >([]);
   const [resourceFilter, setResourceFilter] = useState<string>("");
   const [eventFilter, setEventFilter] = useState<string>("");
+  const [grid, setGrid] = useState<Grid>();
+  const [scheduler, setScheduler] = useState<SchedulerPro>();
 
   const $unplannedGridRef = useRef<BryntumGrid>(null);
   const $dragRef = useRef<Drag>(null);
-
-  const [grid, setGrid] = useState<Grid>();
-  const [scheduler, setScheduler] = useState<SchedulerPro>();
 
   const updateMetrics = () => {
     setMetrics([
@@ -102,7 +103,7 @@ const Planning = () => {
               event.driverId
           )
         )
-          ? `${
+          ? `${Math.round(
               eventStore
                 .query(
                   (event: Delivery) =>
@@ -113,12 +114,12 @@ const Planning = () => {
                   (sum, event) => sum + ((event as EventModel)?.duration ?? 0),
                   0
                 ) /
-              eventStore.query(
-                (event: Delivery) =>
-                  isSameDay(event.actualFrom as Date, selectedDate) &&
-                  event.driverId
-              ).length
-            }m`
+                eventStore.query(
+                  (event: Delivery) =>
+                    isSameDay(event.actualFrom as Date, selectedDate) &&
+                    event.driverId
+                ).length
+            )}m`
           : "Not Applicable",
       },
     ]);
@@ -134,7 +135,7 @@ const Planning = () => {
         readUrl: "/api/deliveries",
         autoLoad: true,
         // @ts-expect-error function is typed incorrectly
-        transformLoadedData: (data: Delivery[]) =>
+        transformLoadedData: (data: Delivery<Client>[]) =>
           map(data, (delivery) => ({
             ...delivery,
             resourceId: delivery.driverId,
@@ -143,6 +144,10 @@ const Planning = () => {
             durationUnit: "m",
             plannedFrom: new Date(delivery.plannedFrom as Date),
             actualFrom: new Date(delivery.actualFrom as Date),
+            address: {
+              lat: delivery.client.lat,
+              lng: delivery.client.lng,
+            }
           })),
         autoCommit: true,
         onLoad: updateMetrics,
@@ -196,6 +201,12 @@ const Planning = () => {
         readUrl: "/api/drivers",
         autoLoad: true,
         onLoad: updateMetrics,
+        sorters: [
+          {
+            field: "name",
+            ascending: true,
+          },
+        ],
         // @ts-expect-error function is typed incorrectly
         transformLoadedData: (data: Driver[]) =>
           map(data, (driver) => ({
@@ -210,7 +221,6 @@ const Planning = () => {
   const schedulerConfig: BryntumSchedulerProProps = {
     rowHeight: 80,
     barMargin: 10,
-    minHeight: 500,
     width: "100%",
     height: "100%",
     eventStyle: "border",
@@ -289,18 +299,65 @@ const Planning = () => {
     },
 
     eventRenderer({ eventRecord, renderData }) {
-      renderData.eventColor =
-        eventRecord.getData("type") === "URGENT" ? "red" : "green";
+      const eventType = eventRecord.getData(
+        "type"
+      ) as keyof typeof eventPalette;
+      renderData.eventColor = eventPalette[eventType].color;
 
       return [
         {
           children: [
             {
-              class: "b-event-name",
-              text: eventRecord.getData("type"),
+              style: {
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontWeight: "bold",
+                fontSize: "0.9em",
+              },
+              children: [
+                {
+                  style: {
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    backgroundColor: eventPalette[eventType].iconColor,
+                  },
+                },
+                {
+                  class: "b-event-name",
+                  style: {
+                    color: "#444",
+                  },
+                  text: eventRecord.getData("type"),
+                },
+              ],
             },
             {
+              style: {
+                fontSize: "0.85em",
+                color: "#444",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+              },
               html: eventRecord.getData("comment"),
+            },
+            {
+              style: {
+                fontSize: "0.8em",
+                color: "#666",
+                marginTop: "auto",
+              },
+              text: `${(eventRecord.startDate as Date).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })} - ${(eventRecord.endDate as Date).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}`,
             },
           ],
         },
@@ -395,6 +452,52 @@ const Planning = () => {
     }
   }, [eventFilter, eventStore]);
 
+  const onMarkerClick = async ({
+    eventRecord,
+  }: {
+    eventRecord: EventModel;
+  }) => {
+    if (eventRecord.resources.length > 0 && scheduler) {
+      await scheduler.scrollEventIntoView(eventRecord, {
+        animate: true,
+        highlight: true,
+      });
+      scheduler.selectedEvents = [eventRecord];
+    } else {
+      await (grid as any).expand();
+      (scheduler?.widgetMap["toggleUnscheduled"] as SlideToggle).value = true;
+      grid?.scrollRowIntoView(eventRecord, {
+        animate: true,
+        highlight: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!scheduler) return;
+
+    new Splitter({
+      appendTo: "planning-container",
+    });
+
+    const mapPanel = new MapPanel({
+      ref: "map",
+      appendTo: "planning-container",
+      header: false,
+      flex: 1,
+      eventStore: eventStore,
+      timeAxis: scheduler?.timeAxis as TimeAxis,
+      listeners: {
+        markerclick: onMarkerClick,
+      },
+    });
+
+    return () => {
+      mapPanel.destroy?.();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scheduler]);
+
   return (
     <div className="h-full">
       <div className="p-4 h-full bg-logistics-navy text-white">
@@ -425,24 +528,26 @@ const Planning = () => {
                   placeholder="Filter drivers..."
                   value={resourceFilter}
                   onChange={(e) => setResourceFilter(e.target.value)}
-                  className="h-9 w-[150px] text-gray-600 bg-white border-gray-200 focus:ring-gray-200"
+                  className="h-9 w-[150px] text-sidebar-secondary bg-background border-border focus:ring-border"
                 />
                 <Input
                   type="text"
                   placeholder="Filter deliveries..."
                   value={eventFilter}
                   onChange={(e) => setEventFilter(e.target.value)}
-                  className="h-9 w-[150px] text-gray-600 bg-white border-gray-200 focus:ring-gray-200"
+                  className="h-9 w-[150px] text-sidebar-secondary bg-background border-border focus:ring-border"
                 />
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="default" size="sm">
-                    <CalendarIcon className="h-4 w-4 mr-1" />
-                    {selectedDate.toLocaleDateString() ===
-                    new Date().toLocaleDateString()
-                      ? "Today"
-                      : selectedDate.toLocaleDateString()}
+                    <CalendarIcon className="h-4 w-4 mr-1 text-white" />
+                    <p className="text-white">
+                      {selectedDate.toLocaleDateString() ===
+                      new Date().toLocaleDateString()
+                        ? "Today"
+                        : selectedDate.toLocaleDateString()}
+                    </p>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-auto p-0" align="end">
@@ -468,30 +573,35 @@ const Planning = () => {
               </DropdownMenu>
             </div>
           </div>
-          <div id="planning-container" className="flex flex-1 border-[1px] border-[#e5e5e8] rounded-md overflow-hidden">
-            <SchedulerWrapper flex={3} {...schedulerConfig} />
-            <BryntumSplitter showButtons />
-            <BryntumGrid
-              store={eventStore.chain((event: Delivery) => !event.driverId)}
-              ref={$unplannedGridRef}
-              onSelectionChange={({ selected }) => {
-                if (selected.length > 0) {
-                  const event = selected[0];
+          <div id="planning-container" className="flex-1 flex flex-col">
+            <div
+              className="flex border-[1px] border-border rounded-t-md"
+              style={{ flex: 2 }}
+            >
+              <SchedulerWrapper flex={3} {...schedulerConfig} />
+              <BryntumSplitter showButtons />
+              <BryntumGrid
+                store={eventStore.chain((event: Delivery) => !event.driverId)}
+                ref={$unplannedGridRef}
+                onSelectionChange={({ selected }) => {
+                  if (selected.length > 0) {
+                    const event = selected[0];
 
-                  if (!event || !scheduler) return;
+                    if (!event || !scheduler) return;
 
-                  scheduler.highlightTimeSpan({
-                    name: "Ideal Delivery Window",
-                    startDate: event.getData("plannedFrom"),
-                    endDate: new Date(
-                      event.getData("plannedFrom").getTime() +
-                        event.getData("duration") * 60 * 1000
-                    ),
-                  });
-                }
-              }}
-              {...unplannedGridConfig}
-            />
+                    scheduler.highlightTimeSpan({
+                      name: "Ideal Delivery Window",
+                      startDate: event.getData("plannedFrom"),
+                      endDate: new Date(
+                        event.getData("plannedFrom").getTime() +
+                          event.getData("duration") * 60 * 1000
+                      ),
+                    });
+                  }
+                }}
+                {...unplannedGridConfig}
+              />
+            </div>
           </div>
         </div>
       </div>

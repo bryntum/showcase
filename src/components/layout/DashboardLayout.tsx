@@ -26,7 +26,7 @@ export const DashboardLayout: FC<NextLayout> = ({ children }) => {
       <Sidebar />
       <div className="flex flex-col flex-1 overflow-x-hidden">
         <Navbar />
-        <main className="p-6 overflow-y-auto animate-fade-in h-full">
+        <main className="px-6 overflow-y-auto animate-fade-in h-full">
           <div className="mx-auto animate-slide-in h-full">{children}</div>
         </main>
       </div>
