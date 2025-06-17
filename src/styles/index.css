@@ -187,6 +187,18 @@
   @apply bg-background;
 }
 
+.b-grid-cell-drop-target {
+  @apply bg-red-50;
+}
+
+.b-label {
+  text-transform: none !important;
+}
+
+.b-hidden {
+  display: none !important;
+}
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;

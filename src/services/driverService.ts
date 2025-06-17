@@ -3,12 +3,29 @@ import { Driver } from '@prisma/client';
 
 export const driverService = {
   async getAllDrivers(): Promise<Driver[]> {
-    return await prisma.driver.findMany();
+    return await prisma.driver.findMany({
+      include: {
+        assignments: {
+          include: {
+            vehicle: true,
+            trailer: true,
+          }
+        },
+      }
+    });
   },
 
   async getDriverById(id: string): Promise<Driver | null> {
     return await prisma.driver.findUnique({
       where: { id },
+      include: {
+        assignments: {
+          include: {
+            vehicle: true,
+            trailer: true,
+          }
+        },
+      }
     });
   },
 

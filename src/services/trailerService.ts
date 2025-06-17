@@ -1,9 +1,9 @@
 import prisma from 'lib/prisma';
-import { Vehicle } from '@prisma/client';
+import { Trailer } from '@prisma/client';
 
-export const vehicleService = {
-  async getAllVehicles(): Promise<Vehicle[]> {
-    return await prisma.vehicle.findMany({
+export const trailerService = {
+  async getAllTrailers(): Promise<Trailer[]> {
+    return await prisma.trailer.findMany({
       include: {
         depot: true,
         assignments: true,
@@ -11,8 +11,8 @@ export const vehicleService = {
     });
   },
 
-  async getVehicleById(id: string): Promise<Vehicle | null> {
-    return await prisma.vehicle.findUnique({
+  async getTrailerById(id: string): Promise<Trailer | null> {
+    return await prisma.trailer.findUnique({
       where: { id },
       include: {
         depot: true,
@@ -21,12 +21,12 @@ export const vehicleService = {
     });
   },
 
-  async createVehicle(data: {
+  async createTrailer(data: {
     name: string;
     VINNumber?: string;
     depotId: string;
-  }): Promise<Vehicle> {
-    return await prisma.vehicle.create({
+  }): Promise<Trailer> {
+    return await prisma.trailer.create({
       data,
       include: {
         depot: true,
@@ -35,15 +35,15 @@ export const vehicleService = {
     });
   },
 
-  async updateVehicle(
+  async updateTrailer(
     id: string,
     data: {
       name?: string;
       VINNumber?: string;
       depotId?: string;
     }
-  ): Promise<Vehicle> {
-    return await prisma.vehicle.update({
+  ): Promise<Trailer> {
+    return await prisma.trailer.update({
       where: { id },
       data,
       include: {
@@ -53,8 +53,8 @@ export const vehicleService = {
     });
   },
 
-  async deleteVehicle(id: string): Promise<Vehicle> {
-    return await prisma.vehicle.delete({
+  async deleteTrailer(id: string): Promise<Trailer> {
+    return await prisma.trailer.delete({
       where: { id },
     });
   },

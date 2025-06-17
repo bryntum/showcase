@@ -101,7 +101,7 @@ export class Drag extends DragHelper {
     return proxy;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   override onDragStart = ({ context }: { context: any }): void => {
     const { grid } = this,
       { selectedRecord } = grid as Grid;
@@ -109,7 +109,7 @@ export class Drag extends DragHelper {
     context.delivery = selectedRecord;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   override onDrag = ({ context }: { context: any }): void => {
     const { schedule } = this,
       driver = context.target && schedule.resolveResourceRecord(context.target);
@@ -117,7 +117,7 @@ export class Drag extends DragHelper {
     context.driver = driver;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   override onDrop = async ({ context }: { context: any }) => {
     const { schedule } = this;
 

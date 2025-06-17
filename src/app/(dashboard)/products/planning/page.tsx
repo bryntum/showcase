@@ -11,9 +11,14 @@ import {
 import { BryntumSchedulerProProps } from "@bryntum/schedulerpro-react-thin/src/BryntumSchedulerPro";
 import { Button } from "components/ui/actions/button";
 import { Calendar } from "components/ui/actions/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  ClockIcon,
+  TrendingUpIcon,
+  TruckIcon,
+  UsersIcon,
+} from "lucide-react";
 import { SchedulerWrapper } from "components/ui/scheduler/SchedulerWrapper";
-import { Truck } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { forEach, isEmpty, map, toLower } from "lodash";
 import {
@@ -21,29 +26,31 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "components/ui/overlays/dropdown-menu";
-import { Client, Delivery } from "@prisma/client";
+import { Client, Delivery, Vehicle, VehicleAssignment } from "@prisma/client";
 import { Scheduler, TimeAxis } from "@bryntum/scheduler-thin";
-import { ResourceInfoColumn } from "@bryntum/scheduler-thin";
-import { BryntumSplitter } from "@bryntum/core-react-thin";
+import { BryntumSlideToggle, BryntumSplitter } from "@bryntum/core-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
-import { eventPalette, unplannedGridConfig } from "./unplannedGrid";
+import { eventPalette, unplannedGridConfig } from "./UnplannedGrid";
 import { isSameDay } from "date-fns";
 import { Input } from "components/ui/forms/input";
 import { Grid } from "@bryntum/grid-thin";
-import { Drag } from "./drag";
+import { Drag } from "./Drag";
 import { useDate } from "../../../../contexts/date-context";
-import MapPanel from "./mapPanel";
+import MapPanel from "./MapPanel";
 import { SlideToggle, Splitter } from "@bryntum/core-thin";
+import MetricCard, { MetricCardProps } from "./MetricCard";
+import { useDarkMode } from "contexts/dark-mode";
+import cn from "lib/utils";
 
 const Planning = () => {
-  const { selectedDate, setSelectedDate } = useDate();
-  const [metrics, setMetrics] = useState<
-    { label: string; value: string | number }[]
-  >([]);
+  const [metrics, setMetrics] = useState<MetricCardProps[]>([]);
   const [resourceFilter, setResourceFilter] = useState<string>("");
   const [eventFilter, setEventFilter] = useState<string>("");
   const [grid, setGrid] = useState<Grid>();
   const [scheduler, setScheduler] = useState<SchedulerPro>();
+
+  const { selectedDate, setSelectedDate } = useDate();
+  const { isDarkMode } = useDarkMode();
 
   const $unplannedGridRef = useRef<BryntumGrid>(null);
   const $dragRef = useRef<Drag>(null);
@@ -51,7 +58,7 @@ const Planning = () => {
   const updateMetrics = () => {
     setMetrics([
       {
-        label: "Active Drivers",
+        title: "Active Drivers",
         value: resourceStore.query(
           (resource: ResourceModel) =>
             !isEmpty(resource.events) &&
@@ -59,16 +66,20 @@ const Planning = () => {
               isSameDay(event.startDate, selectedDate)
             )
         ).length,
+        icon: UsersIcon,
+        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
       {
-        label: "Deliveries Today",
+        title: "Deliveries Today",
         value: eventStore.query(
           (event: Delivery) =>
             isSameDay(event.actualFrom as Date, selectedDate) && event.driverId
         ).length,
+        icon: TruckIcon,
+        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
       {
-        label: "On-Time Rate",
+        title: "On-Time Rate",
         value: !isEmpty(
           eventStore.query(
             (event: Delivery) =>
@@ -93,9 +104,11 @@ const Planning = () => {
                 100
             )}%`
           : "0%",
+        icon: TrendingUpIcon,
+        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
       {
-        label: "Avg Delivery Time",
+        title: "Avg Delivery Time",
         value: !isEmpty(
           eventStore.query(
             (event: Delivery) =>
@@ -121,6 +134,8 @@ const Planning = () => {
                 ).length
             )}m`
           : "Not Applicable",
+        icon: ClockIcon,
+        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
     ]);
   };
@@ -142,12 +157,18 @@ const Planning = () => {
             startDate: delivery.actualFrom,
             duration: delivery.durationInMinutes,
             durationUnit: "m",
+            preamble: delivery.preambleInMinutes
+              ? `${delivery.preambleInMinutes} minute`
+              : undefined,
+            postamble: delivery.postambleInMinutes
+              ? `${delivery.postambleInMinutes} minute`
+              : undefined,
             plannedFrom: new Date(delivery.plannedFrom as Date),
             actualFrom: new Date(delivery.actualFrom as Date),
             address: {
               lat: delivery.client.lat,
               lng: delivery.client.lng,
-            }
+            },
           })),
         autoCommit: true,
         onLoad: updateMetrics,
@@ -208,12 +229,20 @@ const Planning = () => {
           },
         ],
         // @ts-expect-error function is typed incorrectly
-        transformLoadedData: (data: Driver[]) =>
-          map(data, (driver) => ({
-            ...driver,
-            id: driver.id,
-            image: `drivers/${toLower(driver.name)}.jpg`,
-          })),
+        transformLoadedData: (data: Driver<VehicleAssignment<Vehicle>[]>[]) =>
+          map(data, (driver) => {
+            return {
+              ...driver,
+              id: driver.id,
+              image: `drivers/${toLower(driver.name)}.jpg`,
+              vehicle: driver.assignments[0]?.vehicle
+                ? `${driver.assignments[0]?.vehicle?.VINNumber} - ${driver.assignments[0]?.vehicle?.name}`
+                : undefined,
+              trailer: driver.assignments[0]?.trailer
+                ? `${driver.assignments[0]?.trailer?.VINNumber} - ${driver.assignments[0]?.trailer?.name}`
+                : undefined,
+            };
+          }),
       }),
     []
   );
@@ -229,12 +258,86 @@ const Planning = () => {
     useInitialAnimation: false,
     eventStore,
     resourceStore,
+    eventBufferFeature: {
+      renderer({ eventRecord, preambleConfig, postambleConfig }) {
+        if (eventRecord.preamble) {
+          preambleConfig.icon = "b-fa b-fa-truck";
+          preambleConfig.cls = "travel-before";
+          preambleConfig.text = eventRecord.preamble.toString(true);
+        }
+
+        if (eventRecord.postamble) {
+          postambleConfig.icon = "b-fa b-fa-truck";
+          postambleConfig.cls = "travel-after";
+          postambleConfig.text = eventRecord.postamble.toString(true);
+        }
+      },
+    },
     columns: [
       {
-        type: ResourceInfoColumn.type,
         field: "name",
         text: "Driver",
-        width: 180,
+        width: 320,
+        renderer: ({
+          record,
+        }: {
+          record: ResourceModel;
+          cellElement: HTMLElement;
+        }) => {
+          return {
+            tag: "div",
+            class: "b-resource-info",
+            children: [
+              {
+                tag: "img",
+                src: `/${record.getData("image")}`,
+                style: {
+                  width: "3em",
+                  height: "3em",
+                },
+                class: "b-resource-avatar b-resource-image",
+              },
+              {
+                tag: "dl",
+                class: "flex flex-col gap-1",
+                children: [
+                  {
+                    tag: "dt",
+                    html: record.getData("name"),
+                  },
+                  {
+                    tag: "dl",
+                    class: "vehicle-assignments flex flex-col gap-1",
+                    children: [
+                      record.getData("vehicle")
+                        ? {
+                            tag: "dd",
+                            class: "b-fa b-fa-truck before:mr-2",
+                            html: record.getData("vehicle"),
+                          }
+                        : {
+                            tag: "dd",
+                            class: "!text-red-500",
+                            html: "No vehicle assigned",
+                          },
+                      record.getData("trailer")
+                        ? {
+                            tag: "dd",
+                            class: "b-fa b-fa-trailer before:mr-2",
+                            html: record.getData("trailer"),
+                          }
+                        : {
+                            tag: "dd",
+                            class: "!text-red-500",
+                            html: "No trailer assigned",
+                          },
+                    ],
+                  },
+                ],
+              },
+            ],
+          };
+        },
       },
     ] as SchedulerProColumnConfig[],
     viewPreset: {
@@ -308,6 +411,7 @@ const Planning = () => {
         {
           children: [
             {
+              class: "b-event-type",
               style: {
                 display: "flex",
                 alignItems: "center",
@@ -327,7 +431,8 @@ const Planning = () => {
                 {
                   class: "b-event-name",
                   style: {
-                    color: "#444",
+                    color: isDarkMode ? "#fff" : "#444",
+                    opacity: 1,
                   },
                   text: eventRecord.getData("type"),
                 },
@@ -336,7 +441,7 @@ const Planning = () => {
             {
               style: {
                 fontSize: "0.85em",
-                color: "#444",
+                color: isDarkMode ? "#fff" : "#444",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
@@ -346,9 +451,10 @@ const Planning = () => {
               html: eventRecord.getData("comment"),
             },
             {
+              class: "b-event-time",
               style: {
                 fontSize: "0.8em",
-                color: "#666",
+                color: isDarkMode ? "#fff" : "#666",
                 marginTop: "auto",
               },
               text: `${(eventRecord.startDate as Date).toLocaleTimeString([], {
@@ -504,38 +610,46 @@ const Planning = () => {
         <div className="h-full mx-auto flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
             {metrics.map((metric) => (
-              <div key={metric.label} className="bg-primary p-3 rounded-lg">
-                <div className="text-sm text-white">{metric.label}</div>
-                <div className="flex items-baseline">
-                  <span className="text-2xl font-bold mr-2">
-                    {metric.value}
-                  </span>
-                </div>
-              </div>
+              <MetricCard metric={metric} />
             ))}
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-3 md:mb-0">
-              <Truck className="h-8 w-8 mr-2 text-gray-500" />
-              <h1 className="text-2xl font-bold text-gray-500">
-                Driver Planning
-              </h1>
-            </div>
-            <div className="flex space-x-2">
+            <div className="flex justify-between items-center w-full">
               <div className="flex items-center space-x-2">
                 <Input
                   type="text"
                   placeholder="Filter drivers..."
                   value={resourceFilter}
                   onChange={(e) => setResourceFilter(e.target.value)}
-                  className="h-9 w-[150px] text-sidebar-secondary bg-background border-border focus:ring-border"
+                  className={cn(
+                    "h-9 w-[150px] text-sidebar-secondary border-border focus:ring-border",
+                    isDarkMode ? "bg-background" : "bg-white"
+                  )}
                 />
                 <Input
                   type="text"
                   placeholder="Filter deliveries..."
                   value={eventFilter}
                   onChange={(e) => setEventFilter(e.target.value)}
-                  className="h-9 w-[150px] text-sidebar-secondary bg-background border-border focus:ring-border"
+                  className={cn(
+                    "h-9 w-[150px] text-sidebar-secondary border-border focus:ring-border",
+                    isDarkMode ? "bg-background" : "bg-white"
+                  )}
+                />
+                <BryntumSlideToggle
+                  label="Show detailed view"
+                  value={true}
+                  onChange={({ checked }) => {
+                    document
+                      .querySelectorAll(
+                        ".vehicle-assignments, .b-event-type, .b-event-time, .b-resource-avatar"
+                      )
+                      .forEach((element) => {
+                        element.classList.toggle("b-hidden", !checked);
+                      });
+
+                    scheduler?.setConfig({ rowHeight: checked ? 80 : 40 });
+                  }}
                 />
               </div>
               <DropdownMenu>

@@ -4,6 +4,7 @@ import { TimeAxis } from '@bryntum/scheduler-thin';
 import { constructParams, MarkerConfig, PopupConfig } from './Types';
 import Task from './Task';
 import { EventStore } from '@bryntum/schedulerpro-thin';
+import { eventPalette } from './UnplannedGrid';
 
 class CustomTimeAxis extends TimeAxis {
   declare isTimeSpanInAxis: (eventRecord: Task) => boolean;
@@ -112,7 +113,7 @@ export default class MapPanel extends Panel {
   }
 
   private createMarker(eventRecord: Task, lat: number, lng: number) {
-    const color = eventRecord.eventColor || eventRecord.resource?.eventColor || '#f0f0f0';
+    const color = eventPalette[eventRecord.getData("type") as keyof typeof eventPalette].color || '#f0f0f0';
     return new mapboxgl.Marker({ color } as MarkerConfig).setLngLat([lng, lat]);
   }
 
@@ -204,6 +205,7 @@ export default class MapPanel extends Panel {
   }
 
   async onStoreChange(event: Parameters<NonNullable<Exclude<StoreListeners['change'], string>>>[0]) {
+    console.log("onStoreChange", event);
     await this.eventStore.commit();
 
     switch (event.action) {

@@ -32,14 +32,19 @@ export const unplannedGridConfig: BryntumGridProps = {
     {
       text: "Comment",
       field: "comment",
+      flex: 1,
     },
     {
       text: "Type",
       editor: false,
-      renderer: ({ record, cellElement }: { record: Model; cellElement: HTMLElement }) => {
-        const eventType = record.getData(
-          "type"
-        ) as keyof typeof eventPalette;
+      renderer: ({
+        record,
+        cellElement,
+      }: {
+        record: Model;
+        cellElement: HTMLElement;
+      }) => {
+        const eventType = record.getData("type") as keyof typeof eventPalette;
 
         cellElement.style.borderLeft = `2px solid ${eventPalette[eventType].iconColor}`;
         cellElement.style.backgroundColor = eventPalette[eventType].color;
@@ -80,13 +85,14 @@ export const unplannedGridConfig: BryntumGridProps = {
       text: "Start",
       field: "plannedFrom",
       format: "HH:mm",
-      minWidth: 100,
+      autoWidth: true,
     },
     {
       type: "duration",
       editor: false,
       text: "Duration",
       field: "duration",
+      autoWidth: true,
     },
   ] as GridColumnConfig[],
 

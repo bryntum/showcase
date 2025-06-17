@@ -23,7 +23,7 @@ export async function PUT(
 ) {
   try {
     const data = await request.json();
-    const validationError = validateRequest(data, ['plateNumber', 'type']);
+    const validationError = validateRequest(data, []);
     if (validationError) return validationError;
 
     const vehicle = await vehicleService.updateVehicle(params.id, data);
@@ -43,4 +43,4 @@ export async function DELETE(
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete vehicle' }, { status: 500 });
   }
-} 
+}

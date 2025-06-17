@@ -5,21 +5,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import {
-  Package2,
-  Plus,
-  Clock,
-  MessageSquare,
-  Timer,
-  Truck,
-  Package,
-  Check,
-} from "lucide-react";
+import { Package2, Plus, Clock, Timer, Package, Check } from "lucide-react";
 import { Delivery, Driver, Item } from "@prisma/client";
 import { map, toLower } from "lodash";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
-import { AjaxStore, DateHelper, Model, TextField } from "@bryntum/core-thin";
+import { AjaxStore, DateHelper, Model } from "@bryntum/core-thin";
 import { Button } from "../../../../components/ui/actions/button";
 import {
   Dialog,
@@ -38,13 +29,6 @@ import {
   FormMessage,
 } from "../../../../components/ui/forms/form";
 import { Input } from "../../../../components/ui/forms/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/forms/select";
 import {
   Command,
   CommandEmpty,
@@ -70,6 +54,7 @@ import {
 import { useDate } from "../../../../contexts/date-context";
 import { isSameDay } from "date-fns";
 import { BryntumCombo, BryntumTextField } from "@bryntum/core-react-thin";
+import { eventPalette } from "../planning/UnplannedGrid";
 
 const deliveryFormSchema = z.object({
   comment: z.string().min(1, "Comment is required"),
@@ -204,6 +189,47 @@ const Scheduler = () => {
         field: "type",
         width: "9em",
         editor: { type: "dropdown", items: ["URGENT", "REGULAR", "SPECIAL"] },
+        renderer: ({
+          record,
+          cellElement,
+        }: {
+          record: Model;
+          cellElement: HTMLElement;
+        }) => {
+          const eventType = record.getData("type") as keyof typeof eventPalette;
+
+          cellElement.style.borderLeft = `2px solid ${eventPalette[eventType].iconColor}`;
+          cellElement.style.backgroundColor = eventPalette[eventType].color;
+          cellElement.style.opacity = "0.8";
+
+          return {
+            tag: "div",
+            style: {
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "0.8em",
+              fontWeight: 600,
+            },
+            children: [
+              {
+                style: {
+                  width: "12px",
+                  height: "12px",
+                  borderRadius: "50%",
+                  backgroundColor: eventPalette[eventType].iconColor,
+                },
+              },
+              {
+                class: "b-event-name",
+                style: {
+                  color: "#444",
+                },
+                text: record.getData("type"),
+              },
+            ],
+          };
+        },
       },
       {
         text: "Planned From",
@@ -265,11 +291,7 @@ const Scheduler = () => {
       <div className="p-4 h-full bg-logistics-navy text-white">
         <div className="container h-full mx-auto flex flex-col gap-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-3 md:mb-0">
-              <Package2 className="h-8 w-8 mr-2 text-gray-500" />
-              <h1 className="text-2xl font-bold text-gray-500">Deliveries</h1>
-            </div>
-            <div className="flex space-x-2">
+            <div className="flex w-full justify-end space-x-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button>
@@ -301,10 +323,7 @@ const Scheduler = () => {
                   />
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Dialog
-                open={isOpen}
-                onOpenChange={setIsOpen}
-              >
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4" />
@@ -329,7 +348,7 @@ const Scheduler = () => {
                           <FormItem>
                             <FormControl className="w-full">
                               <BryntumTextField
-                                cls="w-full"
+                                width="100%"
                                 labelCls="b-fa b-fa-comment flex gap-2 items-center"
                                 label="Comment"
                                 labelPosition="above"
@@ -348,12 +367,13 @@ const Scheduler = () => {
                           <FormItem>
                             <FormControl className="w-full">
                               <BryntumCombo
-                                cls="w-full"
+                                width="100%"
                                 labelCls="b-fa b-fa-truck flex gap-2 items-center"
                                 label="Type"
                                 labelPosition="above"
-                                // onChange={({ event }) => field.onChange(event)}
                                 items={["URGENT", "REGULAR", "SPECIAL"]}
+                                {...field}
+                                onChange={({ event }) => field.onChange(event)}
                               />
                             </FormControl>
                             <FormMessage className="text-xs" />
@@ -500,7 +520,7 @@ const Scheduler = () => {
               </Dialog>
             </div>
           </div>
-          <div className="flex-1 border-[1px] border-[#e5e5e8] rounded-md overflow-hidden">
+          <div className="flex-1 border-[1px] border-border rounded-md overflow-hidden">
             <BryntumGrid ref={$gridRef} {...gridConfig} />
           </div>
         </div>

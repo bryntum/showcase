@@ -6,7 +6,6 @@ export const deliveryService = {
     return await prisma.delivery.findMany({
       include: {
         item: true,
-        vehicle: true,
         driver: true,
         client: true,
         seller: true,
@@ -19,7 +18,6 @@ export const deliveryService = {
       where: { id },
       include: {
         item: true,
-        vehicle: true,
         driver: true,
         client: true,
         seller: true,
@@ -43,7 +41,6 @@ export const deliveryService = {
       data,
       include: {
         item: true,
-        vehicle: true,
         driver: true,
         client: true,
         seller: true,
@@ -73,14 +70,12 @@ export const deliveryService = {
       data: {
         ...restData,
         item: itemId ? { connect: { id: itemId } } : undefined,
-        vehicle: createRelationUpdate(vehicleId),
         driver: createRelationUpdate(driverId),
         client: createRelationUpdate(clientId),
         seller: createRelationUpdate(sellerId),
       },
       include: {
         item: true,
-        vehicle: true,
         driver: true,
         client: true,
         seller: true,

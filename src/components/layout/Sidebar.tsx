@@ -84,7 +84,7 @@ export const Sidebar = () => {
               alt="Showcase Logo"
               width={100}
               height={24}
-              className="h-6 w-auto translate-y-1"
+              className="h-6 w-auto translate-y-0.5"
             />
           )}
         </Link>
@@ -114,6 +114,7 @@ export const Sidebar = () => {
                 <item.icon size={20} />
                 {!isCollapsed && <span>{item.name}</span>}
               </Link>
+
             ) : (
               <div className="space-y-1">
                 <button

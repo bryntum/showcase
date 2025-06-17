@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const validationError = validateRequest(data, ['plateNumber', 'type']);
+    const validationError = validateRequest(data, ['name', 'VINNumber', 'model', 'depotId']);
     if (validationError) return validationError;
 
     const vehicle = await vehicleService.createVehicle(data);
@@ -22,4 +22,4 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json({ error: 'Failed to create vehicle' }, { status: 500 });
   }
-} 
+}

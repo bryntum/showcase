@@ -50,7 +50,7 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="h-16 border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-20 flex items-center justify-between px-6">
+    <header className="h-16 bg-background/80 backdrop-blur-sm sticky top-0 z-20 flex items-center justify-between px-6">
       <div className="flex items-center space-x-4">
         <h1 className="text-xl font-semibold tracking-tight">{pageTitle}</h1>
       </div>
