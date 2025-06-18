@@ -205,7 +205,6 @@ export default class MapPanel extends Panel {
   }
 
   async onStoreChange(event: Parameters<NonNullable<Exclude<StoreListeners['change'], string>>>[0]) {
-    console.log("onStoreChange", event);
     await this.eventStore.commit();
 
     switch (event.action) {

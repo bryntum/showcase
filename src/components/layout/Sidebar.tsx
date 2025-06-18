@@ -105,7 +105,7 @@ export const Sidebar = () => {
                 className={cn(
                   "flex items-center gap-3 rounded-md px-3 py-2 transition-colors relative group",
                   isActive(item.path)
-                    ? "text-sidebar-primary font-medium"
+                    ? "text-sidebar-primary font-semibold"
                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   isCollapsed && "justify-center px-2"
                 )}
@@ -122,7 +122,7 @@ export const Sidebar = () => {
                   className={cn(
                     "w-full flex items-center justify-between gap-3 rounded-md px-3 py-2 transition-colors",
                     item.children.some((child) => isActive(child.path))
-                      ? "text-sidebar-primary font-medium"
+                      ? "text-sidebar-primary font-semibold"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     isCollapsed && "justify-center px-2"
                   )}
@@ -164,7 +164,7 @@ export const Sidebar = () => {
                         className={cn(
                           "flex items-center gap-3 rounded-md px-2 py-2 text-sm transition-colors",
                           isActive(child.path)
-                            ? "text-sidebar-primary font-medium"
+                            ? "text-sidebar-primary font-semibold"
                             : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                           isCollapsed && "py-1.5"
                         )}

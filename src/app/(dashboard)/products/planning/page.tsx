@@ -13,6 +13,8 @@ import { Button } from "components/ui/actions/button";
 import { Calendar } from "components/ui/actions/calendar";
 import {
   Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
   ClockIcon,
   TrendingUpIcon,
   TruckIcon,
@@ -317,7 +319,7 @@ const Planning = () => {
                           }
                         : {
                             tag: "dd",
-                            class: "!text-red-500",
+                            class: "!text-red-400",
                             html: "No vehicle assigned",
                           },
                       record.getData("trailer")
@@ -328,7 +330,7 @@ const Planning = () => {
                           }
                         : {
                             tag: "dd",
-                            class: "!text-red-500",
+                            class: "!text-red-400",
                             html: "No trailer assigned",
                           },
                     ],
@@ -341,21 +343,18 @@ const Planning = () => {
       },
     ] as SchedulerProColumnConfig[],
     viewPreset: {
-      id: "hourAndDay",
-      base: "hourAndDay",
-      columnLinesFor: 1,
+      id: "preset",
       headers: [
-        {
-          unit: "d",
-          align: "center",
-          dateFormat: "DD MMM YYYY",
-        },
         {
           unit: "h",
           align: "center",
           dateFormat: "HH",
         },
       ],
+      timeResolution: {
+        increment: 5,
+        unit: "m",
+      },
     },
     zoomOnMouseWheel: false,
     zoomKeepsOriginalTimespan: true,
@@ -400,7 +399,6 @@ const Planning = () => {
         },
       },
     },
-
     eventRenderer({ eventRecord, renderData }) {
       const eventType = eventRecord.getData(
         "type"
@@ -431,7 +429,7 @@ const Planning = () => {
                 {
                   class: "b-event-name",
                   style: {
-                    color: isDarkMode ? "#fff" : "#444",
+                    color: "hsl(var(--text))",
                     opacity: 1,
                   },
                   text: eventRecord.getData("type"),
@@ -441,8 +439,8 @@ const Planning = () => {
             {
               style: {
                 fontSize: "0.85em",
-                color: isDarkMode ? "#fff" : "#444",
                 overflow: "hidden",
+                color: "hsl(var(--text))",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
@@ -454,7 +452,7 @@ const Planning = () => {
               class: "b-event-time",
               style: {
                 fontSize: "0.8em",
-                color: isDarkMode ? "#fff" : "#666",
+                color: "hsl(var(--text))",
                 marginTop: "auto",
               },
               text: `${(eventRecord.startDate as Date).toLocaleTimeString([], {
@@ -606,11 +604,11 @@ const Planning = () => {
 
   return (
     <div className="h-full">
-      <div className="p-4 h-full bg-logistics-navy text-white">
+      <div className="p-4 h-full bg-logistics-navy">
         <div className="h-full mx-auto flex flex-col gap-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {metrics.map((metric) => (
-              <MetricCard metric={metric} />
+              <MetricCard key={metric.title} metric={metric} />
             ))}
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center">
@@ -652,39 +650,65 @@ const Planning = () => {
                   }}
                 />
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="default" size="sm">
-                    <CalendarIcon className="h-4 w-4 mr-1 text-white" />
-                    <p className="text-white">
-                      {selectedDate.toLocaleDateString() ===
-                      new Date().toLocaleDateString()
-                        ? "Today"
-                        : selectedDate.toLocaleDateString()}
-                    </p>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-auto p-0" align="end">
-                  <div className="p-2 border-b">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() => setSelectedDate(new Date())}
-                    >
-                      Today
+              <div className="flex items-center space-x-2 ml-auto">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    const prevDay = new Date(selectedDate);
+                    prevDay.setDate(prevDay.getDate() - 1);
+                    setSelectedDate(prevDay);
+                  }}
+                >
+                  <ChevronLeft className={cn("h-4 w-4", isDarkMode ? "text-white" : "text-black")} />
+                  <span className="sr-only">Previous day</span>
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="default" size="sm">
+                      <CalendarIcon className="h-4 w-4 mr-1 text-white" />
+                      <p className="text-white">
+                        {selectedDate.toLocaleDateString() ===
+                        new Date().toLocaleDateString()
+                          ? "Today"
+                          : selectedDate.toLocaleDateString()}
+                      </p>
                     </Button>
-                  </div>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => {
-                      setSelectedDate(date ?? new Date());
-                    }}
-                    initialFocus
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-auto p-0" align="end">
+                    <div className="p-2 border-b">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => setSelectedDate(new Date())}
+                      >
+                        Today
+                      </Button>
+                    </div>
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => {
+                        setSelectedDate(date ?? new Date());
+                      }}
+                      initialFocus
+                    />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    const nextDay = new Date(selectedDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    setSelectedDate(nextDay);
+                  }}
+                >
+                  <ChevronRight className={cn("h-4 w-4", isDarkMode ? "text-white" : "text-black")} />
+                  <span className="sr-only">Next day</span>
+                </Button>
+              </div>
             </div>
           </div>
           <div id="planning-container" className="flex-1 flex flex-col">

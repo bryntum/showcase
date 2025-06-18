@@ -5,7 +5,7 @@ import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { AjaxStore, Model, StringHelper } from "@bryntum/core-thin";
 import { Calendar } from "components/ui/actions/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../../../../components/ui/actions/button";
 import {
   DropdownMenu,
@@ -93,7 +93,15 @@ const VehiclesPage = () => {
                 name: `${driver?.name}`,
                 draggable: true,
                 driverImagePath: `/drivers/${toLower(driver?.name)}.jpg`,
+                vehicleName: assignedVehicle?.vehicle?.name,
+                vehicleModel: assignedVehicle?.vehicle?.model,
                 vehicleTag: assignedVehicle?.vehicle?.VINNumber,
+                trailerName: assignedVehicle?.trailer?.name,
+                trailerCapacity:
+                  assignedVehicle?.trailer?.capacity &&
+                  assignedVehicle?.trailer?.capacityUnit
+                    ? `${assignedVehicle?.trailer?.capacity} ${assignedVehicle?.trailer?.capacityUnit}`
+                    : undefined,
                 trailerTag: assignedVehicle?.trailer?.VINNumber,
               };
             }),
@@ -173,6 +181,9 @@ const VehiclesPage = () => {
     sortFeature: "name",
     store: driversStore,
     rowHeight: 60,
+    cellTooltipFeature: {
+      hoverDelay: 200,
+    },
     columns: [
       {
         text: "Driver",
@@ -207,6 +218,27 @@ const VehiclesPage = () => {
         align: "center",
         renderer: ({ record }: { record: Model }) =>
           VINRenderer(record?.getData("vehicleTag")),
+        tooltipRenderer: ({ record }) => {
+          const vehicleTag = record.getData("vehicleTag");
+          if (!vehicleTag) return null;
+
+          return {
+            tag: "div",
+            class: "p-3 space-y-2",
+            children: [
+              {
+                tag: "div",
+                class: "font-semibold text-base",
+                html: `${record.getData("vehicleName")}`,
+              },
+              {
+                tag: "div",
+                class: "text-sm text-gray-600",
+                html: `${record.getData("vehicleModel")}`,
+              },
+            ],
+          };
+        },
       },
       {
         text: "Trailer",
@@ -217,6 +249,27 @@ const VehiclesPage = () => {
         align: "center",
         renderer: ({ record }: { record: Model }) =>
           VINRenderer(record?.getData("trailerTag")),
+        tooltipRenderer: ({ record }) => {
+          const trailerTag = record.getData("trailerTag");
+          if (!trailerTag) return null;
+
+          return {
+            tag: "div",
+            class: "p-3 space-y-2",
+            children: [
+              {
+                tag: "div",
+                class: "font-semibold text-base",
+                html: `${record.getData("trailerName")}`,
+              },
+              {
+                tag: "div",
+                class: "text-sm text-gray-600",
+                html: `${record.getData("trailerCapacity")}`,
+              },
+            ],
+          };
+        },
       },
     ],
   };
@@ -403,15 +456,34 @@ const VehiclesPage = () => {
                 )}
               />
             </div>
-            <div className="mt-4 md:mt-0">
+            <div className="flex items-center space-x-2 ml-auto">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  const prevDay = new Date(selectedDate);
+                  prevDay.setDate(prevDay.getDate() - 1);
+                  setSelectedDate(prevDay);
+                }}
+              >
+                <ChevronLeft
+                  className={cn(
+                    "h-4 w-4",
+                    isDarkMode ? "text-white" : "text-black"
+                  )}
+                />
+                <span className="sr-only">Previous day</span>
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button>
-                    <CalendarIcon className="h-4 w-4 mr-1" />
-                    {selectedDate.toLocaleDateString() ===
-                    new Date().toLocaleDateString()
-                      ? "Today"
-                      : selectedDate.toLocaleDateString()}
+                  <Button variant="default" size="sm">
+                    <CalendarIcon className="h-4 w-4 mr-1 text-white" />
+                    <p className="text-white">
+                      {selectedDate.toLocaleDateString() ===
+                      new Date().toLocaleDateString()
+                        ? "Today"
+                        : selectedDate.toLocaleDateString()}
+                    </p>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-auto p-0" align="end">
@@ -435,6 +507,23 @@ const VehiclesPage = () => {
                   />
                 </DropdownMenuContent>
               </DropdownMenu>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  const nextDay = new Date(selectedDate);
+                  nextDay.setDate(nextDay.getDate() + 1);
+                  setSelectedDate(nextDay);
+                }}
+              >
+                <ChevronRight
+                  className={cn(
+                    "h-4 w-4",
+                    isDarkMode ? "text-white" : "text-black"
+                  )}
+                />
+                <span className="sr-only">Next day</span>
+              </Button>
             </div>
           </div>
 

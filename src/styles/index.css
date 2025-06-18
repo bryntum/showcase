@@ -1,4 +1,4 @@
-@import 'https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css';
+@import "https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css";
 
 @tailwind base;
 @tailwind components;
@@ -34,6 +34,8 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
+    --text: 240 5% 20%;
+
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 100%;
@@ -44,6 +46,13 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --event-urgent-text: 210 52% 35%;
+    --event-regular-text: 178 59% 35%;
+    --event-special-text: 270 27% 35%;
+
+    --hover-background: 210 100% 95%;
+    --selected-background: 210 100% 90%;
   }
 
   .dark {
@@ -75,6 +84,8 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
 
+    --text: 240 100% 95.9%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -83,6 +94,13 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --event-urgent-text: 240 100% 95.9%;
+    --event-regular-text: 240 100% 95.9%;
+    --event-special-text: 240 100% 95.9%;
+
+    --hover-background: 210 100% 15%;
+    --selected-background: 210 100% 25%;
   }
 }
 
@@ -188,15 +206,40 @@
 }
 
 .b-grid-cell-drop-target {
-  @apply bg-red-50;
+  background-color: hsl(var(--hover-background)) !important;
+}
+
+.b-selected {
+  background-color: hsl(var(--selected-background)) !important;
+}
+
+.b-hover {
+  background-color: hsl(var(--hover-background)) !important;
+}
+
+.b-hover > .b-grid-cell {
+  background-color: hsl(var(--hover-background)) !important;
 }
 
 .b-label {
   text-transform: none !important;
+  color: var(--text) !important;
 }
 
 .b-hidden {
   display: none !important;
+}
+
+.b-grid-header-container .b-header {
+  box-shadow: none !important;
+}
+
+.b-grid-header-container {
+  height: 40px;
+}
+
+.b-sch-event-wrap.b-sch-style-border > .b-sch-event {
+  opacity: 1 !important;
 }
 
 @keyframes gradient {

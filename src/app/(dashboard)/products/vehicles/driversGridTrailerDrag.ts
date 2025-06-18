@@ -87,7 +87,7 @@ export class DriversGridTrailerDrag extends DragHelper {
     const { driversGrid } = this,
       { selectedRecord } = driversGrid as Grid;
 
-    context.grabbed.classList.add("b-hidden");
+    context.grabbed.children[0].classList.add("b-hidden");
     context.grabbedDriver = selectedRecord;
     context.grabbedAssignment = find(get(selectedRecord, "assignments"), (assignment: VehicleAssignment) =>
       isSameDay(assignment.date, this.selectedDate)
@@ -110,6 +110,10 @@ export class DriversGridTrailerDrag extends DragHelper {
 
 
   override onDrop = async ({ context }: { context: any }) => {
+    setTimeout(() => {
+      context.grabbed.children[0].classList.remove("b-hidden");
+    }, 500);
+
     if (context.valid) {
       const promises = [];
       if (DomHelper.isDescendant(this.trailersGrid.element, context.target)) {

@@ -5,7 +5,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Package2, Plus, Clock, Timer, Package, Check } from "lucide-react";
+import {
+  Package2,
+  Plus,
+  Clock,
+  Timer,
+  Package,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Delivery, Driver, Item } from "@prisma/client";
 import { map, toLower } from "lodash";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
@@ -55,6 +64,7 @@ import { useDate } from "../../../../contexts/date-context";
 import { isSameDay } from "date-fns";
 import { BryntumCombo, BryntumTextField } from "@bryntum/core-react-thin";
 import { eventPalette } from "../planning/UnplannedGrid";
+import { useDarkMode } from "contexts/dark-mode";
 
 const deliveryFormSchema = z.object({
   comment: z.string().min(1, "Comment is required"),
@@ -72,6 +82,7 @@ const Scheduler = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [itemPopoverOpen, setItemPopoverOpen] = useState(false);
   const { selectedDate, setSelectedDate } = useDate();
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -112,9 +123,6 @@ const Scheduler = () => {
             },
           })),
         autoCommit: true,
-        onCommit: ({ changes }) => {
-          console.log(changes);
-        },
       }),
     []
   );
@@ -189,45 +197,26 @@ const Scheduler = () => {
         field: "type",
         width: "9em",
         editor: { type: "dropdown", items: ["URGENT", "REGULAR", "SPECIAL"] },
-        renderer: ({
-          record,
-          cellElement,
-        }: {
-          record: Model;
-          cellElement: HTMLElement;
-        }) => {
+        renderer: ({ record }: { record: Model }) => {
           const eventType = record.getData("type") as keyof typeof eventPalette;
-
-          cellElement.style.borderLeft = `2px solid ${eventPalette[eventType].iconColor}`;
-          cellElement.style.backgroundColor = eventPalette[eventType].color;
-          cellElement.style.opacity = "0.8";
 
           return {
             tag: "div",
             style: {
               display: "flex",
               alignItems: "center",
-              gap: "6px",
-              fontSize: "0.8em",
-              fontWeight: 600,
+              justifyContent: "center",
+              padding: "2px 10px",
+              borderRadius: "9999px",
+              backgroundColor: `${eventPalette[eventType].color}80`,
+              border: `1px solid ${eventPalette[eventType].iconColor}`,
+              fontSize: "0.75rem",
+              fontWeight: "500",
+              color: `hsl(var(--event-${toLower(eventType)}-text))`,
+              width: "fit-content",
+              margin: "0 auto",
             },
-            children: [
-              {
-                style: {
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "50%",
-                  backgroundColor: eventPalette[eventType].iconColor,
-                },
-              },
-              {
-                class: "b-event-name",
-                style: {
-                  color: "#444",
-                },
-                text: record.getData("type"),
-              },
-            ],
+            text: record.getData("type"),
           };
         },
       },
@@ -292,47 +281,85 @@ const Scheduler = () => {
         <div className="container h-full mx-auto flex flex-col gap-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex w-full justify-end space-x-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button>
-                    <CalendarIcon className="h-4 w-4 mr-1" />
-                    {selectedDate.toLocaleDateString() ===
-                    new Date().toLocaleDateString()
-                      ? "Today"
-                      : selectedDate.toLocaleDateString()}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-auto p-0" align="end">
-                  <div className="p-2 border-b">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() => setSelectedDate(new Date())}
-                    >
-                      Today
-                    </Button>
-                  </div>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => {
-                      setSelectedDate(date ?? new Date());
-                    }}
-                    initialFocus
+              <div className="flex items-center space-x-2 ml-auto">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    const prevDay = new Date(selectedDate);
+                    prevDay.setDate(prevDay.getDate() - 1);
+                    setSelectedDate(prevDay);
+                  }}
+                >
+                  <ChevronLeft
+                    className={cn(
+                      "h-4 w-4",
+                      isDarkMode ? "text-white" : "text-black"
+                    )}
                   />
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  <span className="sr-only">Previous day</span>
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="default" size="sm">
+                      <CalendarIcon className="h-4 w-4 mr-1 text-white" />
+                      <p className="text-white">
+                        {selectedDate.toLocaleDateString() ===
+                        new Date().toLocaleDateString()
+                          ? "Today"
+                          : selectedDate.toLocaleDateString()}
+                      </p>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-auto p-0" align="end">
+                    <div className="p-2 border-b">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => setSelectedDate(new Date())}
+                      >
+                        Today
+                      </Button>
+                    </div>
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => {
+                        setSelectedDate(date ?? new Date());
+                      }}
+                      initialFocus
+                    />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    const nextDay = new Date(selectedDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    setSelectedDate(nextDay);
+                  }}
+                >
+                  <ChevronRight
+                    className={cn(
+                      "h-4 w-4",
+                      isDarkMode ? "text-white" : "text-black"
+                    )}
+                  />
+                  <span className="sr-only">Next day</span>
+                </Button>
+              </div>
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                   <Button>
-                    <Plus className="h-4 w-4" />
-                    New Delivery
+                    <Plus className="h-4 w-4 text-white" />
+                    <p className="text-white">New Delivery</p>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-gray-900">
+                    <DialogTitle className="text-2xl font-bold text-white">
                       Create New Delivery
                     </DialogTitle>
                   </DialogHeader>
