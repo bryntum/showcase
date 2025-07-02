@@ -5,16 +5,19 @@ import { toLower } from "lodash";
 
 export const eventPalette = {
   URGENT: {
-    color: "#6BA9F7",
-    iconColor: "#357ABD"
+    color: "#fec84b",
+    iconColor: "#b54708",
+    iconClass: "b-fa b-fa-bell"
   },
   REGULAR: {
-    color: "#33B5B4",
-    iconColor: "#248D8A"
+    color: "#99f6e0",
+    iconColor: "#125d56",
+    iconClass: "b-fa b-fa-box-open"
   },
   SPECIAL: {
-    color: "#BC7AD8",
-    iconColor: "#8A4FA1"
+    color: "#a5f0fc",
+    iconColor: "#088ab2",
+    iconClass: "b-fa b-fa-snowflake"
   }
 };
 
@@ -22,18 +25,23 @@ export const unplannedGridConfig: BryntumGridProps = {
   selectionMode: {
     cell: false,
   },
-  stripeFeature: true,
+  stripeFeature: false,
   collapsible: true,
   header: false,
   flex: 1,
   id: "unplannedGrid",
   height: "100%",
   sortFeature: "name",
+  columnLines: false,
+  cls: 'border-[1px] border-border rounded-b-3xl overflow-hidden bg-white',
   columns: [
     {
       text: "Comment",
       field: "comment",
       flex: 1,
+      style: {
+        color: 'hsl(var(--text))'
+      }
     },
     {
       text: "Type",
@@ -70,6 +78,9 @@ export const unplannedGridConfig: BryntumGridProps = {
       format: "HH:mm",
       width: "4em",
       minWidth: "2em",
+      style: {
+        color: 'hsl(var(--text))'
+      }
     },
     {
       type: "duration",
@@ -77,6 +88,9 @@ export const unplannedGridConfig: BryntumGridProps = {
       text: "Duration",
       field: "duration",
       autoWidth: true,
+      style: {
+        color: 'hsl(var(--text))'
+      }
     },
   ] as GridColumnConfig[],
 

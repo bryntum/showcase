@@ -9,7 +9,6 @@ export interface MetricCardProps {
     value: string;
     isPositive: boolean;
   };
-  gradient: string;
 }
 
 const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
@@ -17,11 +16,11 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl ${metric.gradient} px-4 py-2 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl`}
+      className={`relative overflow-hidden rounded-xl border-border border-[1px] px-4 py-2 text-primary bg-primary/10`}
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-white/80">{metric.title}</p>
+          <p className="text-sm font-medium">{metric.title}</p>
           <p className="text-3xl font-bold mt-2">{metric.value}</p>
           {metric.trend && (
             <div className="flex items-center mt-2">
@@ -36,7 +35,7 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
           )}
         </div>
         <div className="ml-4">
-          <div className="rounded-full bg-white/20 p-3">
+          <div className="rounded-full bg-primary p-3">
             <Icon size={24} className="text-white" />
           </div>
         </div>

@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
+    --background: 0 0% 96%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -15,8 +15,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 210 100% 65%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 170 65% 50%;
+    --primary-foreground: 0 0% 96%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -28,20 +28,25 @@
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 96%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 0 0% 90%;
+    --border-header: 174 61% 19%;
+    --input: 169 76% 64%;
+    --input-hover: 169 76% 30%;
     --ring: 222.2 84% 4.9%;
 
-    --text: 240 5% 20%;
+    --text-base: 216 18% 34%;
+    --text-muted: 221 13% 46%;
+    --text-warning: 28 97% 44%;
+
+    --component-background: 0 0% 100%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 210 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 174 61% 10%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
@@ -84,12 +89,15 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
 
-    --text: 240 100% 95.9%;
+    --text-base: 216 18% 34%;
+    --text-muted: 221 13% 46%;
+    --text-warning: 28 97% 44%;
+
+    --component-background: 222.2 84% 2%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
@@ -170,31 +178,57 @@
 
 .b-grid-header {
   text-transform: none !important;
-  @apply bg-background;
+  background-color: hsl(var(--component-background));
+  border-bottom: 1px solid #125d56;
+}
+
+.b-grid-headers, .b-grid-header-container, .b-horizontaltimeaxis {
+  border-bottom: none !important;
+}
+
+.scheduler-filter > .b-field-inner {
+  border-radius: 100px;
+  border-color: hsl(var(--input));
+  padding: 0;
+}
+
+.b-textfield:hover .b-field-inner {
+  border-color: hsl(var(--input-hover)) !important;
+}
+
+.b-field-inner input {
+  padding: 0.5rem 1rem !important;
+}
+
+.b-slidetoggle {
+  flex-direction: row-reverse !important;
+}
+
+.b-slidetoggle input:checked + .b-slidetoggle-toggle {
+  background-color: hsl(var(--primary)) !important;
 }
 
 .b-grid-subgrid {
-  @apply bg-background;
+  background-color: hsl(var(--component-background));
 }
 
 .b-sch-timeaxiscolumn {
-  @apply bg-background;
+  background-color: hsl(var(--component-background));
 }
 .b-grid-row:hover {
-  @apply bg-background;
+  background-color: hsl(var(--component-background));
 }
 .b-resourceheader {
-  @apply bg-background;
+  background-color: hsl(var(--component-background));
 }
 
 .b-virtual-scroller {
-  @apply bg-background;
   scrollbar-width: thin;
   scrollbar-color: #c5c5c8 #f5f5f7;
 }
 
 .b-sch-header-timeaxis-cell {
-  @apply bg-background;
+  background-color: hsl(var(--component-background));
 }
 
 .b-grid-header-container {
@@ -202,7 +236,7 @@
 }
 
 .b-grid-row {
-  @apply bg-background;
+  background-color: hsl(var(--component-background));
 }
 
 .b-grid-cell-drop-target {
@@ -240,6 +274,10 @@
 
 .b-sch-event-wrap.b-sch-style-border > .b-sch-event {
   opacity: 1 !important;
+}
+
+.b-sch-event {
+  border-radius: 0.5rem !important;
 }
 
 @keyframes gradient {

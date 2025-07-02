@@ -30,7 +30,7 @@ import {
 } from "components/ui/overlays/dropdown-menu";
 import { Client, Delivery, Vehicle, VehicleAssignment } from "@prisma/client";
 import { Scheduler, TimeAxis } from "@bryntum/scheduler-thin";
-import { BryntumSlideToggle, BryntumSplitter } from "@bryntum/core-react-thin";
+import { BryntumSlideToggle, BryntumTextField } from "@bryntum/core-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { eventPalette, unplannedGridConfig } from "./UnplannedGrid";
 import { isSameDay } from "date-fns";
@@ -39,7 +39,7 @@ import { Grid } from "@bryntum/grid-thin";
 import { Drag } from "./Drag";
 import { useDate } from "../../../../contexts/date-context";
 import MapPanel from "./MapPanel";
-import { SlideToggle, Splitter } from "@bryntum/core-thin";
+import { SlideToggle } from "@bryntum/core-thin";
 import MetricCard, { MetricCardProps } from "./MetricCard";
 import { useDarkMode } from "contexts/dark-mode";
 import cn from "lib/utils";
@@ -69,7 +69,6 @@ const Planning = () => {
             )
         ).length,
         icon: UsersIcon,
-        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
       {
         title: "Deliveries Today",
@@ -78,7 +77,6 @@ const Planning = () => {
             isSameDay(event.actualFrom as Date, selectedDate) && event.driverId
         ).length,
         icon: TruckIcon,
-        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
       {
         title: "On-Time Rate",
@@ -107,7 +105,6 @@ const Planning = () => {
             )}%`
           : "0%",
         icon: TrendingUpIcon,
-        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
       {
         title: "Avg Delivery Time",
@@ -137,7 +134,6 @@ const Planning = () => {
             )}m`
           : "Not Applicable",
         icon: ClockIcon,
-        gradient: "bg-gradient-to-r from-blue-500 to-purple-500",
       },
     ]);
   };
@@ -254,10 +250,14 @@ const Planning = () => {
     barMargin: 10,
     width: "100%",
     height: "100%",
-    eventStyle: "border",
+    eventStyle: "plain",
+    regionResizeFeature: false,
+    columnLines: false,
+    rowLines: false,
     eventColor: "indigo",
     allowOverlap: false,
     useInitialAnimation: false,
+    cls: "border-border border-[1px] rounded-b-3xl overflow-hidden",
     eventStore,
     resourceStore,
     eventBufferFeature: {
@@ -305,6 +305,7 @@ const Planning = () => {
                 children: [
                   {
                     tag: "dt",
+                    class: "font-medium",
                     html: record.getData("name"),
                   },
                   {
@@ -314,23 +315,23 @@ const Planning = () => {
                       record.getData("vehicle")
                         ? {
                             tag: "dd",
-                            class: "b-fa b-fa-truck before:mr-2",
+                            class: "b-fa b-fa-truck before:mr-2 font-normal",
                             html: record.getData("vehicle"),
                           }
                         : {
                             tag: "dd",
-                            class: "!text-red-400",
+                            class: "!text-text-warning font-normal",
                             html: "No vehicle assigned",
                           },
                       record.getData("trailer")
                         ? {
                             tag: "dd",
-                            class: "b-fa b-fa-trailer before:mr-2",
+                            class: "b-fa b-fa-trailer before:mr-2 font-normal",
                             html: record.getData("trailer"),
                           }
                         : {
                             tag: "dd",
-                            class: "!text-red-400",
+                            class: "!text-text-warning font-normal",
                             html: "No trailer assigned",
                           },
                     ],
@@ -387,7 +388,6 @@ const Planning = () => {
       },
     },
 
-    columnLinesFeature: true,
     timeSpanHighlightFeature: true,
     eventMenuFeature: {
       items: {
@@ -413,48 +413,30 @@ const Planning = () => {
               style: {
                 display: "flex",
                 alignItems: "center",
-                gap: "6px",
-                fontWeight: "bold",
-                fontSize: "0.9em",
               },
               children: [
                 {
-                  style: {
-                    width: "12px",
-                    height: "12px",
-                    borderRadius: "50%",
-                    backgroundColor: eventPalette[eventType].iconColor,
-                  },
+                  tag: "div",
+                  class: cn(
+                    eventPalette[eventType].iconClass,
+                    "text-text-muted"
+                  ),
                 },
                 {
-                  class: "b-event-name",
-                  style: {
-                    color: "hsl(var(--text))",
-                    opacity: 1,
-                  },
-                  text: eventRecord.getData("type"),
+                  class: "b-event-name text-text-muted text-base",
+                  text:
+                    eventRecord.getData("type").charAt(0).toUpperCase() +
+                    eventRecord.getData("type").slice(1).toLowerCase(),
                 },
               ],
             },
             {
-              style: {
-                fontSize: "0.85em",
-                overflow: "hidden",
-                color: "hsl(var(--text))",
-                textOverflow: "ellipsis",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-              },
+              class:
+                "text-text-muted overflow-ellipsis overflow-hidden text-sm font-light",
               html: eventRecord.getData("comment"),
             },
             {
-              class: "b-event-time",
-              style: {
-                fontSize: "0.8em",
-                color: "hsl(var(--text))",
-                marginTop: "auto",
-              },
+              class: "b-event-time text-text-muted text-xs font-light",
               text: `${(eventRecord.startDate as Date).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -580,13 +562,10 @@ const Planning = () => {
   useEffect(() => {
     if (!scheduler) return;
 
-    new Splitter({
-      appendTo: "planning-container",
-    });
-
     const mapPanel = new MapPanel({
       ref: "map",
       appendTo: "planning-container",
+      cls: "border-border border-[1px] rounded-t-3xl overflow-hidden",
       header: false,
       flex: 1,
       eventStore: eventStore,
@@ -604,7 +583,7 @@ const Planning = () => {
 
   return (
     <div className="h-full">
-      <div className="p-4 h-full bg-logistics-navy">
+      <div className="pt-4 px-4 h-full bg-logistics-navy">
         <div className="h-full mx-auto flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {metrics.map((metric) => (
@@ -613,26 +592,21 @@ const Planning = () => {
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="text"
+              <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
+                <BryntumTextField
                   placeholder="Filter drivers..."
                   value={resourceFilter}
-                  onChange={(e) => setResourceFilter(e.target.value)}
-                  className={cn(
-                    "h-9 w-[150px] text-sidebar-secondary border-border focus:ring-border",
-                    isDarkMode ? "bg-background" : "bg-white"
-                  )}
+                  cls="scheduler-filter"
+                  onChange={(e) => setEventFilter(e.value)}
+                  label={undefined}
+
                 />
-                <Input
-                  type="text"
+                <BryntumTextField
                   placeholder="Filter deliveries..."
                   value={eventFilter}
-                  onChange={(e) => setEventFilter(e.target.value)}
-                  className={cn(
-                    "h-9 w-[150px] text-sidebar-secondary border-border focus:ring-border",
-                    isDarkMode ? "bg-background" : "bg-white"
-                  )}
+                  cls="scheduler-filter"
+                  onChange={(e) => setEventFilter(e.value)}
+                  label={undefined}
                 />
                 <BryntumSlideToggle
                   label="Show detailed view"
@@ -660,7 +634,12 @@ const Planning = () => {
                     setSelectedDate(prevDay);
                   }}
                 >
-                  <ChevronLeft className={cn("h-4 w-4", isDarkMode ? "text-white" : "text-black")} />
+                  <ChevronLeft
+                    className={cn(
+                      "h-4 w-4",
+                      isDarkMode ? "text-white" : "text-black"
+                    )}
+                  />
                   <span className="sr-only">Previous day</span>
                 </Button>
                 <DropdownMenu>
@@ -705,19 +684,20 @@ const Planning = () => {
                     setSelectedDate(nextDay);
                   }}
                 >
-                  <ChevronRight className={cn("h-4 w-4", isDarkMode ? "text-white" : "text-black")} />
+                  <ChevronRight
+                    className={cn(
+                      "h-4 w-4",
+                      isDarkMode ? "text-white" : "text-black"
+                    )}
+                  />
                   <span className="sr-only">Next day</span>
                 </Button>
               </div>
             </div>
           </div>
-          <div id="planning-container" className="flex-1 flex flex-col">
-            <div
-              className="flex border-[1px] border-border rounded-t-md"
-              style={{ flex: 2 }}
-            >
+          <div id="planning-container" className="flex-1 flex flex-col gap-8">
+            <div className="flex gap-8" style={{ flex: 2 }}>
               <SchedulerWrapper flex={3} {...schedulerConfig} />
-              <BryntumSplitter showButtons />
               <BryntumGrid
                 store={eventStore.chain((event: Delivery) => !event.driverId)}
                 ref={$unplannedGridRef}
