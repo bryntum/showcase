@@ -36,10 +36,6 @@
     --input-hover: 169 76% 30%;
     --ring: 222.2 84% 4.9%;
 
-    --text-base: 216 18% 34%;
-    --text-muted: 221 13% 46%;
-    --text-warning: 28 97% 44%;
-
     --component-background: 0 0% 100%;
 
     --radius: 0.75rem;
@@ -58,13 +54,52 @@
 
     --hover-background: 210 100% 95%;
     --selected-background: 210 100% 90%;
+
+    --teal-25: 165 80% 98%;
+    --teal-50: 162 76% 97%;
+    --teal-100: 165 85% 89%;
+    --teal-200: 166 84% 78%;
+    --teal-300: 169 76% 64%;
+    --teal-400: 170 65% 50%;
+    --teal-500: 171 79% 40%;
+    --teal-600: 173 83% 32%;
+    --teal-700: 173 76% 26%;
+    --teal-800: 174 68% 22%;
+    --teal-900: 174 61% 19%;
+    --teal-950: 174 61% 10%;
+
+    --warning-25: 42 100% 98%;
+    --warning-50: 45 100% 96%;
+    --warning-100: 45 96% 89%;
+    --warning-200: 44 98% 77%;
+    --warning-300: 42 99% 65%;
+    --warning-400: 39 98% 56%;
+    --warning-500: 34 94% 50%;
+    --warning-600: 28 97% 44%;
+    --warning-700: 22 92% 37%;
+    --warning-800: 19 84% 31%;
+    --warning-900: 18 79% 27%;
+    --warning-950: 17 79% 17%;
+
+    --cyan-25: 186 100% 98%;
+    --cyan-50: 186 100% 96%;
+    --cyan-100: 186 96% 90%;
+    --cyan-200: 188 94% 82%;
+    --cyan-300: 189 92% 69%;
+    --cyan-400: 190 86% 53%;
+    --cyan-500: 191 94% 43%;
+    --cyan-600: 194 91% 36%;
+    --cyan-700: 195 82% 31%;
+    --cyan-800: 196 70% 27%;
+    --cyan-900: 198 64% 24%;
+    --cyan-950: 197 63% 14%;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 174 61% 10%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
@@ -89,10 +124,6 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
 
-    --text-base: 216 18% 34%;
-    --text-muted: 221 13% 46%;
-    --text-warning: 28 97% 44%;
-
     --component-background: 222.2 84% 2%;
 
     --sidebar-background: 240 5.9% 10%;
@@ -109,6 +140,45 @@
 
     --hover-background: 210 100% 15%;
     --selected-background: 210 100% 25%;
+
+    --teal-25: 174 61% 10%;
+    --teal-50: 174 61% 19%;
+    --teal-100: 174 68% 22%;
+    --teal-200: 173 76% 26%;
+    --teal-300: 173 83% 32%;
+    --teal-400: 171 79% 40%;
+    --teal-500: 170 65% 50%;
+    --teal-600: 169 76% 64%;
+    --teal-700: 166 84% 78%;
+    --teal-800: 165 85% 89%;
+    --teal-900: 162 76% 97%;
+    --teal-950: 165 80% 98%;
+
+    --warning-950: 42 100% 98%;
+    --warning-900: 45 100% 96%;
+    --warning-800: 45 96% 89%;
+    --warning-700: 44 98% 77%;
+    --warning-600: 42 99% 65%;
+    --warning-500: 39 98% 56%;
+    --warning-400: 34 94% 50%;
+    --warning-300: 28 97% 44%;
+    --warning-200: 22 92% 37%;
+    --warning-100: 19 84% 31%;
+    --warning-50: 18 79% 27%;
+    --warning-25: 17 79% 17%;
+
+    --cyan-950: 186 100% 98%;
+    --cyan-900: 186 100% 96%;
+    --cyan-800: 186 96% 90%;
+    --cyan-700: 188 94% 82%;
+    --cyan-600: 189 92% 69%;
+    --cyan-500: 190 86% 53%;
+    --cyan-400: 191 94% 43%;
+    --cyan-300: 194 91% 36%;
+    --cyan-200: 195 82% 31%;
+    --cyan-100: 196 70% 27%;
+    --cyan-50: 198 64% 24%;
+    --cyan-25: 197 63% 14%;
   }
 }
 
@@ -188,12 +258,14 @@
 
 .scheduler-filter > .b-field-inner {
   border-radius: 100px;
-  border-color: hsl(var(--input));
+  border-color: hsl(var(--teal-300));
+  background-color: hsl(var(--card)) !important;
   padding: 0;
 }
 
-.b-textfield:hover .b-field-inner {
-  border-color: hsl(var(--input-hover)) !important;
+.scheduler-filter > .b-field-inner:hover {
+  background-color: hsl(var(--teal-25)) !important;
+  border-color: hsl(var(--teal-300)) !important;
 }
 
 .b-field-inner input {
@@ -257,7 +329,7 @@
 
 .b-label {
   text-transform: none !important;
-  color: var(--text) !important;
+  @apply text-teal-950;
 }
 
 .b-hidden {

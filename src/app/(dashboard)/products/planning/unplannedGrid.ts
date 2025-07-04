@@ -1,25 +1,29 @@
 import { Model } from "@bryntum/core-thin";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { GridColumnConfig } from "@bryntum/grid-thin";
-import { toLower } from "lodash";
+import cn from "lib/utils";
 
-export const eventPalette = {
-  URGENT: {
-    color: "#fec84b",
-    iconColor: "#b54708",
-    iconClass: "b-fa b-fa-bell"
-  },
-  REGULAR: {
-    color: "#99f6e0",
-    iconColor: "#125d56",
-    iconClass: "b-fa b-fa-box-open"
-  },
-  SPECIAL: {
-    color: "#a5f0fc",
-    iconColor: "#088ab2",
-    iconClass: "b-fa b-fa-snowflake"
+export const eventTypeCellRenderer = ({ record }: { record: Model }) => {
+  const baseClass = "b-fa rounded-full text-xs px-2 py-0.5 before:pr-2 flex items-center justify-center gap-2 font-medium w-fit mx-auto border-[1px]"
+  const eventTypePalette = {
+    URGENT: {
+      class: "b-fa-bell !bg-warning-25 !text-warning-500 !border-warning-500",
+    },
+    REGULAR: {
+      class: "b-fa-box-open !bg-teal-25 !text-teal-500 !border-teal-500",
+    },
+    SPECIAL: {
+      class: "b-fa-snowflake !bg-cyan-25 !text-cyan-500 !border-cyan-500",
+    }
   }
-};
+  const eventType = record.getData("type") as keyof typeof eventTypePalette;
+
+  return {
+    tag: "div",
+    class: cn(baseClass, eventTypePalette[eventType].class),
+    text: record.getData("type")
+  };
+}
 
 export const unplannedGridConfig: BryntumGridProps = {
   selectionMode: {
@@ -33,42 +37,21 @@ export const unplannedGridConfig: BryntumGridProps = {
   height: "100%",
   sortFeature: "name",
   columnLines: false,
-  cls: 'border-[1px] border-border rounded-b-3xl overflow-hidden bg-white',
+  cls: 'border-[1px] border-border rounded-b-3xl overflow-hidden',
   columns: [
     {
       text: "Comment",
       field: "comment",
       flex: 1,
       style: {
-        color: 'hsl(var(--text))'
+        color: 'text-text-base'
       }
     },
     {
       text: "Type",
       editor: false,
-      renderer: ({ record }: { record: Model }) => {
-        const eventType = record.getData("type") as keyof typeof eventPalette;
-
-        return {
-          tag: "div",
-          style: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "4px",
-            padding: "2px 10px",
-            borderRadius: "9999px",
-            backgroundColor: `${eventPalette[eventType].color}80`,
-            border: `1px solid ${eventPalette[eventType].iconColor}`,
-            fontSize: "0.75rem",
-            fontWeight: "500",
-            color: `hsl(var(--event-${toLower(eventType)}-text))`,
-            width: "fit-content",
-            margin: "0 auto",
-          },
-          text: record.getData("type")
-        };
-      },
+      align: "center",
+      renderer: eventTypeCellRenderer,
     },
     {
       type: "time",
@@ -79,7 +62,7 @@ export const unplannedGridConfig: BryntumGridProps = {
       width: "4em",
       minWidth: "2em",
       style: {
-        color: 'hsl(var(--text))'
+        color: 'text-text-base'
       }
     },
     {
@@ -89,7 +72,7 @@ export const unplannedGridConfig: BryntumGridProps = {
       field: "duration",
       autoWidth: true,
       style: {
-        color: 'hsl(var(--text))'
+        color: 'text-text-base'
       }
     },
   ] as GridColumnConfig[],

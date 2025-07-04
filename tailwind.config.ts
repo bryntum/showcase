@@ -39,14 +39,9 @@ export default {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        text: {
-          muted: 'hsl(var(--text-muted))',
-          base: 'hsl(var(--text-base))',
-          warning: 'hsl(var(--text-warning))'
-        },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))'
+          DEFAULT: 'hsl(var(--teal-400))',
+          foreground: 'hsl(var(--teal-700))'
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -80,6 +75,48 @@ export default {
           'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))'
+        },
+        teal: {
+          25: 'hsl(var(--teal-25))',
+          50: 'hsl(var(--teal-50))',
+          100: 'hsl(var(--teal-100))',
+          200: 'hsl(var(--teal-200))',
+          300: 'hsl(var(--teal-300))',
+          400: 'hsl(var(--teal-400))',
+          500: 'hsl(var(--teal-500))',
+          600: 'hsl(var(--teal-600))',
+          700: 'hsl(var(--teal-700))',
+          800: 'hsl(var(--teal-800))',
+          900: 'hsl(var(--teal-900))',
+          950: 'hsl(var(--teal-950))'
+        },
+        warning: {
+          25: 'hsl(var(--warning-25))',
+          50: 'hsl(var(--warning-50))',
+          100: 'hsl(var(--warning-100))',
+          200: 'hsl(var(--warning-200))',
+          300: 'hsl(var(--warning-300))',
+          400: 'hsl(var(--warning-400))',
+          500: 'hsl(var(--warning-500))',
+          600: 'hsl(var(--warning-600))',
+          700: 'hsl(var(--warning-700))',
+          800: 'hsl(var(--warning-800))',
+          900: 'hsl(var(--warning-900))',
+          950: 'hsl(var(--warning-950))'
+        },
+        cyan: {
+          25: 'hsl(var(--cyan-25))',
+          50: 'hsl(var(--cyan-50))',
+          100: 'hsl(var(--cyan-100))',
+          200: 'hsl(var(--cyan-200))',
+          300: 'hsl(var(--cyan-300))',
+          400: 'hsl(var(--cyan-400))',
+          500: 'hsl(var(--cyan-500))',
+          600: 'hsl(var(--cyan-600))',
+          700: 'hsl(var(--cyan-700))',
+          800: 'hsl(var(--cyan-800))',
+          900: 'hsl(var(--cyan-900))',
+          950: 'hsl(var(--cyan-950))'
         }
       },
       borderRadius: {

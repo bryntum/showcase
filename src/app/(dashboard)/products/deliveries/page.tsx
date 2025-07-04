@@ -63,7 +63,7 @@ import {
 import { useDate } from "../../../../contexts/date-context";
 import { isSameDay } from "date-fns";
 import { BryntumCombo, BryntumTextField } from "@bryntum/core-react-thin";
-import { eventPalette } from "../planning/UnplannedGrid";
+import { eventTypeCellRenderer } from "../planning/UnplannedGrid";
 import { useDarkMode } from "contexts/dark-mode";
 
 const deliveryFormSchema = z.object({
@@ -196,29 +196,9 @@ const Scheduler = () => {
         text: "Type",
         field: "type",
         width: "9em",
+        align: "center",
         editor: { type: "dropdown", items: ["URGENT", "REGULAR", "SPECIAL"] },
-        renderer: ({ record }: { record: Model }) => {
-          const eventType = record.getData("type") as keyof typeof eventPalette;
-
-          return {
-            tag: "div",
-            style: {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "2px 10px",
-              borderRadius: "9999px",
-              backgroundColor: `${eventPalette[eventType].color}80`,
-              border: `1px solid ${eventPalette[eventType].iconColor}`,
-              fontSize: "0.75rem",
-              fontWeight: "500",
-              color: `hsl(var(--event-${toLower(eventType)}-text))`,
-              width: "fit-content",
-              margin: "0 auto",
-            },
-            text: record.getData("type"),
-          };
-        },
+        renderer: eventTypeCellRenderer,
       },
       {
         text: "Planned From",

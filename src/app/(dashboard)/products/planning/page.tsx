@@ -13,8 +13,6 @@ import { Button } from "components/ui/actions/button";
 import { Calendar } from "components/ui/actions/calendar";
 import {
   Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
   ClockIcon,
   TrendingUpIcon,
   TruckIcon,
@@ -30,18 +28,20 @@ import {
 } from "components/ui/overlays/dropdown-menu";
 import { Client, Delivery, Vehicle, VehicleAssignment } from "@prisma/client";
 import { Scheduler, TimeAxis } from "@bryntum/scheduler-thin";
-import { BryntumSlideToggle, BryntumTextField } from "@bryntum/core-react-thin";
+import {
+  BryntumButton,
+  BryntumSlideToggle,
+  BryntumTextField,
+} from "@bryntum/core-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
-import { eventPalette, unplannedGridConfig } from "./UnplannedGrid";
+import { unplannedGridConfig } from "./UnplannedGrid";
 import { isSameDay } from "date-fns";
-import { Input } from "components/ui/forms/input";
 import { Grid } from "@bryntum/grid-thin";
 import { Drag } from "./Drag";
 import { useDate } from "../../../../contexts/date-context";
 import MapPanel from "./MapPanel";
 import { SlideToggle } from "@bryntum/core-thin";
 import MetricCard, { MetricCardProps } from "./MetricCard";
-import { useDarkMode } from "contexts/dark-mode";
 import cn from "lib/utils";
 
 const Planning = () => {
@@ -52,12 +52,20 @@ const Planning = () => {
   const [scheduler, setScheduler] = useState<SchedulerPro>();
 
   const { selectedDate, setSelectedDate } = useDate();
-  const { isDarkMode } = useDarkMode();
 
   const $unplannedGridRef = useRef<BryntumGrid>(null);
   const $dragRef = useRef<Drag>(null);
 
   const updateMetrics = () => {
+    const activeDriverAmount = resourceStore.query(
+      (resource: ResourceModel) =>
+        !isEmpty(resource.events) &&
+        resource.events.some((event) =>
+          isSameDay(event.startDate, selectedDate)
+        )
+    ).length;
+    const totalDriverAmount = resourceStore.allRecords.length;
+
     setMetrics([
       {
         title: "Active Drivers",
@@ -69,6 +77,12 @@ const Planning = () => {
             )
         ).length,
         icon: UsersIcon,
+        trend: `${totalDriverAmount - activeDriverAmount} have no vehicle assigned`,
+        badge: {
+          type: "neutral",
+          href: "/products/planning/drivers",
+          label: "Assign now",
+        }
       },
       {
         title: "Deliveries Today",
@@ -77,6 +91,11 @@ const Planning = () => {
             isSameDay(event.actualFrom as Date, selectedDate) && event.driverId
         ).length,
         icon: TruckIcon,
+        trend: "3 more than average",
+        badge: {
+          type: "positive",
+          label: "15%",
+        }
       },
       {
         title: "On-Time Rate",
@@ -105,6 +124,11 @@ const Planning = () => {
             )}%`
           : "0%",
         icon: TrendingUpIcon,
+        trend: "below average",
+        badge: {
+          type: "negative",
+          label: "20,3%",
+        }
       },
       {
         title: "Avg Delivery Time",
@@ -134,6 +158,11 @@ const Planning = () => {
             )}m`
           : "Not Applicable",
         icon: ClockIcon,
+        trend: "above average",
+        badge: {
+          type: "positive",
+          label: "10m",
+        }
       },
     ]);
   };
@@ -310,7 +339,8 @@ const Planning = () => {
                   },
                   {
                     tag: "dl",
-                    class: "vehicle-assignments flex flex-col gap-1",
+                    class:
+                      "vehicle-assignments text-teal-500 flex flex-col gap-1",
                     children: [
                       record.getData("vehicle")
                         ? {
@@ -320,7 +350,7 @@ const Planning = () => {
                           }
                         : {
                             tag: "dd",
-                            class: "!text-text-warning font-normal",
+                            class: "!text-warning-600 font-normal",
                             html: "No vehicle assigned",
                           },
                       record.getData("trailer")
@@ -331,7 +361,7 @@ const Planning = () => {
                           }
                         : {
                             tag: "dd",
-                            class: "!text-text-warning font-normal",
+                            class: "!text-warning-600 font-normal",
                             html: "No trailer assigned",
                           },
                     ],
@@ -400,16 +430,28 @@ const Planning = () => {
       },
     },
     eventRenderer({ eventRecord, renderData }) {
-      const eventType = eventRecord.getData(
-        "type"
-      ) as keyof typeof eventPalette;
-      renderData.eventColor = eventPalette[eventType].color;
+      const eventPalette = {
+        URGENT: {
+          class: "!bg-warning-400 !text-gray-500",
+          icon: "b-fa b-fa-bell"
+        },
+        REGULAR: {
+          class: "!bg-teal-300 !text-gray-500",
+          icon: "b-fa b-fa-box-open"
+        },
+        SPECIAL: {
+          class: "!bg-cyan-300 !text-gray-500",
+          icon: "b-fa b-fa-snowflake"
+        }
+      }
+      const eventType = eventRecord.getData("type") as keyof typeof eventPalette;
+      renderData.cls += ` ${eventPalette[eventType].class}`;
 
       return [
         {
           children: [
             {
-              class: "b-event-type",
+              class: `b-event-type`,
               style: {
                 display: "flex",
                 alignItems: "center",
@@ -417,10 +459,7 @@ const Planning = () => {
               children: [
                 {
                   tag: "div",
-                  class: cn(
-                    eventPalette[eventType].iconClass,
-                    "text-text-muted"
-                  ),
+                  class: eventPalette[eventType].icon,
                 },
                 {
                   class: "b-event-name text-text-muted text-base",
@@ -597,9 +636,8 @@ const Planning = () => {
                   placeholder="Filter drivers..."
                   value={resourceFilter}
                   cls="scheduler-filter"
-                  onChange={(e) => setEventFilter(e.value)}
+                  onChange={(e) => setResourceFilter(e.value)}
                   label={undefined}
-
                 />
                 <BryntumTextField
                   placeholder="Filter deliveries..."
@@ -610,6 +648,7 @@ const Planning = () => {
                 />
                 <BryntumSlideToggle
                   label="Show detailed view"
+                  labelCls="!text-teal-900"
                   value={true}
                   onChange={({ checked }) => {
                     document
@@ -624,29 +663,24 @@ const Planning = () => {
                   }}
                 />
               </div>
-              <div className="flex items-center space-x-2 ml-auto">
-                <Button
-                  variant="outline"
-                  size="icon"
+              <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
+                <BryntumButton
+                  cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const prevDay = new Date(selectedDate);
                     prevDay.setDate(prevDay.getDate() - 1);
                     setSelectedDate(prevDay);
                   }}
-                >
-                  <ChevronLeft
-                    className={cn(
-                      "h-4 w-4",
-                      isDarkMode ? "text-white" : "text-black"
-                    )}
-                  />
-                  <span className="sr-only">Previous day</span>
-                </Button>
+                />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="default" size="sm">
-                      <CalendarIcon className="h-4 w-4 mr-1 text-white" />
-                      <p className="text-white">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="rounded-full bg-card h-10 border-teal-300 border-[1px] hover:bg-teal-50"
+                    >
+                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-300" />
+                      <p className="text-text-base">
                         {selectedDate.toLocaleDateString() ===
                         new Date().toLocaleDateString()
                           ? "Today"
@@ -655,7 +689,7 @@ const Planning = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-auto p-0" align="end">
-                    <div className="p-2 border-b">
+                    <div className="!rounded-full !bg-card !border-teal-300 !min-h-10 !h-10">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -675,23 +709,14 @@ const Planning = () => {
                     />
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button
-                  variant="outline"
-                  size="icon"
+                <BryntumButton
+                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const nextDay = new Date(selectedDate);
                     nextDay.setDate(nextDay.getDate() + 1);
                     setSelectedDate(nextDay);
                   }}
-                >
-                  <ChevronRight
-                    className={cn(
-                      "h-4 w-4",
-                      isDarkMode ? "text-white" : "text-black"
-                    )}
-                  />
-                  <span className="sr-only">Next day</span>
-                </Button>
+                />
               </div>
             </div>
           </div>
