@@ -62,7 +62,11 @@ import {
 } from "components/ui/overlays/dropdown-menu";
 import { useDate } from "../../../../contexts/date-context";
 import { isSameDay } from "date-fns";
-import { BryntumCombo, BryntumTextField } from "@bryntum/core-react-thin";
+import {
+  BryntumButton,
+  BryntumCombo,
+  BryntumTextField,
+} from "@bryntum/core-react-thin";
 import { eventTypeCellRenderer } from "../planning/UnplannedGrid";
 import { useDarkMode } from "contexts/dark-mode";
 
@@ -261,29 +265,24 @@ const Scheduler = () => {
         <div className="container h-full mx-auto flex flex-col gap-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex w-full justify-end space-x-2">
-              <div className="flex items-center space-x-2 ml-auto">
-                <Button
-                  variant="outline"
-                  size="icon"
+              <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
+                <BryntumButton
+                  cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const prevDay = new Date(selectedDate);
                     prevDay.setDate(prevDay.getDate() - 1);
                     setSelectedDate(prevDay);
                   }}
-                >
-                  <ChevronLeft
-                    className={cn(
-                      "h-4 w-4",
-                      isDarkMode ? "text-white" : "text-black"
-                    )}
-                  />
-                  <span className="sr-only">Previous day</span>
-                </Button>
+                />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="default" size="sm">
-                      <CalendarIcon className="h-4 w-4 mr-1 text-white" />
-                      <p className="text-white">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="rounded-full bg-card h-10 border-teal-300 border-[1px] hover:bg-teal-50"
+                    >
+                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-300" />
+                      <p className="text-text-base">
                         {selectedDate.toLocaleDateString() ===
                         new Date().toLocaleDateString()
                           ? "Today"
@@ -292,7 +291,7 @@ const Scheduler = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-auto p-0" align="end">
-                    <div className="p-2 border-b">
+                    <div className="!rounded-full !bg-card !border-teal-300 !min-h-10 !h-10">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -312,96 +311,47 @@ const Scheduler = () => {
                     />
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button
-                  variant="outline"
-                  size="icon"
+                <BryntumButton
+                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const nextDay = new Date(selectedDate);
                     nextDay.setDate(nextDay.getDate() + 1);
                     setSelectedDate(nextDay);
                   }}
-                >
-                  <ChevronRight
-                    className={cn(
-                      "h-4 w-4",
-                      isDarkMode ? "text-white" : "text-black"
-                    )}
-                  />
-                  <span className="sr-only">Next day</span>
-                </Button>
-              </div>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="h-4 w-4 text-white" />
-                    <p className="text-white">New Delivery</p>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-white">
-                      Create New Delivery
-                    </DialogTitle>
-                  </DialogHeader>
-                  <Form {...form}>
-                    <form
-                      onSubmit={form.handleSubmit(onSubmit)}
-                      className="space-y-6 py-4"
-                    >
-                      <FormField
-                        control={form.control}
-                        name="comment"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl className="w-full">
-                              <BryntumTextField
-                                width="100%"
-                                labelCls="b-fa b-fa-comment flex gap-2 items-center"
-                                label="Comment"
-                                labelPosition="above"
-                                {...field}
-                                onChange={({ event }) => field.onChange(event)}
-                              />
-                            </FormControl>
-                            <FormMessage className="text-xs" />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="type"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl className="w-full">
-                              <BryntumCombo
-                                width="100%"
-                                labelCls="b-fa b-fa-truck flex gap-2 items-center"
-                                label="Type"
-                                labelPosition="above"
-                                items={["URGENT", "REGULAR", "SPECIAL"]}
-                                {...field}
-                                onChange={({ event }) => field.onChange(event)}
-                              />
-                            </FormControl>
-                            <FormMessage className="text-xs" />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="grid grid-cols-2 gap-4">
+                />
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="rounded-full bg-teal-300 hover:bg-teal-400">
+                      <Plus className="h-4 w-4 text-white" />
+                      <p className="text-white">New Delivery</p>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold text-white">
+                        Create New Delivery
+                      </DialogTitle>
+                    </DialogHeader>
+                    <Form {...form}>
+                      <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-6 py-4"
+                      >
                         <FormField
                           control={form.control}
-                          name="plannedFrom"
+                          name="comment"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                <Clock className="h-4 w-4" />
-                                Planned Time
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="time"
+                              <FormControl className="w-full">
+                                <BryntumTextField
+                                  width="100%"
+                                  labelCls="b-fa b-fa-comment flex gap-2 items-center"
+                                  label="Comment"
+                                  labelPosition="above"
                                   {...field}
-                                  className="h-11"
+                                  onChange={({ event }) =>
+                                    field.onChange(event)
+                                  }
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
@@ -410,121 +360,167 @@ const Scheduler = () => {
                         />
                         <FormField
                           control={form.control}
-                          name="durationInMinutes"
+                          name="type"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                <Timer className="h-4 w-4" />
-                                Duration
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  min="1"
+                              <FormControl className="w-full">
+                                <BryntumCombo
+                                  width="100%"
+                                  labelCls="b-fa b-fa-truck flex gap-2 items-center"
+                                  label="Type"
+                                  labelPosition="above"
+                                  items={["URGENT", "REGULAR", "SPECIAL"]}
                                   {...field}
-                                  className="h-11"
-                                  placeholder="Minutes"
+                                  onChange={({ event }) =>
+                                    field.onChange(event)
+                                  }
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
                             </FormItem>
                           )}
                         />
-                      </div>
-                      <FormField
-                        control={form.control}
-                        name="itemId"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col">
-                            <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                              <Package className="h-4 w-4" />
-                              Item
-                            </FormLabel>
-                            <Popover
-                              open={itemPopoverOpen}
-                              onOpenChange={setItemPopoverOpen}
-                            >
-                              <PopoverTrigger asChild>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="plannedFrom"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                  <Clock className="h-4 w-4" />
+                                  Planned Time
+                                </FormLabel>
                                 <FormControl>
-                                  <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    className={cn(
-                                      "h-11 w-full justify-between",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value
-                                      ? items.find(
-                                          (item) => item.id === field.value
-                                        )?.name
-                                      : "Select an item"}
-                                    <Package className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                  </Button>
+                                  <Input
+                                    type="time"
+                                    {...field}
+                                    className="h-11"
+                                  />
                                 </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-full p-0"
-                                align="start"
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="durationInMinutes"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                  <Timer className="h-4 w-4" />
+                                  Duration
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    {...field}
+                                    className="h-11"
+                                    placeholder="Minutes"
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="itemId"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                <Package className="h-4 w-4" />
+                                Item
+                              </FormLabel>
+                              <Popover
+                                open={itemPopoverOpen}
+                                onOpenChange={setItemPopoverOpen}
                               >
-                                <Command>
-                                  <CommandInput placeholder="Search items..." />
-                                  <CommandList>
-                                    <CommandEmpty>No items found.</CommandEmpty>
-                                    <CommandGroup>
-                                      {items.map((item) => (
-                                        <CommandItem
-                                          value={item.name}
-                                          key={item.id}
-                                          onSelect={() => {
-                                            form.setValue("itemId", item.id);
-                                            setItemPopoverOpen(false);
-                                          }}
-                                        >
-                                          <div className="flex flex-col w-full">
-                                            <div className="flex items-center">
-                                              <Check
-                                                className={cn(
-                                                  "mr-2 h-4 w-4",
-                                                  item.id === field.value
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                                )}
-                                              />
-                                              <span className="font-medium">
-                                                {item.name}
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className={cn(
+                                        "h-11 w-full justify-between",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      {field.value
+                                        ? items.find(
+                                            (item) => item.id === field.value
+                                          )?.name
+                                        : "Select an item"}
+                                      <Package className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-full p-0"
+                                  align="start"
+                                >
+                                  <Command>
+                                    <CommandInput placeholder="Search items..." />
+                                    <CommandList>
+                                      <CommandEmpty>
+                                        No items found.
+                                      </CommandEmpty>
+                                      <CommandGroup>
+                                        {items.map((item) => (
+                                          <CommandItem
+                                            value={item.name}
+                                            key={item.id}
+                                            onSelect={() => {
+                                              form.setValue("itemId", item.id);
+                                              setItemPopoverOpen(false);
+                                            }}
+                                          >
+                                            <div className="flex flex-col w-full">
+                                              <div className="flex items-center">
+                                                <Check
+                                                  className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    item.id === field.value
+                                                      ? "opacity-100"
+                                                      : "opacity-0"
+                                                  )}
+                                                />
+                                                <span className="font-medium">
+                                                  {item.name}
+                                                </span>
+                                              </div>
+                                              <span className="text-xs text-gray-500 ml-6">
+                                                {item.description} •{" "}
+                                                {item.weight}g • {item.currency}{" "}
+                                                {item.sellPrice}
                                               </span>
                                             </div>
-                                            <span className="text-xs text-gray-500 ml-6">
-                                              {item.description} • {item.weight}
-                                              g • {item.currency}{" "}
-                                              {item.sellPrice}
-                                            </span>
-                                          </div>
-                                        </CommandItem>
-                                      ))}
-                                    </CommandGroup>
-                                  </CommandList>
-                                </Command>
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage className="text-xs" />
-                          </FormItem>
-                        )}
-                      />
-                      <DialogFooter className="pt-4">
-                        <Button
-                          type="submit"
-                          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Create Delivery
-                        </Button>
-                      </DialogFooter>
-                    </form>
-                  </Form>
-                </DialogContent>
-              </Dialog>
+                                          </CommandItem>
+                                        ))}
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          )}
+                        />
+                        <DialogFooter className="pt-4">
+                          <Button
+                            type="submit"
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Create Delivery
+                          </Button>
+                        </DialogFooter>
+                      </form>
+                    </Form>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
           </div>
           <div className="flex-1 border-[1px] border-border rounded-md overflow-hidden">

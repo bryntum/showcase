@@ -5,7 +5,11 @@ import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { AjaxStore, Model, StringHelper } from "@bryntum/core-thin";
 import { Calendar } from "components/ui/actions/calendar";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "../../../../components/ui/actions/button";
 import {
   DropdownMenu,
@@ -13,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "components/ui/overlays/dropdown-menu";
 import { useDate } from "../../../../contexts/date-context";
-import { find, get, map, toLower } from "lodash";
+import { every, find, get, map, toLower } from "lodash";
 import { Driver, Trailer, Vehicle, VehicleAssignment } from "@prisma/client";
 import { VehiclesGridDrag } from "./vehiclesGridDrag";
 import { isSameDay } from "date-fns";
@@ -21,15 +25,16 @@ import { Grid } from "@bryntum/grid-thin";
 import { TrailersGridDrag } from "./trailersGridDrag";
 import { DriversGridVehicleDrag } from "./driversGridVehicleDrag";
 import { DriversGridTrailerDrag } from "./driversGridTrailerDrag";
-import { Input } from "components/ui/forms/input";
 import cn from "lib/utils";
 import { useDarkMode } from "contexts/dark-mode";
+import { BryntumButton, BryntumTextField } from "@bryntum/core-react-thin";
 
 const VehiclesPage = () => {
   const { selectedDate, setSelectedDate } = useDate();
   const { isDarkMode } = useDarkMode();
 
   const [driverFilter, setDriverFilter] = useState("");
+  const [vehicleFilter, setVehicleFilter] = useState("");
 
   const [driversGrid, setDriversGrid] = useState<Grid>();
   const [vehiclesGrid, setVehiclesGrid] = useState<Grid>();
@@ -53,17 +58,16 @@ const VehiclesPage = () => {
         {
           tag: "div",
           class:
-            "flex items-center justify-center min-w-[120px] px-2 py-1 rounded bg-white border-2 border-blue-600 shadow-sm",
+            "flex items-center justify-center min-w-[120px] px-2 py-1 rounded bg-card border-2 border-teal-300 text-teal-950 shadow-sm",
           style: {
             fontFamily: "monospace",
             letterSpacing: "0.05em",
             textShadow: "0 1px 1px rgba(0,0,0,0.1)",
-            background: "linear-gradient(to bottom, #ffffff 0%, #f8f8f8 100%)",
           },
           children: [
             {
               tag: "span",
-              class: "text-sm font-bold text-black uppercase tracking-wider",
+              class: "text-sm font-bold text-teal-900 uppercase tracking-wider",
               text: VINNumber,
             },
           ],
@@ -284,6 +288,14 @@ const VehiclesPage = () => {
           isSameDay(assignment.date, selectedDate)
       );
 
+      if (vehicleFilter) {
+        return (
+          vehicle.VINNumber?.toLowerCase().includes(
+            vehicleFilter.toLowerCase()
+          ) || vehicle.name?.toLowerCase().includes(vehicleFilter.toLowerCase())
+        );
+      }
+
       return !assignment;
     }),
     height: "100%",
@@ -319,6 +331,14 @@ const VehiclesPage = () => {
           isSameDay(assignment.date, selectedDate)
       );
 
+      if (vehicleFilter) {
+        return (
+          vehicle.VINNumber?.toLowerCase().includes(
+            vehicleFilter.toLowerCase()
+          ) || vehicle.name?.toLowerCase().includes(vehicleFilter.toLowerCase())
+        );
+      }
+
       return !assignment;
     }),
     height: "100%",
@@ -347,12 +367,49 @@ const VehiclesPage = () => {
 
   useEffect(() => {
     driversStore.clearFilters();
-    if (driverFilter) {
-      driversStore.filterBy((driver: Driver) =>
-        driver.name.toLowerCase().includes(driverFilter.toLowerCase())
-      );
+    if (driverFilter || vehicleFilter) {
+      driversStore.filterBy((driver: Model) => {
+        const checks = [true];
+
+        if (driverFilter) {
+          checks.push(
+            driver
+              .getData("name")
+              ?.toLowerCase()
+              .includes(driverFilter.toLowerCase())
+          );
+        }
+
+        if (vehicleFilter) {
+          const vehicleTagCheck = driver
+            .getData("vehicleTag")
+            ?.toLowerCase()
+            .includes(vehicleFilter.toLowerCase());
+          const vehicleNameCheck = driver
+            .getData("vehicleName")
+            ?.toLowerCase()
+            .includes(vehicleFilter.toLowerCase());
+          const trailerTagCheck = driver
+            .getData("trailerTag")
+            ?.toLowerCase()
+            .includes(vehicleFilter.toLowerCase());
+          const trailerNameCheck = driver
+            .getData("trailerName")
+            ?.toLowerCase()
+            .includes(vehicleFilter.toLowerCase());
+
+          checks.push(
+            vehicleTagCheck ||
+              vehicleNameCheck ||
+              trailerTagCheck ||
+              trailerNameCheck
+          );
+        }
+
+        return every(checks);
+      });
     }
-  }, [driverFilter]);
+  }, [driverFilter, vehicleFilter]);
 
   useEffect(() => {
     setVehiclesGrid($vehiclesGridRef.current?.instance);
@@ -442,43 +499,40 @@ const VehiclesPage = () => {
       <div className="p-4 h-full bg-logistics-navy text-white">
         <div className="container h-full mx-auto flex flex-col gap-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Input
-                type="text"
+            <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
+              <BryntumTextField
                 placeholder="Filter drivers..."
                 value={driverFilter}
-                onChange={(e) => setDriverFilter(e.target.value)}
-                className={cn(
-                  "h-9 w-[150px] text-black border-border focus:ring-border",
-                  isDarkMode
-                    ? "bg-background text-white"
-                    : "bg-white text-black"
-                )}
+                cls="scheduler-filter"
+                onChange={(e) => setDriverFilter(e.value)}
+                label={undefined}
+              />
+              <BryntumTextField
+                placeholder="Filter vehicles..."
+                value={vehicleFilter}
+                cls="scheduler-filter"
+                onChange={(e) => setVehicleFilter(e.value)}
+                label={undefined}
               />
             </div>
-            <div className="flex items-center space-x-2 ml-auto">
-              <Button
-                variant="outline"
-                size="icon"
+            <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
+              <BryntumButton
+                cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-300 !text-teal-800 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                 onClick={() => {
                   const prevDay = new Date(selectedDate);
                   prevDay.setDate(prevDay.getDate() - 1);
                   setSelectedDate(prevDay);
                 }}
-              >
-                <ChevronLeft
-                  className={cn(
-                    "h-4 w-4",
-                    isDarkMode ? "text-white" : "text-black"
-                  )}
-                />
-                <span className="sr-only">Previous day</span>
-              </Button>
+              />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="default" size="sm">
-                    <CalendarIcon className="h-4 w-4 mr-1 text-white" />
-                    <p className="text-white">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="rounded-full bg-card h-10 border-teal-300 border-[1px] hover:bg-teal-50"
+                  >
+                    <CalendarIcon className="h-4 w-4 mr-1 text-teal-300" />
+                    <p className="text-teal-800">
                       {selectedDate.toLocaleDateString() ===
                       new Date().toLocaleDateString()
                         ? "Today"
@@ -487,7 +541,7 @@ const VehiclesPage = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-auto p-0" align="end">
-                  <div className="p-2 border-b">
+                  <div className="!rounded-full !bg-card !border-teal-300 !min-h-10 !h-10">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -507,29 +561,20 @@ const VehiclesPage = () => {
                   />
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button
-                variant="outline"
-                size="icon"
+              <BryntumButton
+                cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-300 !text-teal-800 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                 onClick={() => {
                   const nextDay = new Date(selectedDate);
                   nextDay.setDate(nextDay.getDate() + 1);
                   setSelectedDate(nextDay);
                 }}
-              >
-                <ChevronRight
-                  className={cn(
-                    "h-4 w-4",
-                    isDarkMode ? "text-white" : "text-black"
-                  )}
-                />
-                <span className="sr-only">Next day</span>
-              </Button>
+              />
             </div>
           </div>
 
           <div className="h-[90%] grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="h-full flex flex-col gap-4">
-              <h2 className="text-xl font-semibold text-gray-500">Drivers</h2>
+              <h2 className="text-xl font-semibold text-teal-900">Drivers</h2>
               <div className="h-full border-[1px] border-border overflow-hidden rounded-md">
                 <BryntumGrid
                   id="driversGrid"
@@ -539,7 +584,7 @@ const VehiclesPage = () => {
               </div>
             </div>
             <div className="h-full flex flex-col gap-4">
-              <h2 className="text-xl font-semibold text-gray-500">Vehicles</h2>
+              <h2 className="text-xl font-semibold text-teal-900">Vehicles</h2>
               <div className="flex-1 border-[1px] border-border overflow-hidden rounded-md">
                 <BryntumGrid
                   id="vehiclesGrid"
@@ -547,7 +592,7 @@ const VehiclesPage = () => {
                   {...vehiclesGridConfig}
                 />
               </div>
-              <h2 className="text-xl font-semibold text-gray-500">Trailers</h2>
+              <h2 className="text-xl font-semibold text-teal-900">Trailers</h2>
               <div className="flex-1 border-[1px] border-border overflow-hidden rounded-md">
                 <BryntumGrid
                   id="trailersGrid"

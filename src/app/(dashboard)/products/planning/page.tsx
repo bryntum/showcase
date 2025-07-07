@@ -283,7 +283,6 @@ const Planning = () => {
     regionResizeFeature: false,
     columnLines: false,
     rowLines: false,
-    eventColor: "indigo",
     allowOverlap: false,
     useInitialAnimation: false,
     cls: "border-border border-[1px] rounded-b-3xl overflow-hidden",
@@ -432,15 +431,15 @@ const Planning = () => {
     eventRenderer({ eventRecord, renderData }) {
       const eventPalette = {
         URGENT: {
-          class: "!bg-warning-400 !text-gray-500",
+          class: "!bg-warning-400 !text-event-text",
           icon: "b-fa b-fa-bell"
         },
         REGULAR: {
-          class: "!bg-teal-300 !text-gray-500",
+          class: "!bg-teal-300 !text-event-text",
           icon: "b-fa b-fa-box-open"
         },
         SPECIAL: {
-          class: "!bg-cyan-300 !text-gray-500",
+          class: "!bg-cyan-300 !text-event-text",
           icon: "b-fa b-fa-snowflake"
         }
       }
@@ -462,7 +461,7 @@ const Planning = () => {
                   class: eventPalette[eventType].icon,
                 },
                 {
-                  class: "b-event-name text-text-muted text-base",
+                  class: "b-event-name text-event-text text-base",
                   text:
                     eventRecord.getData("type").charAt(0).toUpperCase() +
                     eventRecord.getData("type").slice(1).toLowerCase(),
@@ -471,11 +470,11 @@ const Planning = () => {
             },
             {
               class:
-                "text-text-muted overflow-ellipsis overflow-hidden text-sm font-light",
+                "text-event-text overflow-ellipsis overflow-hidden text-sm font-light",
               html: eventRecord.getData("comment"),
             },
             {
-              class: "b-event-time text-text-muted text-xs font-light",
+              class: "b-event-time text-event-text text-xs font-light",
               text: `${(eventRecord.startDate as Date).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",

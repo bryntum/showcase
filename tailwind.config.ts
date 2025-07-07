@@ -76,6 +76,9 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))'
         },
+        event: {
+          text: 'hsl(var(--event-text))'
+        },
         teal: {
           25: 'hsl(var(--teal-25))',
           50: 'hsl(var(--teal-50))',

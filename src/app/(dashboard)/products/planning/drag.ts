@@ -51,6 +51,18 @@ export class Drag extends DragHelper {
   }
 
   override createProxy = (grabbedElement: HTMLElement): HTMLDivElement => {
+    const eventPalette = {
+      URGENT: {
+        class: "!bg-warning-400",
+      },
+      REGULAR: {
+        class: "!bg-teal-300",
+      },
+      SPECIAL: {
+        class: "!bg-cyan-300",
+      }
+    }
+
     const { context, schedule, grid } = this,
       delivery = grid.getRecordFromElement(grabbedElement) as EventModel,
       durationInPixels = schedule.timeAxisViewModel.getDistanceForDuration(
@@ -61,13 +73,14 @@ export class Drag extends DragHelper {
       ),
       proxy = document.createElement("div");
 
+    const eventType = delivery.getData("type") as keyof typeof eventPalette;
+
     proxy.style.cssText = "";
 
     Object.assign(proxy.style, {
       width: `${durationInPx}px`,
-      height: `${
-        schedule.rowHeight - 2 * (schedule.resourceMargin as number)
-      }px`,
+      height: `${schedule.rowHeight - 2 * (schedule.resourceMargin as number)
+        }px`,
     });
 
     if (schedule.timeAxisSubGrid.width < durationInPixels) {
@@ -82,9 +95,9 @@ export class Drag extends DragHelper {
       "b-sch-horizontal"
     );
     proxy.innerHTML = StringHelper.xss`
-            <div class="b-sch-event b-has-content b-sch-event-withicon">
-                <div class="b-sch-event-content">
-                    <i class="b-icon b-fa-icon b-fa-package"></i>
+            <div class="b-sch-event b-has-content b-sch-event-withicon !border-none ${eventPalette[eventType].class}">
+                <div class="b-sch-event-content !text-event-text !border-none">
+                    <i class="b-icon b-fa b-fa-icon b-fa-package"></i>
                     <div>
                         <div>${delivery.getData("comment")}</div>
                     </div>
@@ -101,7 +114,7 @@ export class Drag extends DragHelper {
     return proxy;
   };
 
-   
+
   override onDragStart = ({ context }: { context: any }): void => {
     const { grid } = this,
       { selectedRecord } = grid as Grid;
@@ -109,7 +122,7 @@ export class Drag extends DragHelper {
     context.delivery = selectedRecord;
   };
 
-   
+
   override onDrag = ({ context }: { context: any }): void => {
     const { schedule } = this,
       driver = context.target && schedule.resolveResourceRecord(context.target);
@@ -117,7 +130,7 @@ export class Drag extends DragHelper {
     context.driver = driver;
   };
 
-   
+
   override onDrop = async ({ context }: { context: any }) => {
     const { schedule } = this;
 
