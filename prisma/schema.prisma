@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -33,105 +30,89 @@ model Delivery {
   comment            String?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
-
-  // Relations
-  item   Item    @relation(fields: [itemId], references: [id])
-  driver Driver? @relation(fields: [driverId], references: [id])
-  client Client? @relation(fields: [clientId], references: [id])
-  seller Seller? @relation(fields: [sellerId], references: [id])
+  client             Client?   @relation(fields: [clientId], references: [id])
+  driver             Driver?   @relation(fields: [driverId], references: [id])
+  item               Item      @relation(fields: [itemId], references: [id])
+  seller             Seller?   @relation(fields: [sellerId], references: [id])
 }
 
 model Item {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   description String?
   buyPrice    Int
   sellPrice   Int
   currency    String
   weight      Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  deliveries Delivery[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deliveries  Delivery[]
 }
 
 model Vehicle {
-  id        String   @id @default(uuid())
-  name      String
-  VINNumber String?
-  depotId   String
-  model     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
+  id          String              @id @default(uuid())
+  name        String
+  VINNumber   String?
+  depotId     String
+  model       String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
   depot       Depot               @relation(fields: [depotId], references: [id])
   assignments VehicleAssignment[]
 }
 
 model Trailer {
-  id           String   @id @default(uuid())
+  id           String              @id @default(uuid())
   name         String
   VINNumber    String?
   depotId      String
   capacity     Int?
   capacityUnit String?
   vehicleId    String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Relations
-  depot   Depot     @relation(fields: [depotId], references: [id])
-  assignments VehicleAssignment[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  depot        Depot               @relation(fields: [depotId], references: [id])
+  assignments  VehicleAssignment[]
 }
 
 model Depot {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
   address   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   lat       Float
   lng       Float
-
-  // Relations
-  vehicles Vehicle[]
-  Trailer  Trailer[]
+  Trailer   Trailer[]
+  vehicles  Vehicle[]
 }
 
 model Driver {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
+  id          String              @id @default(uuid())
+  name        String
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
   deliveries  Delivery[]
   assignments VehicleAssignment[]
 }
 
 model Client {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lat       Float
-  lng       Float
-
-  // Relations
+  id         String     @id @default(uuid())
+  name       String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  lat        Float
+  lng        Float
   deliveries Delivery[]
 }
 
 model Seller {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lat       Float
-  lng       Float
-
-  // Relations
+  id         String     @id @default(uuid())
+  name       String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  lat        Float
+  lng        Float
   deliveries Delivery[]
 }
 
@@ -143,11 +124,9 @@ model VehicleAssignment {
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Relations
-  vehicle  Vehicle? @relation(fields: [vehicleId], references: [id])
-  trailer  Trailer? @relation(fields: [trailerId], references: [id])
-  driver   Driver   @relation(fields: [driverId], references: [id])
+  driver    Driver   @relation(fields: [driverId], references: [id])
+  trailer   Trailer? @relation(fields: [trailerId], references: [id])
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
 
   @@unique([vehicleId, trailerId, date])
   @@index([date])

@@ -4,11 +4,13 @@ import { FC } from 'react';
 import Providers from './providers';
 import { TooltipProvider } from 'components/ui/data-display/tooltip';
 import Toaster from 'components/ui/feedback/toaster';
+import dynamic from 'next/dynamic';
 
 export const metadata = {
   title: 'Bryntum Showcase',
   description: 'Dashboard for Bryntum products',
 };
+
 
 const RootLayout: FC<NextLayout> = (props) => {
   const { children } = props;
@@ -31,7 +33,7 @@ const RootLayout: FC<NextLayout> = (props) => {
         <Providers>
           <TooltipProvider>
             <Toaster />
-            {children}
+              {children}
           </TooltipProvider>
         </Providers>
       </body>

@@ -4,7 +4,6 @@ import { useState } from "react";
 import cn from "lib/utils";
 import Image from "next/image";
 import {
-  LayoutDashboard,
   GanttChart,
   BarChart3,
   User,
@@ -13,7 +12,6 @@ import {
   Truck,
   Package2,
   Users,
-  ChevronLeft,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -24,7 +22,6 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
     {
       name: "Products",
       icon: BarChart3,

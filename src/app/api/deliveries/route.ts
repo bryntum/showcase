@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { deliveryService } from 'services/deliveryService';
 
-export async function GET() {
+export const GET = async () => {
   try {
     const deliveries = await deliveryService.getAllDeliveries();
     return NextResponse.json(deliveries);
@@ -10,7 +10,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export const POST = async (request: Request) => {
   try {
     const data = await request.json();
     const delivery = await deliveryService.createDelivery(data);

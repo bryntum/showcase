@@ -7,8 +7,6 @@ import { AjaxStore, Model, StringHelper } from "@bryntum/core-thin";
 import { Calendar } from "components/ui/actions/calendar";
 import {
   Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { Button } from "../../../../components/ui/actions/button";
 import {
@@ -25,13 +23,11 @@ import { Grid } from "@bryntum/grid-thin";
 import { TrailersGridDrag } from "./trailersGridDrag";
 import { DriversGridVehicleDrag } from "./driversGridVehicleDrag";
 import { DriversGridTrailerDrag } from "./driversGridTrailerDrag";
-import cn from "lib/utils";
-import { useDarkMode } from "contexts/dark-mode";
 import { BryntumButton, BryntumTextField } from "@bryntum/core-react-thin";
+import dynamic from "next/dynamic";
 
 const VehiclesPage = () => {
   const { selectedDate, setSelectedDate } = useDate();
-  const { isDarkMode } = useDarkMode();
 
   const [driverFilter, setDriverFilter] = useState("");
   const [vehicleFilter, setVehicleFilter] = useState("");
@@ -608,4 +604,6 @@ const VehiclesPage = () => {
   );
 };
 
-export default VehiclesPage;
+export default dynamic(() => Promise.resolve(VehiclesPage), {
+  ssr: false
+});

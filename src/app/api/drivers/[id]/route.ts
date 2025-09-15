@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server';
 import { driverService } from 'services/driverService';
 import { validateRequest } from 'lib/validation';
 
-export async function GET(
+export const GET = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {  
   try {
-    const driver = await driverService.getDriverById(params.id);
+    const { id } = await params;
+    const driver = await driverService.getDriverById(id);
     if (!driver) {
       return NextResponse.json({ error: 'Driver not found' }, { status: 404 });
     }
@@ -17,28 +18,30 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export const PUT = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
+    const { id } = await params;
     const data = await request.json();
     const validationError = validateRequest(data, ['name', 'licenseNumber']);
     if (validationError) return validationError;
 
-    const driver = await driverService.updateDriver(params.id, data);
+    const driver = await driverService.updateDriver(id, data);
     return NextResponse.json(driver);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update driver' }, { status: 500 });
   }
 }
 
-export async function DELETE(
+export const DELETE = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
-    await driverService.deleteDriver(params.id);
+    const { id } = await params;
+    await driverService.deleteDriver(id);
     return NextResponse.json({ message: 'Driver deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete driver' }, { status: 500 });

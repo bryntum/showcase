@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export function validateRequest(data: Record<string, unknown>, requiredFields: string[]) {
+export const validateRequest = (data: Record<string, unknown>, requiredFields: string[]) => {
   const missingFields = requiredFields.filter(field => !data[field]);
   
   if (missingFields.length > 0) {

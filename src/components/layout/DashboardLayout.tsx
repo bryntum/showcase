@@ -2,7 +2,7 @@
 
 import { FC, useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
-import { Navbar } from "./Navbar";
+import Navbar from "./Navbar";
 import { usePathname } from "next/navigation";
 import { NextLayout } from "types/appRouter";
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { EventModel } from '@bryntum/schedulerpro-thin';
 import { Duration } from '@bryntum/core-thin';
 import Address from './Address';

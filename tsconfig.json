@@ -36,14 +36,22 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "skipDefaultLibCheck": true,
+    "maxNodeModuleJsDepth": 0
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "prisma/**/*.ts",
+    "scripts/**/*.ts",
     "types.d.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "node_modules/@bryntum/**/*.tsx",
+    "node_modules/@bryntum/**/*.ts"
+  ]
 }

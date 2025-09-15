@@ -4,7 +4,7 @@ import { glob } from 'glob';
 
 const THEMES_DIR = path.join(process.cwd(), 'public', 'themes');
 
-async function fixFontUrls() {
+const fixFontUrls = async () => {
     try {
         // Find all CSS files in the themes directory
         const cssFiles = await glob('**/*.css', { cwd: THEMES_DIR });

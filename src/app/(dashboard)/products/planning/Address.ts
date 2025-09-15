@@ -1,3 +1,5 @@
+'use client';
+
 import { Model } from '@bryntum/core-thin';
 
 export default class Address extends Model {

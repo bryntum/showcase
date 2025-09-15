@@ -4,7 +4,7 @@ import { NextLayout } from "types/appRouter";
 import { DateProvider } from "../../contexts/date-context";
 import { DarkModeProvider } from "contexts/dark-mode";
 
-const DashboardLayoutWrapper: FC<NextLayout> = ({ children }) => {
+const LayoutWrapper: FC<NextLayout> = ({ children }) => {
   return (
     <DateProvider>
       <DarkModeProvider>
@@ -14,4 +14,4 @@ const DashboardLayoutWrapper: FC<NextLayout> = ({ children }) => {
   );
 };
 
-export default DashboardLayoutWrapper;
+export default LayoutWrapper;

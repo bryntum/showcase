@@ -6,14 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import {
-  Package2,
   Plus,
   Clock,
   Timer,
   Package,
   Check,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { Delivery, Driver, Item } from "@prisma/client";
 import { map, toLower } from "lodash";
@@ -68,7 +65,7 @@ import {
   BryntumTextField,
 } from "@bryntum/core-react-thin";
 import { eventTypeCellRenderer } from "../planning/UnplannedGrid";
-import { useDarkMode } from "contexts/dark-mode";
+import dynamic from "next/dynamic";
 
 const deliveryFormSchema = z.object({
   comment: z.string().min(1, "Comment is required"),
@@ -86,7 +83,6 @@ const Scheduler = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [itemPopoverOpen, setItemPopoverOpen] = useState(false);
   const { selectedDate, setSelectedDate } = useDate();
-  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -532,4 +528,6 @@ const Scheduler = () => {
   );
 };
 
-export default Scheduler;
+export default dynamic(() => Promise.resolve(Scheduler), {
+  ssr: false
+});

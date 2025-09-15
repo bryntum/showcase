@@ -1,3 +1,5 @@
+'use client';
+
 import mapboxgl from 'mapbox-gl';
 import { Panel, GlobalEvents, DomHelper, StringHelper, StoreListeners, Toast, EventHelper } from '@bryntum/core-thin';
 import { TimeAxis } from '@bryntum/scheduler-thin';

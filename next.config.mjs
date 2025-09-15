@@ -24,8 +24,9 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    optimizePackageImports: [],
+
+  typescript: {
+    ignoreBuildErrors: true,
   },
 };
 

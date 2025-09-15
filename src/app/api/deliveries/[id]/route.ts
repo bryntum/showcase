@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { deliveryService } from 'services/deliveryService';
 
-export async function GET(
+export const GET = async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const delivery = await deliveryService.getDeliveryById(id);
@@ -17,10 +17,10 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export const PUT = async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const data = await request.json();
@@ -31,10 +31,10 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
+export const DELETE = async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     await deliveryService.deleteDelivery(id);

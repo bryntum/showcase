@@ -11,7 +11,7 @@ const DarkModeContext = createContext<DarkModeContextType | undefined>(
   undefined
 );
 
-export function DarkModeProvider({ children }: { children: ReactNode }) {
+export const DarkModeProvider = ({ children }: { children: ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   return (
@@ -21,7 +21,7 @@ export function DarkModeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useDarkMode() {
+export const useDarkMode = () => {
   const context = useContext(DarkModeContext);
   if (context === undefined) {
     throw new Error("useDarkMode must be used within a DarkModeProvider");

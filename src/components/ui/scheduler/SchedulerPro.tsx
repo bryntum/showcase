@@ -2,6 +2,8 @@
 
 import { BryntumSchedulerPro } from "@bryntum/schedulerpro-react-thin";
 
-export default function Scheduler({ ...props }) {
+const SchedulerPro = ({ ...props }) => {
   return <BryntumSchedulerPro {...props} />;
-}
+};
+
+export default SchedulerPro;

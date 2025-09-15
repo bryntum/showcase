@@ -18,7 +18,7 @@ import {
   TruckIcon,
   UsersIcon,
 } from "lucide-react";
-import { SchedulerWrapper } from "components/ui/scheduler/SchedulerWrapper";
+import { SchedulerProWrapper } from "components/ui/scheduler/SchedulerProWrapper";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { forEach, isEmpty, map, toLower } from "lodash";
 import {
@@ -42,7 +42,7 @@ import { useDate } from "../../../../contexts/date-context";
 import MapPanel from "./MapPanel";
 import { SlideToggle } from "@bryntum/core-thin";
 import MetricCard, { MetricCardProps } from "./MetricCard";
-import cn from "lib/utils";
+import dynamic from "next/dynamic";
 
 const Planning = () => {
   const [metrics, setMetrics] = useState<MetricCardProps[]>([]);
@@ -77,12 +77,14 @@ const Planning = () => {
             )
         ).length,
         icon: UsersIcon,
-        trend: `${totalDriverAmount - activeDriverAmount} have no vehicle assigned`,
+        trend: `${
+          totalDriverAmount - activeDriverAmount
+        } have no vehicle assigned`,
         badge: {
           type: "neutral",
           href: "/products/planning/drivers",
           label: "Assign now",
-        }
+        },
       },
       {
         title: "Deliveries Today",
@@ -95,7 +97,7 @@ const Planning = () => {
         badge: {
           type: "positive",
           label: "15%",
-        }
+        },
       },
       {
         title: "On-Time Rate",
@@ -128,7 +130,7 @@ const Planning = () => {
         badge: {
           type: "negative",
           label: "20,3%",
-        }
+        },
       },
       {
         title: "Avg Delivery Time",
@@ -162,7 +164,7 @@ const Planning = () => {
         badge: {
           type: "positive",
           label: "10m",
-        }
+        },
       },
     ]);
   };
@@ -432,18 +434,20 @@ const Planning = () => {
       const eventPalette = {
         URGENT: {
           class: "!bg-warning-400 !text-event-text",
-          icon: "b-fa b-fa-bell"
+          icon: "b-fa b-fa-bell",
         },
         REGULAR: {
           class: "!bg-teal-300 !text-event-text",
-          icon: "b-fa b-fa-box-open"
+          icon: "b-fa b-fa-box-open",
         },
         SPECIAL: {
           class: "!bg-cyan-300 !text-event-text",
-          icon: "b-fa b-fa-snowflake"
-        }
-      }
-      const eventType = eventRecord.getData("type") as keyof typeof eventPalette;
+          icon: "b-fa b-fa-snowflake",
+        },
+      };
+      const eventType = eventRecord.getData(
+        "type"
+      ) as keyof typeof eventPalette;
       renderData.cls += ` ${eventPalette[eventType].class}`;
 
       return [
@@ -721,7 +725,7 @@ const Planning = () => {
           </div>
           <div id="planning-container" className="flex-1 flex flex-col gap-8">
             <div className="flex gap-8" style={{ flex: 2 }}>
-              <SchedulerWrapper flex={3} {...schedulerConfig} />
+              <SchedulerProWrapper flex={3} {...schedulerConfig} />
               <BryntumGrid
                 store={eventStore.chain((event: Delivery) => !event.driverId)}
                 ref={$unplannedGridRef}
@@ -751,4 +755,6 @@ const Planning = () => {
   );
 };
 
-export default Planning;
+export default dynamic(() => Promise.resolve(Planning), {
+  ssr: false,
+});

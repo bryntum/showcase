@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server';
 import { userService } from 'services/userService';
 import { validateRequest } from 'lib/validation';
 
-export async function GET(
+export const GET = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
-    const user = await userService.getUserById(Number(params.id));
+    const { id } = await params;
+    const user = await userService.getUserById(Number(id));
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -17,28 +18,30 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export const PUT = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
+    const { id } = await params;
     const data = await request.json();
     const validationError = validateRequest(data, ['email', 'name']);
     if (validationError) return validationError;
 
-    const user = await userService.updateUser(Number(params.id), data);
+    const user = await userService.updateUser(Number(id), data);
     return NextResponse.json(user);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
   }
 }
 
-export async function DELETE(
+export const DELETE = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
-    await userService.deleteUser(Number(params.id));
+    const { id } = await params;
+    await userService.deleteUser(Number(id));
     return NextResponse.json({ message: 'User deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });

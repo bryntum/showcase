@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server';
 import { depotService } from 'services/depotService';
 import { validateRequest } from 'lib/validation';
 
-export async function GET(
+export const GET = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
-    const depot = await depotService.getDepotById(params.id);
+    const { id } = await params;
+    const depot = await depotService.getDepotById(id);
     if (!depot) {
       return NextResponse.json({ error: 'Depot not found' }, { status: 404 });
     }
@@ -17,28 +18,30 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export const PUT = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
+    const { id } = await params;
     const data = await request.json();
     const validationError = validateRequest(data, ['name', 'location']);
     if (validationError) return validationError;
 
-    const depot = await depotService.updateDepot(params.id, data);
+    const depot = await depotService.updateDepot(id, data);
     return NextResponse.json(depot);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update depot' }, { status: 500 });
   }
 }
 
-export async function DELETE(
+export const DELETE = async (
   request: Request,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
-    await depotService.deleteDepot(params.id);
+    const { id } = await params;
+    await depotService.deleteDepot(id);
     return NextResponse.json({ message: 'Depot deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete depot' }, { status: 500 });

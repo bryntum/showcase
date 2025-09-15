@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { BryntumSchedulerPro, BryntumSchedulerProProps } from "@bryntum/schedulerpro-react-thin";
 
-const SchedulerPro = dynamic(() => import("./Scheduler.tsx"), {
+const SchedulerPro = dynamic(() => import("./SchedulerPro.tsx"), {
   ssr: false,
   loading: () => {
     return (
@@ -19,7 +19,7 @@ const SchedulerPro = dynamic(() => import("./Scheduler.tsx"), {
   },
 });
 
-const SchedulerWrapper = (
+const SchedulerProWrapper = (
   schedulerConfig: BryntumSchedulerProProps & {
     innerRef?: React.RefObject<BryntumSchedulerPro>;
   }
@@ -31,4 +31,4 @@ const SchedulerWrapper = (
   );
 };
 
-export { SchedulerWrapper };
+export { SchedulerProWrapper };

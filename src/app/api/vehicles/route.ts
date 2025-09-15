@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { vehicleService } from 'services/vehicleService';
 import { validateRequest } from 'lib/validation';
 
-export async function GET() {
+export const GET = async () => {
   try {
     const vehicles = await vehicleService.getAllVehicles();
     return NextResponse.json(vehicles);
@@ -11,7 +11,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export const POST = async (request: Request) => {
   try {
     const data = await request.json();
     const validationError = validateRequest(data, ['name', 'VINNumber', 'model', 'depotId']);

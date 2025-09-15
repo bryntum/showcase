@@ -25,6 +25,7 @@ import {
 import { Label } from "components/ui/forms/label";
 import { Input } from "components/ui/forms/input";
 import { Switch } from "components/ui/forms/switch";
+import dynamic from "next/dynamic";
 
 const Profile = () => {
   const handleSaveProfile = () => {
@@ -252,4 +253,6 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default dynamic(() => Promise.resolve(Profile), {
+  ssr: false
+});

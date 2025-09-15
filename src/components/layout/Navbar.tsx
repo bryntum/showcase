@@ -12,16 +12,15 @@ import {
 } from "components/ui/overlays/dropdown-menu";
 import { DomHelper } from "@bryntum/core-thin";
 import { useDarkMode } from "contexts/dark-mode";
+import dynamic from "next/dynamic";
 
-export const Navbar = () => {
+const Navbar = () => {
   const pathname = usePathname();
   const [pageTitle, setPageTitle] = useState("Dashboard");
   const { isDarkMode, setIsDarkMode } = useDarkMode();
 
   useEffect(() => {
-    if (pathname === "/" || pathname === "/dashboard") {
-      setPageTitle("Dashboard");
-    } else if (pathname?.includes("/products/planning")) {
+    if (pathname?.includes("/products/planning")) {
       setPageTitle("Planning");
     } else if (pathname?.includes("/products/drivers")) {
       setPageTitle("Drivers");
@@ -52,7 +51,9 @@ export const Navbar = () => {
   return (
     <header className="h-16 bg-background/80 backdrop-blur-sm sticky top-0 z-20 flex items-center justify-between px-6">
       <div className="flex items-center space-x-4">
-        <h1 className="text-3xl text-teal-950 font-semibold tracking-tight">{pageTitle}</h1>
+        <h1 className="text-3xl text-teal-950 font-semibold tracking-tight">
+          {pageTitle}
+        </h1>
       </div>
 
       <div className="flex items-center space-x-2">
@@ -84,7 +85,9 @@ export const Navbar = () => {
                 key={i}
                 className="flex flex-col items-start p-3 cursor-pointer"
               >
-                <p className="text-sm font-medium text-teal-950">Usage limit reached</p>
+                <p className="text-sm font-medium text-teal-950">
+                  Usage limit reached
+                </p>
                 <p className="text-xs text-teal-950">
                   Your Bryntum Grid usage has reached 90% of your monthly limit.
                 </p>
@@ -99,3 +102,7 @@ export const Navbar = () => {
     </header>
   );
 };
+
+export default dynamic(() => Promise.resolve(Navbar), {
+  ssr: false,
+});

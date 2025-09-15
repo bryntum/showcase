@@ -32,7 +32,7 @@ type ChartContextProps = {
 
 const ChartContext = createContext<ChartContextProps | null>(null);
 
-function useChart() {
+const useChart = () => {
   const context = useContext(ChartContext);
 
   if (!context) {
@@ -325,11 +325,11 @@ const ChartLegendContent = forwardRef<
 ChartLegendContent.displayName = "ChartLegend";
 
 // Helper to extract item config from a payload.
-function getPayloadConfigFromPayload(
+const getPayloadConfigFromPayload = (
   config: ChartConfig,
   payload: unknown,
   key: string
-) {
+) => {
   if (typeof payload !== "object" || payload === null) {
     return undefined;
   }
