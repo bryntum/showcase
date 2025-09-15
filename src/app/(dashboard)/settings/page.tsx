@@ -29,7 +29,6 @@ import { Input } from "components/ui/forms/input";
 import { Switch } from "components/ui/forms/switch";
 import { Badge } from "components/ui/data-display/badge";
 import { Separator } from "components/ui/layout/separator";
-import dynamic from "next/dynamic";
 
 const Settings = () => {
   const handleSaveSettings = () => {
@@ -370,6 +369,4 @@ const Settings = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(Settings), {
-  ssr: false
-});
+export default Settings;

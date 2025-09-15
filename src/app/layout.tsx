@@ -4,7 +4,6 @@ import { FC } from 'react';
 import Providers from './providers';
 import { TooltipProvider } from 'components/ui/data-display/tooltip';
 import Toaster from 'components/ui/feedback/toaster';
-import dynamic from 'next/dynamic';
 
 export const metadata = {
   title: 'Bryntum Showcase',

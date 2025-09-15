@@ -5,13 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import {
-  Plus,
-  Clock,
-  Timer,
-  Package,
-  Check,
-} from "lucide-react";
+import { Plus, Clock, Timer, Package, Check } from "lucide-react";
 import { Delivery, Driver, Item } from "@prisma/client";
 import { map, toLower } from "lodash";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
@@ -65,7 +59,7 @@ import {
   BryntumTextField,
 } from "@bryntum/core-react-thin";
 import { eventTypeCellRenderer } from "../planning/UnplannedGrid";
-import dynamic from "next/dynamic";
+import { GridWrapper } from "components/ui/grid/GridWrapper";
 
 const deliveryFormSchema = z.object({
   comment: z.string().min(1, "Comment is required"),
@@ -520,7 +514,7 @@ const Scheduler = () => {
             </div>
           </div>
           <div className="flex-1 border-[1px] border-border rounded-md overflow-hidden">
-            <BryntumGrid ref={$gridRef} {...gridConfig} />
+            <GridWrapper innerRef={$gridRef} {...gridConfig} />
           </div>
         </div>
       </div>
@@ -528,6 +522,4 @@ const Scheduler = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(Scheduler), {
-  ssr: false
-});
+export default Scheduler

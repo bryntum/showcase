@@ -10,9 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "components/ui/overlays/dropdown-menu";
-import { DomHelper } from "@bryntum/core-thin";
 import { useDarkMode } from "contexts/dark-mode";
-import dynamic from "next/dynamic";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -37,12 +35,16 @@ const Navbar = () => {
     }
   }, [pathname]);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = async () => {
     if (isDarkMode) {
       document.documentElement.classList.remove("dark");
+      // Dynamically import DomHelper to avoid SSR issues
+      const { DomHelper } = await import("@bryntum/core-thin");
       DomHelper.setTheme("stockholm");
     } else {
       document.documentElement.classList.add("dark");
+      // Dynamically import DomHelper to avoid SSR issues
+      const { DomHelper } = await import("@bryntum/core-thin");
       DomHelper.setTheme("classic-dark");
     }
     setIsDarkMode(!isDarkMode);
@@ -103,6 +105,4 @@ const Navbar = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(Navbar), {
-  ssr: false,
-});
+export default Navbar;

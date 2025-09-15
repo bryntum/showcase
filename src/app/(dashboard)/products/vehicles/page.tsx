@@ -5,9 +5,7 @@ import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { AjaxStore, Model, StringHelper } from "@bryntum/core-thin";
 import { Calendar } from "components/ui/actions/calendar";
-import {
-  Calendar as CalendarIcon,
-} from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "../../../../components/ui/actions/button";
 import {
   DropdownMenu,
@@ -24,7 +22,6 @@ import { TrailersGridDrag } from "./trailersGridDrag";
 import { DriversGridVehicleDrag } from "./driversGridVehicleDrag";
 import { DriversGridTrailerDrag } from "./driversGridTrailerDrag";
 import { BryntumButton, BryntumTextField } from "@bryntum/core-react-thin";
-import dynamic from "next/dynamic";
 
 const VehiclesPage = () => {
   const { selectedDate, setSelectedDate } = useDate();
@@ -604,6 +601,4 @@ const VehiclesPage = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(VehiclesPage), {
-  ssr: false
-});
+export default VehiclesPage;

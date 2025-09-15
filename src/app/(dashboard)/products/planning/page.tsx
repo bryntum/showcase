@@ -33,7 +33,6 @@ import {
   BryntumSlideToggle,
   BryntumTextField,
 } from "@bryntum/core-react-thin";
-import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { unplannedGridConfig } from "./UnplannedGrid";
 import { isSameDay } from "date-fns";
 import { Grid } from "@bryntum/grid-thin";
@@ -42,7 +41,8 @@ import { useDate } from "../../../../contexts/date-context";
 import MapPanel from "./MapPanel";
 import { SlideToggle } from "@bryntum/core-thin";
 import MetricCard, { MetricCardProps } from "./MetricCard";
-import dynamic from "next/dynamic";
+import { GridWrapper } from "components/ui/grid/GridWrapper";
+import { BryntumGrid } from "@bryntum/grid-react-thin";
 
 const Planning = () => {
   const [metrics, setMetrics] = useState<MetricCardProps[]>([]);
@@ -726,9 +726,9 @@ const Planning = () => {
           <div id="planning-container" className="flex-1 flex flex-col gap-8">
             <div className="flex gap-8" style={{ flex: 2 }}>
               <SchedulerProWrapper flex={3} {...schedulerConfig} />
-              <BryntumGrid
+              <GridWrapper
                 store={eventStore.chain((event: Delivery) => !event.driverId)}
-                ref={$unplannedGridRef}
+                innerRef={$unplannedGridRef}
                 onSelectionChange={({ selected }) => {
                   if (selected.length > 0) {
                     const event = selected[0];
@@ -755,6 +755,4 @@ const Planning = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(Planning), {
-  ssr: false,
-});
+export default Planning;
