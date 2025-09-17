@@ -30,7 +30,7 @@ export const Sidebar = () => {
         { name: "Planning", icon: GanttChart, path: "/products/planning" },
         { name: "Deliveries", icon: Package2, path: "/products/deliveries" },
         { name: "Vehicles", icon: Truck, path: "/products/vehicles" },
-        { name: "Drivers", icon: Users, path: "/products/drivers" },
+        // { name: "Drivers", icon: Users, path: "/products/drivers" },
       ],
     },
     { name: "Profile", icon: User, path: "/profile" },
@@ -72,7 +72,7 @@ export const Sidebar = () => {
         </Link>
       </div>
 
-      <div className="border-border border-[1px] rounded-r-3xl mb-16 bg-card flex flex-col justify-between h-full">
+      <div className="border-border border-[1px] rounded-r-3xl mb-8 bg-card flex flex-col justify-between h-full">
         <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-2">
           {navItems.map((item) => (
             <div key={item.name} className="px-3">

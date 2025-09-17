@@ -7,7 +7,7 @@ import * as z from "zod";
 
 import { Plus, Clock, Timer, Package, Check } from "lucide-react";
 import { Delivery, Driver, Item } from "@prisma/client";
-import { map, toLower } from "lodash";
+import { map, toLower, every } from "lodash";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { AjaxStore, DateHelper, Model } from "@bryntum/core-thin";
@@ -76,6 +76,7 @@ const Scheduler = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [itemPopoverOpen, setItemPopoverOpen] = useState(false);
+  const [deliveryFilter, setDeliveryFilter] = useState<string>("");
   const { selectedDate, setSelectedDate } = useDate();
 
   useEffect(() => {
@@ -123,13 +124,32 @@ const Scheduler = () => {
 
   useEffect(() => {
     if (store) {
+      store.clearFilters();
       store.addFilter({
         id: "dateFilter",
         filterBy: (record) =>
           isSameDay(new Date(record.getData("plannedFrom")), selectedDate),
       });
+
+      if (deliveryFilter) {
+        store.filterBy((record: Model) => {
+          const comment = record.getData("comment");
+          const itemName = record.getData("itemName");
+          const driverName = record.getData("driverName");
+          const type = record.getData("type");
+          const checks = [];
+
+          checks.push(
+            comment?.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
+            itemName?.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
+            driverName?.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
+            type?.toLowerCase().includes(deliveryFilter.toLowerCase())
+          );
+          return every(checks);
+        });
+      }
     }
-  }, [selectedDate, store]);
+  }, [selectedDate, store, deliveryFilter]);
 
   const form = useForm<DeliveryFormValues>({
     resolver: zodResolver(deliveryFormSchema),
@@ -254,6 +274,15 @@ const Scheduler = () => {
       <div className="p-4 h-full bg-logistics-navy text-white">
         <div className="container h-full mx-auto flex flex-col gap-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
+              <BryntumTextField
+                placeholder="Filter deliveries..."
+                value={deliveryFilter}
+                cls="scheduler-filter"
+                label={undefined}
+                onInput={(e) => setDeliveryFilter(e.value)}
+              />
+            </div>
             <div className="flex w-full justify-end space-x-2">
               <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
                 <BryntumButton
@@ -522,4 +551,4 @@ const Scheduler = () => {
   );
 };
 
-export default Scheduler
+export default Scheduler;

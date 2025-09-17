@@ -497,14 +497,14 @@ const VehiclesPage = () => {
                 placeholder="Filter drivers..."
                 value={driverFilter}
                 cls="scheduler-filter"
-                onChange={(e) => setDriverFilter(e.value)}
+                onInput={(e) => setDriverFilter(e.value)}
                 label={undefined}
               />
               <BryntumTextField
                 placeholder="Filter vehicles..."
                 value={vehicleFilter}
                 cls="scheduler-filter"
-                onChange={(e) => setVehicleFilter(e.value)}
+                onInput={(e) => setVehicleFilter(e.value)}
                 label={undefined}
               />
             </div>

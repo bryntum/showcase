@@ -13,27 +13,7 @@ import {
 import { useDarkMode } from "contexts/dark-mode";
 
 const Navbar = () => {
-  const pathname = usePathname();
-  const [pageTitle, setPageTitle] = useState("Dashboard");
   const { isDarkMode, setIsDarkMode } = useDarkMode();
-
-  useEffect(() => {
-    if (pathname?.includes("/products/planning")) {
-      setPageTitle("Planning");
-    } else if (pathname?.includes("/products/drivers")) {
-      setPageTitle("Drivers");
-    } else if (pathname?.includes("/products/vehicles")) {
-      setPageTitle("Vehicles");
-    } else if (pathname?.includes("/products/deliveries")) {
-      setPageTitle("Deliveries");
-    } else if (pathname?.includes("/profile")) {
-      setPageTitle("Profile");
-    } else if (pathname?.includes("/settings")) {
-      setPageTitle("Settings");
-    } else {
-      setPageTitle("Bryntum Hub");
-    }
-  }, [pathname]);
 
   const toggleDarkMode = async () => {
     if (isDarkMode) {
@@ -50,14 +30,12 @@ const Navbar = () => {
     setIsDarkMode(!isDarkMode);
   };
 
-  return (
-    <header className="h-16 bg-background/80 backdrop-blur-sm sticky top-0 z-20 flex items-center justify-between px-6">
-      <div className="flex items-center space-x-4">
-        <h1 className="text-3xl text-teal-950 font-semibold tracking-tight">
-          {pageTitle}
-        </h1>
-      </div>
+  useEffect(() => {
+   toggleDarkMode();
+  }, []);
 
+  return (
+    <header className="h-16 bg-background/80 backdrop-blur-sm sticky top-0 z-20 flex justify-end px-6">
       <div className="flex items-center space-x-2">
         <Button
           size="icon"

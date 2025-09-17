@@ -51,6 +51,8 @@ export default class MapPanel extends Panel {
 
   constructor(args: constructParams) {
     super(args);
+
+    this.setMapStyle();
   }
 
   override construct(...args: constructParams[]) {

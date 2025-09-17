@@ -4,12 +4,12 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build && yarn seed",
     "start": "next start",
     "lint": "eslint .",
     "init-db": "npx tsx prisma/init-db.ts",
     "seed": "npx tsx prisma/seed.ts",
-    "postinstall": "npx tsx scripts/fix-font-urls.ts && patch-package"
+    "postinstall": "npx tsx scripts/fix-font-urls.ts && prisma generate && yarn seed"
   },
   "dependencies": {
     "@bryntum/core-react-thin": "^6.2.2",
@@ -17,6 +17,7 @@
     "@bryntum/engine-thin": "^6.2.2",
     "@bryntum/grid-react-thin": "^6.2.2",
     "@bryntum/grid-thin": "^6.2.2",
+    "@bryntum/scheduler-thin": "^6.2.2",
     "@bryntum/schedulerpro-react-thin": "^6.2.2",
     "@bryntum/schedulerpro-thin": "^6.2.2",
     "@hookform/resolvers": "^3.9.0",

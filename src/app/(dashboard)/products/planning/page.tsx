@@ -12,6 +12,7 @@ import { BryntumSchedulerProProps } from "@bryntum/schedulerpro-react-thin/src/B
 import { Button } from "components/ui/actions/button";
 import { Calendar } from "components/ui/actions/calendar";
 import {
+  AlertTriangleIcon,
   Calendar as CalendarIcon,
   ClockIcon,
   TrendingUpIcon,
@@ -57,14 +58,10 @@ const Planning = () => {
   const $dragRef = useRef<Drag>(null);
 
   const updateMetrics = () => {
-    const activeDriverAmount = resourceStore.query(
+    const driversWithoutVehicle = resourceStore.query(
       (resource: ResourceModel) =>
-        !isEmpty(resource.events) &&
-        resource.events.some((event) =>
-          isSameDay(event.startDate, selectedDate)
-        )
+        !resource.getData("vehicle")
     ).length;
-    const totalDriverAmount = resourceStore.allRecords.length;
 
     setMetrics([
       {
@@ -77,12 +74,10 @@ const Planning = () => {
             )
         ).length,
         icon: UsersIcon,
-        trend: `${
-          totalDriverAmount - activeDriverAmount
-        } have no vehicle assigned`,
+        trend: <div className="flex items-center"><AlertTriangleIcon className="mr-1" size={16} />{driversWithoutVehicle} missing vehicle</div>,
         badge: {
           type: "neutral",
-          href: "/products/planning/drivers",
+          href: "/products/vehicles",
           label: "Assign now",
         },
       },
@@ -639,14 +634,14 @@ const Planning = () => {
                   placeholder="Filter drivers..."
                   value={resourceFilter}
                   cls="scheduler-filter"
-                  onChange={(e) => setResourceFilter(e.value)}
+                  onInput={(e) => setResourceFilter(e.value)}
                   label={undefined}
                 />
                 <BryntumTextField
                   placeholder="Filter deliveries..."
                   value={eventFilter}
                   cls="scheduler-filter"
-                  onChange={(e) => setEventFilter(e.value)}
+                  onInput={(e) => setEventFilter(e.value)}
                   label={undefined}
                 />
                 <BryntumSlideToggle

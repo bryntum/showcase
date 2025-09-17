@@ -6,12 +6,15 @@ export interface MetricCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
-  trend?: string;
+  trend?: string | React.ReactNode;
   badge?: {
     type: "neutral" | "positive" | "negative";
     href?: string;
     label: string;
   };
+  styles?: {
+    trendContainer?: string;
+  }
 }
 
 const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
@@ -30,29 +33,49 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
           </div>
         </div>
       </div>
-      <div className="flex mt-2 items-center justify-between">
+      <div className={cn("flex mt-2 items-center justify-between", metric.styles?.trendContainer )}>
         {metric.trend && (
           <div className="flex text-teal-400 items-center">
             <span className="text-sm text-teal-400">{metric.trend}</span>
           </div>
         )}
         {metric.badge && (
-          <div
-            className={cn(
-              "flex gap-2 text-sm items-center rounded-full py-0 px-2",
-              metric.badge.type === "neutral" &&
-                "text-teal-400 bg-card border-[1px] border-teal-400",
-              metric.badge.type === "positive" &&
-                "text-teal-400 bg-teal-50 border-[1px] border-teal-400",
-              metric.badge.type === "negative" &&
-                "text-warning-500 bg-warning-50 border-[1px] border-warning-500"
-            )}
-          >
-            {metric.badge.type === "positive" && <ArrowUpIcon size={16} />}
-            {metric.badge.type === "negative" && <ArrowDownIcon size={16} />}
-            {metric.badge.label}
-            {metric.badge.type === "neutral" && <ArrowRightIcon size={16} />}
-          </div>
+          metric.badge.href ? (
+            <a 
+              href={metric.badge.href}
+              className={cn(
+                "flex gap-2 text-sm items-center rounded-full py-0 px-2 cursor-pointer",
+                metric.badge.type === "neutral" &&
+                  "text-teal-400 bg-card border-[1px] border-teal-400",
+                metric.badge.type === "positive" &&
+                  "text-teal-400 bg-teal-50 border-[1px] border-teal-400", 
+                metric.badge.type === "negative" &&
+                  "text-warning-500 bg-warning-50 border-[1px] border-warning-500"
+              )}
+            >
+              {metric.badge.type === "positive" && <ArrowUpIcon size={16} />}
+              {metric.badge.type === "negative" && <ArrowDownIcon size={16} />}
+              {metric.badge.label}
+              {metric.badge.type === "neutral" && <ArrowRightIcon size={16} />}
+            </a>
+          ) : (
+            <div
+              className={cn(
+                "flex gap-2 text-sm items-center rounded-full py-0 px-2",
+                metric.badge.type === "neutral" &&
+                  "text-teal-400 bg-card border-[1px] border-teal-400",
+                metric.badge.type === "positive" &&
+                  "text-teal-400 bg-teal-50 border-[1px] border-teal-400",
+                metric.badge.type === "negative" &&
+                  "text-warning-500 bg-warning-50 border-[1px] border-warning-500"
+              )}
+            >
+              {metric.badge.type === "positive" && <ArrowUpIcon size={16} />}
+              {metric.badge.type === "negative" && <ArrowDownIcon size={16} />}
+              {metric.badge.label}
+              {metric.badge.type === "neutral" && <ArrowRightIcon size={16} />}
+            </div>
+          )
         )}
       </div>
       <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full -translate-y-16 translate-x-16"></div>

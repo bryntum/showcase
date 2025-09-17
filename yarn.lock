@@ -67,20 +67,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bryntum/gantt-react-thin@npm:^6.2.2":
-  version: 6.3.1
-  resolution: "@bryntum/gantt-react-thin@npm:6.3.1"
-  checksum: 10c0/69232461a8706b1c621e94f2641cdf3272bcb88dad127182a9f9b0bdc2f39ae98b9a7aaff3e78fcbe3a64f97a24c965005482b54f0105e84db06137ce3ab9e5b
-  languageName: node
-  linkType: hard
-
-"@bryntum/gantt-thin@npm:^6.2.2":
-  version: 6.3.1
-  resolution: "@bryntum/gantt-thin@npm:6.3.1"
-  checksum: 10c0/89a748989f4dd321b48023d93562ae171475e50319b7f52830e9ee2dd9e53e23ef8055581da02fc2282649cb7c820d63dd99926efadeb3f4234b65a01487e8f8
-  languageName: node
-  linkType: hard
-
 "@bryntum/grid-react-thin@npm:^6.2.2":
   version: 6.3.1
   resolution: "@bryntum/grid-react-thin@npm:6.3.1"
@@ -95,17 +81,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bryntum/scheduler-react-thin@npm:^6.2.2":
-  version: 6.3.1
-  resolution: "@bryntum/scheduler-react-thin@npm:6.3.1"
-  checksum: 10c0/6021cc0f6f3a3c6762a6c9e74338e25dc8086f20221b0a08be584d101fe58c4907db5776c82fa7a26cf9128f8ca98878efb3e165444138952c19d20d78f5f778
-  languageName: node
-  linkType: hard
-
 "@bryntum/scheduler-thin@npm:^6.2.2":
-  version: 6.3.1
-  resolution: "@bryntum/scheduler-thin@npm:6.3.1"
-  checksum: 10c0/792cdd7f71c0effbd6481f9218d74a534763531128858bdfee0333ee21c20561935f95c41d018bb6e7375c49468eecee8471be0d287550f7613d7d602b6b83cf
+  version: 6.3.2
+  resolution: "@bryntum/scheduler-thin@npm:6.3.2"
+  checksum: 10c0/9e9a6ca3b806d6bd5e15ee4b131cbd15cb55bba91dbb8603f294fd7a021a4a35c9c9dfc4d069a013b0b70fead04808f5f685747efca5139acf73043b1f4ff4f0
   languageName: node
   linkType: hard
 
@@ -2592,11 +2571,8 @@ __metadata:
     "@bryntum/core-react-thin": "npm:^6.2.2"
     "@bryntum/core-thin": "npm:^6.2.2"
     "@bryntum/engine-thin": "npm:^6.2.2"
-    "@bryntum/gantt-react-thin": "npm:^6.2.2"
-    "@bryntum/gantt-thin": "npm:^6.2.2"
     "@bryntum/grid-react-thin": "npm:^6.2.2"
     "@bryntum/grid-thin": "npm:^6.2.2"
-    "@bryntum/scheduler-react-thin": "npm:^6.2.2"
     "@bryntum/scheduler-thin": "npm:^6.2.2"
     "@bryntum/schedulerpro-react-thin": "npm:^6.2.2"
     "@bryntum/schedulerpro-thin": "npm:^6.2.2"
