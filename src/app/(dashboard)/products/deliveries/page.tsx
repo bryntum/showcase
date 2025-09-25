@@ -286,7 +286,7 @@ const Scheduler = () => {
             <div className="flex w-full justify-end space-x-2">
               <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="b-fa b-fa-chevron-left !rounded-full !border-teal-500 !text-teal-500 !bg-card hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const prevDay = new Date(selectedDate);
                     prevDay.setDate(prevDay.getDate() - 1);
@@ -298,9 +298,9 @@ const Scheduler = () => {
                     <Button
                       variant="default"
                       size="sm"
-                      className="rounded-full bg-card h-10 border-teal-300 border-[1px] hover:bg-teal-50"
+                      className="rounded-full bg-card h-10 !border-teal-500 !text-teal-500 border-[1px] hover:bg-teal-50"
                     >
-                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-300" />
+                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-500" />
                       <p className="text-text-base">
                         {selectedDate.toLocaleDateString() ===
                         new Date().toLocaleDateString()
@@ -310,7 +310,7 @@ const Scheduler = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-auto p-0" align="end">
-                    <div className="!rounded-full !bg-card !border-teal-300 !min-h-10 !h-10">
+                    <div className="!rounded-full !bg-card !border-teal-500 !text-teal-500 !min-h-10 !h-10">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -331,7 +331,7 @@ const Scheduler = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const nextDay = new Date(selectedDate);
                     nextDay.setDate(nextDay.getDate() + 1);

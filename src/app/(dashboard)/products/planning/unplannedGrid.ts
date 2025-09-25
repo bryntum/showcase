@@ -37,7 +37,7 @@ export const unplannedGridConfig: BryntumGridProps = {
   height: "100%",
   sortFeature: "name",
   columnLines: false,
-  cls: 'border-[1px] border-border rounded-b-3xl overflow-hidden',
+  cls: 'border-[1px] border-border rounded-3xl overflow-hidden',
   columns: [
     {
       text: "Comment",

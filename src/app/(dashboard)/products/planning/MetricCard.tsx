@@ -35,7 +35,7 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
       </div>
       <div className={cn("flex mt-2 items-center justify-between", metric.styles?.trendContainer )}>
         {metric.trend && (
-          <div className="flex text-teal-400 items-center">
+          <div className="flex text-teal-600 items-center">
             <span className="text-sm text-teal-400">{metric.trend}</span>
           </div>
         )}
@@ -44,9 +44,9 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
             <a 
               href={metric.badge.href}
               className={cn(
-                "flex gap-2 text-sm items-center rounded-full py-0 px-2 cursor-pointer",
+                "flex gap-1 text-sm/6 items-center rounded-full py-0 pb-[1px] px-3 cursor-pointer",
                 metric.badge.type === "neutral" &&
-                  "text-teal-400 bg-card border-[1px] border-teal-400",
+                  "text-teal-400 bg-card hover:bg-teal-50 border-[1px] border-teal-400",
                 metric.badge.type === "positive" &&
                   "text-teal-400 bg-teal-50 border-[1px] border-teal-400", 
                 metric.badge.type === "negative" &&

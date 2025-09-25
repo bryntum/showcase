@@ -51,7 +51,7 @@
     --hover-background: 210 100% 95%;
     --selected-background: 210 100% 90%;
 
-    --event-text: 220 9% 46%;
+    --event-text: 220 9% 26%;
 
     --teal-25: 165 80% 98%;
     --teal-50: 162 76% 97%;
@@ -240,20 +240,22 @@
   border-bottom: 1px solid #125d56;
 }
 
-.b-grid-headers, .b-grid-header-container, .b-horizontaltimeaxis {
+.b-grid-headers,
+.b-grid-header-container,
+.b-horizontaltimeaxis {
   border-bottom: none !important;
 }
 
-.scheduler-filter > .b-field-inner {
+.scheduler-filter>.b-field-inner {
   border-radius: 100px;
-  border-color: hsl(var(--teal-300));
+  border-color: hsl(var(--teal-500));
   background-color: hsl(var(--card)) !important;
   padding: 0;
 }
 
-.scheduler-filter > .b-field-inner:hover {
+.scheduler-filter>.b-field-inner:hover {
   background-color: hsl(var(--teal-25)) !important;
-  border-color: hsl(var(--teal-300)) !important;
+  border-color: hsl(var(--teal-500)) !important;
 }
 
 .b-field-inner input {
@@ -264,8 +266,8 @@
   flex-direction: row-reverse !important;
 }
 
-.b-slidetoggle input:checked + .b-slidetoggle-toggle {
-  background-color: hsl(var(--teal-400)) !important;
+.b-slidetoggle input:checked+.b-slidetoggle-toggle {
+  background-color: hsl(var(--teal-500)) !important;
 }
 
 .b-grid-subgrid {
@@ -275,9 +277,11 @@
 .b-sch-timeaxiscolumn {
   background-color: hsl(var(--card));
 }
+
 .b-grid-row:hover {
   background-color: hsl(var(--card));
 }
+
 .b-resourceheader {
   background-color: hsl(var(--card));
 }
@@ -315,7 +319,7 @@
   background-color: hsl(var(--teal-50)) !important;
 }
 
-.b-hover > .b-grid-cell {
+.b-hover>.b-grid-cell {
   background-color: hsl(var(--teal-50)) !important;
 }
 
@@ -336,7 +340,7 @@
   height: 40px;
 }
 
-.b-sch-event-wrap.b-sch-style-border > .b-sch-event {
+.b-sch-event-wrap.b-sch-style-border>.b-sch-event {
   opacity: 1 !important;
 }
 
@@ -348,10 +352,54 @@
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
+}
+
+.b-grid-header[data-column="comment"],
+.b-grid-header[data-column="name"],
+.b-grid-cell[data-column="comment"] {
+  padding-left: 16px !important;
+}
+
+.b-grid-header[data-column="duration"],
+.b-grid-cell[data-column="duration"] {
+  padding-right: 16px !important;
+}
+
+.b-panel-header {
+  background-color: hsl(var(--teal-200)) !important;
+}
+
+.b-button {
+  text-transform: capitalize !important;
+}
+
+.b-button.b-raised {
+  background-color: hsl(var(--teal-500)) !important;
+}
+
+.b-button.b-raised:hover {
+  background-color: hsl(var(--teal-600)) !important;
+}
+
+.b-panel.b-floating>.b-panel-header.b-dock-top,
+.b-panel.b-floating:not(.b-has-header)>.b-panel-body-wrap>.b-toolbar.b-dock-top {
+  border-top-left-radius: 1.5rem !important;
+  border-top-right-radius: 1.5rem !important;
+}
+
+.b-panel.b-floating > .b-panel-body-wrap > .b-toolbar.b-dock-bottom {
+  border-bottom-left-radius: 1.5rem !important;
+  border-bottom-right-radius: 1.5rem !important;
+}
+
+.b-schedulertaskeditor,.b-schedulertaskeditor-body-wrap{
+  border-radius: 1.5rem !important;
 }

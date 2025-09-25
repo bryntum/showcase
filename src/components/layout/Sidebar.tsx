@@ -82,7 +82,7 @@ export const Sidebar = () => {
                   className={cn(
                     "flex items-center gap-3 rounded-full pl-3 pr-5 py-1 my-1 w-fit transition-colors relative group",
                     isActive(item.path)
-                      ? "bg-teal-400 text-teal-800"
+                      ? "bg-teal-100 text-teal-800"
                       : "text-teal-950 hover:bg-teal-100"
                   )}
                 >
@@ -121,7 +121,7 @@ export const Sidebar = () => {
                           className={cn(
                             "flex items-center gap-3 rounded-full pl-3 pr-5 py-1 my-1 text-sm w-fit transition-colors",
                             isActive(child.path)
-                              ? "bg-teal-400 text-teal-800"
+                              ? "bg-teal-100 !text-event-text"
                               : " hover:bg-teal-100 text-teal-950"
                           )}
                         >
@@ -137,7 +137,7 @@ export const Sidebar = () => {
           ))}
         </div>
 
-        <div className="border-t border-teal-300 mx-6" />
+        <div className="border-t border-teal-500 mx-6" />
 
         <div className="p-4 text-teal-950">
           <div className="flex items-center gap-3">

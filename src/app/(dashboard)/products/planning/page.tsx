@@ -59,8 +59,7 @@ const Planning = () => {
 
   const updateMetrics = () => {
     const driversWithoutVehicle = resourceStore.query(
-      (resource: ResourceModel) =>
-        !resource.getData("vehicle")
+      (resource: ResourceModel) => !resource.getData("vehicle")
     ).length;
 
     setMetrics([
@@ -74,7 +73,13 @@ const Planning = () => {
             )
         ).length,
         icon: UsersIcon,
-        trend: <div className="flex items-center"><AlertTriangleIcon className="mr-1" size={16} />{driversWithoutVehicle} missing vehicle</div>,
+        trend: (
+          <div className="flex items-center">
+            <AlertTriangleIcon className="mr-1" size={16} />
+            {driversWithoutVehicle} missing{" "}
+            {driversWithoutVehicle === 1 ? "vehicle" : "vehicles"}
+          </div>
+        ),
         badge: {
           type: "neutral",
           href: "/products/vehicles",
@@ -272,7 +277,7 @@ const Planning = () => {
   );
 
   const schedulerConfig: BryntumSchedulerProProps = {
-    rowHeight: 80,
+    rowHeight: 90,
     barMargin: 10,
     width: "100%",
     height: "100%",
@@ -282,7 +287,7 @@ const Planning = () => {
     rowLines: false,
     allowOverlap: false,
     useInitialAnimation: false,
-    cls: "border-border border-[1px] rounded-b-3xl overflow-hidden",
+    cls: "border-border border-[1px] rounded-3xl overflow-hidden",
     eventStore,
     resourceStore,
     eventBufferFeature: {
@@ -432,7 +437,7 @@ const Planning = () => {
           icon: "b-fa b-fa-bell",
         },
         REGULAR: {
-          class: "!bg-teal-300 !text-event-text",
+          class: "!bg-teal-100 !text-event-text",
           icon: "b-fa b-fa-box-open",
         },
         SPECIAL: {
@@ -469,11 +474,11 @@ const Planning = () => {
             },
             {
               class:
-                "text-event-text overflow-ellipsis overflow-hidden text-sm font-light",
+                "text-event-text overflow-ellipsis overflow-hidden text-sm/6 font-light",
               html: eventRecord.getData("comment"),
             },
             {
-              class: "b-event-time text-event-text text-xs font-light",
+              class: "b-event-time text-event-text text-2xs font-light ",
               text: `${(eventRecord.startDate as Date).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -663,7 +668,7 @@ const Planning = () => {
               </div>
               <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const prevDay = new Date(selectedDate);
                     prevDay.setDate(prevDay.getDate() - 1);
@@ -675,9 +680,9 @@ const Planning = () => {
                     <Button
                       variant="default"
                       size="sm"
-                      className="rounded-full bg-card h-10 border-teal-300 border-[1px] hover:bg-teal-50"
+                      className="rounded-full bg-card h-10 !border-teal-500 !text-teal-500 border-[1px] hover:bg-teal-50"
                     >
-                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-300" />
+                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-500" />
                       <p className="text-text-base">
                         {selectedDate.toLocaleDateString() ===
                         new Date().toLocaleDateString()
@@ -687,7 +692,7 @@ const Planning = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-auto p-0" align="end">
-                    <div className="!rounded-full !bg-card !border-teal-300 !min-h-10 !h-10">
+                    <div className="!rounded-full !bg-card !border-teal-500 !text-teal-500 !min-h-10 !h-10">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -708,7 +713,7 @@ const Planning = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-300 !text-text-base hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const nextDay = new Date(selectedDate);
                     nextDay.setDate(nextDay.getDate() + 1);
