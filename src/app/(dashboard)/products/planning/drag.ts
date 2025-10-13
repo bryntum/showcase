@@ -10,6 +10,7 @@ import {
 import { DragHelperConfig } from "@bryntum/core-thin";
 import { Grid } from "@bryntum/grid-thin";
 import { EventModel, SchedulerPro } from "@bryntum/schedulerpro-thin";
+import { get } from "lodash";
 
 type DragConfig = DragHelperConfig & {
   grid: Grid;
@@ -55,13 +56,13 @@ export class Drag extends DragHelper {
   override createProxy = (grabbedElement: HTMLElement): HTMLDivElement => {
     const eventPalette = {
       URGENT: {
-        class: "!bg-warning-400",
+        class: "!bg-warning-100",
       },
       REGULAR: {
-        class: "!bg-teal-300",
+        class: "!bg-teal-100",
       },
       SPECIAL: {
-        class: "!bg-cyan-300",
+        class: "!bg-cyan-100",
       }
     }
 
@@ -97,7 +98,7 @@ export class Drag extends DragHelper {
       "b-sch-horizontal"
     );
     proxy.innerHTML = StringHelper.xss`
-            <div class="b-sch-event b-has-content b-sch-event-withicon !border-none ${eventPalette[eventType].class}">
+            <div class="b-sch-event b-has-content b-sch-event-withicon !border-none ${get(eventPalette, eventType, eventPalette.REGULAR).class}">
                 <div class="b-sch-event-content !text-event-text !border-none">
                     <i class="b-icon b-fa b-fa-icon b-fa-package"></i>
                     <div>

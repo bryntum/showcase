@@ -58,7 +58,7 @@ import {
   BryntumCombo,
   BryntumTextField,
 } from "@bryntum/core-react-thin";
-import { eventTypeCellRenderer } from "../planning/UnplannedGrid";
+import { eventTypeCellRenderer } from "../planning/unplannedGrid";
 import { GridWrapper } from "components/ui/grid/GridWrapper";
 
 const deliveryFormSchema = z.object({
@@ -278,8 +278,8 @@ const Scheduler = () => {
               <BryntumTextField
                 placeholder="Filter deliveries..."
                 value={deliveryFilter}
-                cls="scheduler-filter"
                 label={undefined}
+                cls="text-input"
                 onInput={(e) => setDeliveryFilter(e.value)}
               />
             </div>

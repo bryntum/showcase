@@ -53,8 +53,11 @@
 
     --event-text: 220 9% 26%;
 
+    --toast-progress-background-color: 169 76% 64%;
+
     --teal-25: 165 80% 98%;
     --teal-50: 162 76% 97%;
+    --teal-75: 162 76% 92%;
     --teal-100: 165 85% 89%;
     --teal-200: 166 84% 78%;
     --teal-300: 169 76% 64%;
@@ -91,6 +94,8 @@
     --cyan-800: 196 70% 27%;
     --cyan-900: 198 64% 24%;
     --cyan-950: 197 63% 14%;
+
+    --highlight-text: 0 0% 100%;
   }
 
   .dark {
@@ -137,8 +142,11 @@
 
     --event-text: 220 9% 90%;
 
+    --toast-progress-background-color: 171 79% 40% !important;
+
     --teal-25: 174 61% 10%;
     --teal-50: 174 61% 19%;
+    --teal-75: 174 61% 20%;
     --teal-100: 174 68% 22%;
     --teal-200: 173 76% 26%;
     --teal-300: 173 83% 32%;
@@ -246,16 +254,34 @@
   border-bottom: none !important;
 }
 
-.scheduler-filter>.b-field-inner {
-  border-radius: 100px;
-  border-color: hsl(var(--teal-500));
-  background-color: hsl(var(--card)) !important;
-  padding: 0;
-}
+.text-input {
+  &>.b-field-inner {
+    border-radius: 100px;
+    border-color: hsl(var(--teal-500));
+    background-color: hsl(var(--card)) !important;
+    padding: 0;
 
-.scheduler-filter>.b-field-inner:hover {
-  background-color: hsl(var(--teal-25)) !important;
-  border-color: hsl(var(--teal-500)) !important;
+    &:hover {
+      background-color: hsl(var(--teal-25)) !important;
+      border-color: hsl(var(--teal-500)) !important;
+    }
+  }
+  
+  &:hover {
+    &>.b-field-inner {
+      border-color: hsl(var(--teal-500)) !important;
+    }
+  }
+
+  &.b-contains-focus {
+    .b-field-inner {
+      border-color: hsl(var(--teal-500)) !important;
+    }
+  }
+
+  label {
+    color: hsl(var(--text-event)) !important;
+  }
 }
 
 .b-field-inner input {
@@ -312,15 +338,15 @@
 }
 
 .b-selected {
-  background-color: hsl(var(--teal-100)) !important;
+  background-color: hsl(var(--teal-50)) !important;
 }
 
 .b-hover {
-  background-color: hsl(var(--teal-50)) !important;
+  background-color: hsl(var(--teal-75)) !important;
 }
 
 .b-hover>.b-grid-cell {
-  background-color: hsl(var(--teal-50)) !important;
+  background-color: hsl(var(--teal-75)) !important;
 }
 
 .b-label {
@@ -374,7 +400,7 @@
 }
 
 .b-panel-header {
-  background-color: hsl(var(--teal-200)) !important;
+  background-color: hsl(var(--teal-100)) !important;
 }
 
 .b-button {
@@ -395,11 +421,26 @@
   border-top-right-radius: 1.5rem !important;
 }
 
-.b-panel.b-floating > .b-panel-body-wrap > .b-toolbar.b-dock-bottom {
+.b-panel.b-floating>.b-panel-body-wrap>.b-toolbar.b-dock-bottom {
   border-bottom-left-radius: 1.5rem !important;
   border-bottom-right-radius: 1.5rem !important;
 }
 
-.b-schedulertaskeditor,.b-schedulertaskeditor-body-wrap{
+.b-schedulertaskeditor,
+.b-schedulertaskeditor-body-wrap {
   border-radius: 1.5rem !important;
+}
+
+.b-sch-highlighted-range {
+  background-color: hsl(var(--teal-50)) !important;
+  border-color: hsl(var(--teal-500)) !important;
+}
+
+.b-sch-highlighted-range-name {
+  text-align: center !important;
+  color: hsl(var(--teal-500)) !important;
+}
+
+.b-toast-progress {
+  background: hsl(var(--teal-300)) !important;
 }

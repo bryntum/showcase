@@ -16,23 +16,27 @@ import {
   Shield,
   Mail,
 } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "components/ui/actions/button";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "components/ui/navigation/tabs";
-import { Label } from "components/ui/forms/label";
-import { Input } from "components/ui/forms/input";
-import { Switch } from "components/ui/forms/switch";
 import { Badge } from "components/ui/data-display/badge";
 import { Separator } from "components/ui/layout/separator";
+import {
+  BryntumSlideToggle,
+  BryntumTextField,
+  BryntumButton,
+} from "@bryntum/core-react-thin";
+import { Toast } from "@bryntum/core-thin";
 
 const Settings = () => {
   const handleSaveSettings = () => {
-    toast.success("Settings saved successfully");
+    Toast.show({
+      html: "Settings saved successfully",
+      timeout: 5000,
+    });
   };
 
   return (
@@ -44,9 +48,6 @@ const Settings = () => {
             Manage your account settings and preferences.
           </p>
         </div>
-        <Button onClick={handleSaveSettings} className="mt-4 md:mt-0">
-          Save Changes
-        </Button>
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
@@ -67,21 +68,34 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="company-name">Company Name</Label>
-                <Input id="company-name" defaultValue="Acme Inc." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="company-website">Website</Label>
-                <Input id="company-website" defaultValue="https://acme.com" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="company-description">Description</Label>
-                <Input
+              <div className="space-y-4">
+                <BryntumTextField
+                  id="company-name"
+                  label="Company Name"
+                  cls="text-input !w-full"
+                  labelPosition="above"
+                  value="Acme Inc."
+                />
+                <BryntumTextField
+                  id="company-website"
+                  label="Website"
+                  cls="text-input !w-full"
+                  labelPosition="above"
+                  value="https://acme.com"
+                />
+                <BryntumTextField
                   id="company-description"
-                  defaultValue="A leading technology company."
+                  label="Description"
+                  cls="text-input !w-full"
+                  labelPosition="above"
+                  value="A leading technology company."
                 />
               </div>
+              <BryntumButton
+                cls="b-fa b-fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                onClick={handleSaveSettings}
+                text="Save Changes"
+              />
             </CardContent>
           </Card>
 
@@ -93,22 +107,12 @@ const Settings = () => {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium">Dark Mode</p>
-                  <p className="text-sm text-muted-foreground">
-                    Toggle dark mode on and off
-                  </p>
-                </div>
-                <Switch />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
                   <p className="text-sm font-medium">Beta Features</p>
                   <p className="text-sm text-muted-foreground">
                     Get early access to new features
                   </p>
                 </div>
-                <Switch />
+                <BryntumSlideToggle value={false} />
               </div>
             </CardContent>
           </Card>
@@ -122,7 +126,7 @@ const Settings = () => {
                   <CardTitle>Subscription Plan</CardTitle>
                   <CardDescription>Manage your subscription</CardDescription>
                 </div>
-                <Badge variant="default">Professional</Badge>
+                <Badge variant="outline">Professional</Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -161,14 +165,15 @@ const Settings = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col space-y-2">
-                <Button variant="outline">Change Plan</Button>
-                <Button
-                  variant="outline"
-                  className="text-destructive hover:text-destructive"
-                >
-                  Cancel Subscription
-                </Button>
+              <div className="flex items-center gap-2">
+                <BryntumButton
+                  cls="b-fa b-fa-arrow-up-right-from-square gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  text="Change Plan"
+                />
+                <BryntumButton
+                  cls="b-fa b-fa-ban gap-2 !rounded-full !border-none !bg-destructive !text-white !text-sm !font-medium hover:!bg-destructive/80 !py-1 !min-h-9"
+                  text="Cancel Subscription"
+                />
               </div>
             </CardContent>
           </Card>
@@ -191,9 +196,12 @@ const Settings = () => {
                     </p>
                   </div>
                 </div>
-                <Badge>Default</Badge>
+                <Badge variant="outline">Default</Badge>
               </div>
-              <Button variant="outline">Add Payment Method</Button>
+              <BryntumButton
+                cls="b-fa b-fa-credit-card gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                text="Add Payment Method"
+              />
             </CardContent>
           </Card>
         </TabsContent>
@@ -208,7 +216,10 @@ const Settings = () => {
                     Manage your team members and roles
                   </CardDescription>
                 </div>
-                <Button>Invite Team Member</Button>
+                <BryntumButton
+                  cls="b-fa b-fa-user-plus gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  text="Invite Team Member"
+                />
               </div>
             </CardHeader>
             <CardContent>
@@ -261,7 +272,10 @@ const Settings = () => {
                   <CardTitle>API Keys</CardTitle>
                   <CardDescription>Manage your API keys</CardDescription>
                 </div>
-                <Button>Generate New Key</Button>
+                <BryntumButton
+                  cls="b-fa b-fa-key gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  text="Generate New Key"
+                />
               </div>
             </CardHeader>
             <CardContent>
@@ -291,17 +305,14 @@ const Settings = () => {
                         <p className="text-xs font-mono">{apiKey.key}</p>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex items-center gap-2">
                       <p className="text-xs text-muted-foreground">
                         Created {apiKey.created}
                       </p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive mt-1"
-                      >
-                        Revoke
-                      </Button>
+                      <BryntumButton
+                        cls="!rounded-full !border-none !bg-destructive !text-white !text-xs !font-medium hover:!bg-destructive/80 !py-1 !min-h-7 !px-3"
+                        text="Revoke"
+                      />
                     </div>
                   </div>
                 ))}
@@ -355,7 +366,7 @@ const Settings = () => {
                           </p>
                         </div>
                       </div>
-                      <Switch defaultChecked={index < 2} />
+                      <BryntumSlideToggle value={index < 2} />
                     </div>
                     {index < arr.length - 1 && <Separator />}
                   </Fragment>

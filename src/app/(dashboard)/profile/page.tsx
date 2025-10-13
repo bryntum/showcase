@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -14,7 +13,6 @@ import {
   AvatarImage,
 } from "components/ui/data-display/avatar";
 import { Badge } from "components/ui/data-display/badge";
-import { Button } from "components/ui/actions/button";
 import { Separator } from "components/ui/layout/separator";
 import {
   Tabs,
@@ -22,13 +20,15 @@ import {
   TabsList,
   TabsTrigger,
 } from "components/ui/navigation/tabs";
-import { Label } from "components/ui/forms/label";
-import { Input } from "components/ui/forms/input";
-import { Switch } from "components/ui/forms/switch";
+import { BryntumButton, BryntumSlideToggle, BryntumTextField } from "@bryntum/core-react-thin";
+import { Toast } from "@bryntum/core-thin";
 
 const Profile = () => {
   const handleSaveProfile = () => {
-    toast.success("Profile information updated successfully");
+    Toast.show({
+      html: "Profile updated successfully",
+      timeout: 5000,
+    });
   };
 
   return (
@@ -68,9 +68,6 @@ const Profile = () => {
                   <Badge variant="outline">Admin</Badge>
                   <Badge variant="outline">Developer</Badge>
                 </div>
-                <Button variant="outline" size="sm" className="mt-6 w-full">
-                  Change Avatar
-                </Button>
               </CardContent>
             </Card>
 
@@ -118,29 +115,43 @@ const Profile = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="first-name">First Name</Label>
-                      <Input id="first-name" defaultValue="John" />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex gap-2">
+                      <BryntumTextField
+                        id="first-name"
+                        label="First Name"
+                        cls="text-input !w-full"
+                        labelPosition="above"
+                        value="John"
+                      />
+                      <BryntumTextField
+                        id="last-name"
+                        label="Last Name"
+                        cls="text-input !w-full"
+                        labelPosition="above"
+                        value="Doe"
+                      />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="last-name">Last Name</Label>
-                      <Input id="last-name" defaultValue="Doe" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
+                    <BryntumTextField
                       id="email"
-                      type="email"
-                      defaultValue="john.doe@example.com"
+                      label="Email"
+                      cls="text-input !w-full"
+                      labelPosition="above"
+                      value="john.doe@example.com"
+                    />
+                    <BryntumTextField
+                      id="company"
+                      label="Company"
+                      cls="text-input !w-full"
+                      labelPosition="above"
+                      value="Acme Inc."
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="company">Company</Label>
-                    <Input id="company" defaultValue="Acme Inc." />
-                  </div>
-                  <Button onClick={handleSaveProfile}>Save Changes</Button>
+                  <BryntumButton
+                    cls="b-fa b-fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    onClick={handleSaveProfile}
+                    text="Save Changes"
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -153,26 +164,42 @@ const Profile = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="current-password">Current Password</Label>
-                    <Input id="current-password" type="password" />
+                    <BryntumTextField
+                      id="current-password"
+                      label="Current Password"
+                      cls="text-input !w-full"
+                      labelPosition="above"
+                      value="********"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
-                    <Input id="new-password" type="password" />
+                    <BryntumTextField
+                      id="new-password"
+                      label="New Password"
+                      cls="text-input !w-full"
+                      labelPosition="above"
+                      value="********"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">
-                      Confirm New Password
-                    </Label>
-                    <Input id="confirm-password" type="password" />
+                    <BryntumTextField
+                      id="confirm-password"
+                      label="Confirm New Password"
+                      cls="text-input !w-full"
+                      labelPosition="above"
+                      value="********"
+                    />
                   </div>
-                  <Button
+                  <BryntumButton
+                    cls="b-fa b-fa-lock gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                     onClick={() =>
-                      toast.success("Password updated successfully")
+                      Toast.show({
+                        html: "Password updated successfully",
+                        timeout: 20000,
+                      })
                     }
-                  >
-                    Change Password
-                  </Button>
+                    text="Change Password"
+                  />
                 </CardContent>
               </Card>
 
@@ -193,7 +220,7 @@ const Profile = () => {
                         Add an extra layer of security to your account
                       </p>
                     </div>
-                    <Switch />
+                    <BryntumSlideToggle value={false} />
                   </div>
                 </CardContent>
               </Card>
@@ -213,7 +240,7 @@ const Profile = () => {
                         Receive email notifications about updates
                       </p>
                     </div>
-                    <Switch defaultChecked />
+                    <BryntumSlideToggle value={true} />
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
@@ -223,7 +250,7 @@ const Profile = () => {
                         Receive updates about new features
                       </p>
                     </div>
-                    <Switch defaultChecked />
+                    <BryntumSlideToggle value={true} />
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
@@ -233,15 +260,19 @@ const Profile = () => {
                         Receive alerts when you're close to your plan limits
                       </p>
                     </div>
-                    <Switch defaultChecked />
+                    <BryntumSlideToggle value={true} />
                   </div>
-                  <Button
+                  <BryntumButton
+                    cls="b-fa b-fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    text="Save Preferences"
                     onClick={() =>
-                      toast.success("Preferences updated successfully")
+                      Toast.show({
+                        html: "Preferences updated successfully",
+                        timeout: 20000,
+                      })
                     }
                   >
-                    Save Preferences
-                  </Button>
+                  </BryntumButton>
                 </CardContent>
               </Card>
             </TabsContent>

@@ -496,14 +496,14 @@ const VehiclesPage = () => {
               <BryntumTextField
                 placeholder="Filter drivers..."
                 value={driverFilter}
-                cls="scheduler-filter"
+                cls="text-input"
                 onInput={(e) => setDriverFilter(e.value)}
                 label={undefined}
               />
               <BryntumTextField
                 placeholder="Filter vehicles..."
                 value={vehicleFilter}
-                cls="scheduler-filter"
+                cls="text-input"
                 onInput={(e) => setVehicleFilter(e.value)}
                 label={undefined}
               />
@@ -525,7 +525,7 @@ const VehiclesPage = () => {
                     className="rounded-full bg-card h-10 !border-teal-500 !text-teal-500 border-[1px] hover:bg-teal-50"
                   >
                     <CalendarIcon className="h-4 w-4 mr-1 text-teal-500" />
-                    <p className="text-teal-800">
+                    <p className="text-text-base">
                       {selectedDate.toLocaleDateString() ===
                       new Date().toLocaleDateString()
                         ? "Today"

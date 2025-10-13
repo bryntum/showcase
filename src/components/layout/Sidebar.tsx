@@ -11,7 +11,6 @@ import {
   ChevronRight,
   Truck,
   Package2,
-  Users,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -82,8 +81,8 @@ export const Sidebar = () => {
                   className={cn(
                     "flex items-center gap-3 rounded-full pl-3 pr-5 py-1 my-1 w-fit transition-colors relative group",
                     isActive(item.path)
-                      ? "bg-teal-100 text-teal-800"
-                      : "text-teal-950 hover:bg-teal-100"
+                      ? "bg-teal-200 text-teal-800"
+                      : "text-teal-950 hover:bg-teal-200"
                   )}
                 >
                   <item.icon size={20} />
@@ -96,7 +95,7 @@ export const Sidebar = () => {
                     className={cn(
                       "text-teal-950 flex items-center justify-between gap-3 rounded-full pl-3 pr-5 py-1 my-1 w-fit transition-colors",
                       !item.children.some((child) => isActive(child.path)) &&
-                        "hover:bg-teal-100"
+                        "hover:bg-teal-200"
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -121,8 +120,8 @@ export const Sidebar = () => {
                           className={cn(
                             "flex items-center gap-3 rounded-full pl-3 pr-5 py-1 my-1 text-sm w-fit transition-colors",
                             isActive(child.path)
-                              ? "bg-teal-100 !text-event-text"
-                              : " hover:bg-teal-100 text-teal-950"
+                              ? "bg-teal-200 !text-event-text"
+                              : " hover:bg-teal-200 text-teal-950"
                           )}
                         >
                           <child.icon size={16} />

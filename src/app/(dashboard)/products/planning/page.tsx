@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { SchedulerProWrapper } from "components/ui/scheduler/SchedulerProWrapper";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { forEach, isEmpty, map, toLower } from "lodash";
+import { capitalize, forEach, get, isEmpty, map, toLower } from "lodash";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,12 +34,12 @@ import {
   BryntumSlideToggle,
   BryntumTextField,
 } from "@bryntum/core-react-thin";
-import { unplannedGridConfig } from "./UnplannedGrid";
+import { unplannedGridConfig } from "./unplannedGrid";
 import { isSameDay } from "date-fns";
 import { Grid } from "@bryntum/grid-thin";
-import { Drag } from "./Drag";
+import { Drag } from "./drag";
 import { useDate } from "../../../../contexts/date-context";
-import MapPanel from "./MapPanel";
+import MapPanel from "./mapPanel";
 import { SlideToggle } from "@bryntum/core-thin";
 import MetricCard, { MetricCardProps } from "./MetricCard";
 import { GridWrapper } from "components/ui/grid/GridWrapper";
@@ -433,7 +433,7 @@ const Planning = () => {
     eventRenderer({ eventRecord, renderData }) {
       const eventPalette = {
         URGENT: {
-          class: "!bg-warning-400 !text-event-text",
+          class: "!bg-warning-100 !text-event-text",
           icon: "b-fa b-fa-bell",
         },
         REGULAR: {
@@ -441,14 +441,16 @@ const Planning = () => {
           icon: "b-fa b-fa-box-open",
         },
         SPECIAL: {
-          class: "!bg-cyan-300 !text-event-text",
+          class: "!bg-cyan-100 !text-event-text",
           icon: "b-fa b-fa-snowflake",
         },
       };
       const eventType = eventRecord.getData(
         "type"
       ) as keyof typeof eventPalette;
-      renderData.cls += ` ${eventPalette[eventType].class}`;
+      renderData.cls += ` ${
+        get(eventPalette, eventType, eventPalette.REGULAR).class
+      }`;
 
       return [
         {
@@ -462,13 +464,14 @@ const Planning = () => {
               children: [
                 {
                   tag: "div",
-                  class: eventPalette[eventType].icon,
+                  class: get(eventPalette, eventType, eventPalette.REGULAR)
+                    .icon,
                 },
                 {
                   class: "b-event-name text-event-text text-base",
-                  text:
-                    eventRecord.getData("type").charAt(0).toUpperCase() +
-                    eventRecord.getData("type").slice(1).toLowerCase(),
+                  text: capitalize(
+                    get(eventRecord.getData("type"), "type", "regular")
+                  ),
                 },
               ],
             },
@@ -511,7 +514,7 @@ const Planning = () => {
           scheduler.highlightTimeSpan({
             animationId: "deliveryWindow",
             surround: true,
-            name: "Outside Delivery Window",
+            name: "Outside delivery window",
             startDate: selectedEvent.getData("plannedFrom"),
             endDate: new Date(
               selectedEvent.getData("plannedFrom").getTime() +
@@ -638,14 +641,14 @@ const Planning = () => {
                 <BryntumTextField
                   placeholder="Filter drivers..."
                   value={resourceFilter}
-                  cls="scheduler-filter"
+                  cls="text-input"
                   onInput={(e) => setResourceFilter(e.value)}
                   label={undefined}
                 />
                 <BryntumTextField
                   placeholder="Filter deliveries..."
                   value={eventFilter}
-                  cls="scheduler-filter"
+                  cls="text-input"
                   onInput={(e) => setEventFilter(e.value)}
                   label={undefined}
                 />
