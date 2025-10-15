@@ -1,8 +1,13 @@
 @import "https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css";
+@import url('https://use.fontawesome.com/releases/v6.7.2/css/all.css');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root:not(.b-nothing) {
+  --b-widget-icon-font-family : 'Font Awesome 6 Pro';
+}
 
 @layer base {
   :root {
@@ -11,6 +16,9 @@
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
+
+    --b-grid-cell-background: 0 0% 100%;
+    --b-grid-row-background: 0 0% 100%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -105,6 +113,9 @@
     --card: 174 61% 10%;
     --card-foreground: 210 40% 98%;
 
+    --b-grid-cell-background: 174 61% 10%;
+    --b-grid-row-background: 174 61% 10%;
+
     --popover: 174 61% 7%;
     --popover-foreground: 210 40% 98%;
 
@@ -139,6 +150,7 @@
 
     --hover-background: 210 100% 15%;
     --selected-background: 210 100% 25%;
+    --b-grid-cell-selected-background: 174 61% 10% !important;
 
     --event-text: 220 9% 90%;
 
@@ -242,6 +254,11 @@
   }
 }
 
+.b-scheduler-pro,
+.b-grid {
+  --b-panel-border: 1px solid;
+}
+
 .b-grid-header {
   text-transform: none !important;
   background-color: hsl(var(--component-background));
@@ -254,45 +271,27 @@
   border-bottom: none !important;
 }
 
-.text-input {
-  &>.b-field-inner {
-    border-radius: 100px;
-    border-color: hsl(var(--teal-500));
-    background-color: hsl(var(--card)) !important;
-    padding: 0;
-
-    &:hover {
-      background-color: hsl(var(--teal-25)) !important;
-      border-color: hsl(var(--teal-500)) !important;
-    }
-  }
-  
-  &:hover {
-    &>.b-field-inner {
-      border-color: hsl(var(--teal-500)) !important;
-    }
-  }
-
-  &.b-contains-focus {
-    .b-field-inner {
-      border-color: hsl(var(--teal-500)) !important;
-    }
-  }
-
-  label {
-    color: hsl(var(--text-event)) !important;
-  }
+.b-text-field {
+  --b-text-field-border-radius: 100px !important;
+  --b-text-field-border-color: hsl(var(--teal-500)) !important;
+  --b-text-field-background-color: hsl(var(--card)) !important;
+  --b-text-field-hover-background-color: hsl(var(--teal-25)) !important;
+  --b-text-field-focus-background-color: hsl(var(--teal-25)) !important;
+  --b-text-field-focus-border-color: hsl(var(--teal-500)) !important;
+  --b-text-field-focus-ring-color: hsl(var(--teal-500)) !important;
+  --b-text-field-focus-ring-width: 1px !important;
+  --b-text-field-focus-ring-offset-width: 1px !important;
 }
 
 .b-field-inner input {
   padding: 0.5rem 1rem !important;
 }
 
-.b-slidetoggle {
+.b-slide-toggle {
   flex-direction: row-reverse !important;
 }
 
-.b-slidetoggle input:checked+.b-slidetoggle-toggle {
+.b-slide-toggle input:checked+.b-slide-toggle-toggle {
   background-color: hsl(var(--teal-500)) !important;
 }
 
@@ -301,10 +300,6 @@
 }
 
 .b-sch-timeaxiscolumn {
-  background-color: hsl(var(--card));
-}
-
-.b-grid-row:hover {
   background-color: hsl(var(--card));
 }
 
@@ -329,12 +324,17 @@
   height: 68px;
 }
 
-.b-grid-row {
+.b-grid-row,
+.b-grid-sub-grid {
   background-color: hsl(var(--card));
 }
 
 .b-grid-cell-drop-target {
   background-color: hsl(var(--teal-50)) !important;
+}
+
+.b-grid-row.b-selected .b-grid-cell {
+  --b-grid-cell-applied-background: var(--teal-50) !important;
 }
 
 .b-selected {
@@ -426,8 +426,8 @@
   border-bottom-right-radius: 1.5rem !important;
 }
 
-.b-schedulertaskeditor,
-.b-schedulertaskeditor-body-wrap {
+.b-scheduler-task-editor,
+.b-scheduler-task-editor-body-wrap {
   border-radius: 1.5rem !important;
 }
 

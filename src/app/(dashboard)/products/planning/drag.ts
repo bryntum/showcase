@@ -43,7 +43,7 @@ export class Drag extends DragHelper {
       unifiedProxy: true,
       removeProxyAfterDrop: false,
       cloneTarget: true,
-      dropTargetSelector: ".b-timeline-subgrid",
+      dropTargetSelector: ".b-timeline-sub-grid",
       targetSelector: ".b-grid-row",
     });
     this.grid = config.grid;
@@ -54,6 +54,7 @@ export class Drag extends DragHelper {
   }
 
   override createProxy = (grabbedElement: HTMLElement): HTMLDivElement => {
+    console.log("createProxy", grabbedElement);
     const eventPalette = {
       URGENT: {
         class: "!bg-warning-100",
@@ -75,6 +76,7 @@ export class Drag extends DragHelper {
         delivery.durationMS
       ),
       proxy = document.createElement("div");
+
 
     const eventType = delivery.getData("type") as keyof typeof eventPalette;
 
@@ -100,7 +102,7 @@ export class Drag extends DragHelper {
     proxy.innerHTML = StringHelper.xss`
             <div class="b-sch-event b-has-content b-sch-event-withicon !border-none ${get(eventPalette, eventType, eventPalette.REGULAR).class}">
                 <div class="b-sch-event-content !text-event-text !border-none">
-                    <i class="b-icon b-fa b-fa-icon b-fa-package"></i>
+                    <i class="fa fa-package"></i>
                     <div>
                         <div>${delivery.getData("comment")}</div>
                     </div>

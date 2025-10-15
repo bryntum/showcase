@@ -5,25 +5,37 @@ import cn from "lib/utils";
 import { get } from "lodash";
 
 export const eventTypeCellRenderer = ({ record }: { record: Model }) => {
-  const baseClass = "b-fa rounded-full text-xs px-2 py-0.5 before:pr-2 flex items-center justify-center gap-2 font-medium w-fit mx-auto border-[1px] text-event-text"
+  const baseClass = "rounded-full text-xs px-2 py-0.5 flex items-center justify-center gap-2 font-medium w-fit mx-auto border-[1px] text-event-text"
   const eventTypePalette = {
     URGENT: {
-      class: "b-fa-bell !bg-warning-100 !border-warning-500",
+      iconClass: "fa fa-bell font-bold",
+      bgClass: "!bg-warning-100 !border-warning-500",
     },
     REGULAR: {
-      class: "b-fa-box-open !bg-teal-100 !border-teal-500",
+      iconClass: "fa fa-box-open font-bold", 
+      bgClass: "!bg-teal-100 !border-teal-500",
     },
     SPECIAL: {
-      class: "b-fa-snowflake !bg-cyan-100 !border-cyan-500",
+      iconClass: "fa fa-snowflake font-bold",
+      bgClass: "!bg-cyan-100 !border-cyan-500", 
     }
   }
   const eventType = record.getData("type") as keyof typeof eventTypePalette;
 
-
   return {
     tag: "div",
-    class: cn(baseClass, get(eventTypePalette, eventType, eventTypePalette.REGULAR).class),
-    text: record.getData("type")
+    class: cn(baseClass, get(eventTypePalette, eventType, eventTypePalette.REGULAR).bgClass),
+    children: [
+      {
+        tag: "i",
+        class: get(eventTypePalette, eventType, eventTypePalette.REGULAR).iconClass
+      },
+      {
+        tag: "span",
+        text: record.getData("type"),
+        class: "font-normal"
+      }
+    ]
   };
 }
 

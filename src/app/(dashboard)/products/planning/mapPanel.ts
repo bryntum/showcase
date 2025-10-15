@@ -172,8 +172,8 @@ export default class MapPanel extends Panel {
 
   private createPopupContent = (eventRecord: Task) => StringHelper.xss`
         <span class="event-name">${eventRecord.name}</span>
-        <span class="resource"><i class="b-fa b-fa-fw b-fa-user"></i>${eventRecord.resource?.name || 'Unassigned'}</span>
-        <span class="location"><i class="b-fa b-fa-fw b-fa-map-marker-alt"></i>${eventRecord.shortAddress}</span>
+        <span class="resource"><i class="fa fa-fw fa-user"></i>${eventRecord.resource?.name || 'Unassigned'}</span>
+        <span class="location"><i class="fa fa-fw fa-map-marker-alt"></i>${eventRecord.shortAddress}</span>
     `;
 
   onMapClick({ target }: { target: mapboxgl.Marker }) {

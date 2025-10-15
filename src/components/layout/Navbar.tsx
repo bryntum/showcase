@@ -1,9 +1,9 @@
 "use client";
 
-import { Bell, Moon, Sun } from "lucide-react";
-import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell, faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
+import { useEffect } from "react";
 import { Button } from "components/ui/actions/button";
-import { usePathname } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,18 +20,18 @@ const Navbar = () => {
       document.documentElement.classList.remove("dark");
       // Dynamically import DomHelper to avoid SSR issues
       const { DomHelper } = await import("@bryntum/core-thin");
-      DomHelper.setTheme("stockholm");
+      DomHelper.setTheme("svalbard-light");
     } else {
       document.documentElement.classList.add("dark");
       // Dynamically import DomHelper to avoid SSR issues
       const { DomHelper } = await import("@bryntum/core-thin");
-      DomHelper.setTheme("classic-dark");
+      DomHelper.setTheme("svalbard-dark");
     }
     setIsDarkMode(!isDarkMode);
   };
 
   useEffect(() => {
-   toggleDarkMode();
+    toggleDarkMode();
   }, []);
 
   return (
@@ -43,7 +43,7 @@ const Navbar = () => {
           className="rounded-full text-teal-950"
           onClick={toggleDarkMode}
         >
-          {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+          <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} size="sm" />
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -52,7 +52,7 @@ const Navbar = () => {
               variant="ghost"
               className="rounded-full relative text-teal-950"
             >
-              <Bell size={18} />
+              <FontAwesomeIcon icon={faBell} size="sm" />
               <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-teal-950">
                 3
               </span>

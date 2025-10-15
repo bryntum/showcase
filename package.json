@@ -4,22 +4,27 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build && yarn seed",
+    "build": "prisma generate && next build && npm run seed",
     "start": "next start",
     "lint": "eslint .",
     "init-db": "npx tsx prisma/init-db.ts",
     "seed": "npx tsx prisma/seed.ts",
-    "postinstall": "npx tsx scripts/fix-font-urls.ts && prisma generate && yarn seed"
+    "postinstall": "postinstall && prisma generate && npm run seed"
   },
   "dependencies": {
-    "@bryntum/core-react-thin": "^6.2.2",
-    "@bryntum/core-thin": "^6.2.2",
-    "@bryntum/engine-thin": "^6.2.2",
-    "@bryntum/grid-react-thin": "^6.2.2",
-    "@bryntum/grid-thin": "^6.2.2",
-    "@bryntum/scheduler-thin": "^6.2.2",
-    "@bryntum/schedulerpro-react-thin": "^6.2.2",
-    "@bryntum/schedulerpro-thin": "^6.2.2",
+    "@bryntum/core-react-thin": "^7.0.0-alpha.1",
+    "@bryntum/core-thin": "^7.0.0-alpha.1",
+    "@bryntum/engine-thin": "^7.0.0-alpha.1",
+    "@bryntum/grid-react-thin": "^7.0.0-alpha.1",
+    "@bryntum/grid-thin": "^7.0.0-alpha.1",
+    "@bryntum/scheduler-thin": "^7.0.0-alpha.1",
+    "@bryntum/schedulerpro-react-thin": "^7.0.0-alpha.1",
+    "@bryntum/schedulerpro-thin": "^7.0.0-alpha.1",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^3.1.0",
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^6.5.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -57,7 +62,6 @@
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.462.0",
     "mapbox-gl": "^3.12.0",
     "next": "^15.2.4",
     "next-themes": "^0.3.0",
@@ -98,12 +102,9 @@
     "typescript-eslint": "^8.0.1"
   },
   "postinstall": {
-    "node_modules/@bryntum/core-thin/fonts": "copy public/themes/fonts",
-    "node_modules/@bryntum/core-thin/*.css*": "copy public/themes/",
-    "node_modules/@bryntum/grid-thin/*.css*": "copy public/themes/",
-    "node_modules/@bryntum/schedulerpro-thin/*.css*": "copy public/themes/",
-    "node_modules/@bryntum/scheduler-thin/*.css*": "copy public/themes/",
-    "node_modules/@bryntum/gantt-thin/*.css*": "copy public/themes/"
-  },
-  "packageManager": "yarn@4.9.2"
+    "node_modules/@bryntum/core-thin/svalbard-*.css": "copy public/themes/core-thin/",
+    "node_modules/@bryntum/grid-thin/svalbard-*.css": "copy public/themes/grid-thin/",
+    "node_modules/@bryntum/scheduler-thin/svalbard-*.css": "copy public/themes/scheduler-thin/",
+    "node_modules/@bryntum/schedulerpro-thin/svalbard-*.css": "copy public/themes/schedulerpro-thin/"
+  }
 }

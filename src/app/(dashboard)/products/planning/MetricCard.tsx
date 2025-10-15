@@ -1,16 +1,17 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  LucideIcon,
-} from "lucide-react";
+  faArrowDown,
+  faArrowRight,
+  faArrowUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import cn from "lib/utils";
 
 export interface MetricCardProps {
   title: string;
   value: string | number;
-  icon: LucideIcon;
+  icon: IconDefinition;
   trend?: string | React.ReactNode;
   badge?: {
     type: "neutral" | "positive" | "negative";
@@ -33,8 +34,8 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
           <p className="text-3xl text-teal-900 font-bold">{metric.value}</p>
         </div>
         <div className="ml-4">
-          <div className="rounded-full bg-teal-300 p-3">
-            <Icon size={24} className="text-teal-700" />
+          <div className="rounded-full bg-teal-300 p-3 w-12 h-12 flex items-center justify-center">
+            <FontAwesomeIcon icon={Icon} size="lg" className="text-teal-700" />
           </div>
         </div>
       </div>
@@ -63,10 +64,16 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
                   "bg-warning-50 border-[1px] border-warning-100"
               )}
             >
-              {metric.badge.type === "positive" && <ArrowUpIcon size={16} />}
-              {metric.badge.type === "negative" && <ArrowDownIcon size={16} />}
+              {metric.badge.type === "positive" && (
+                <FontAwesomeIcon icon={faArrowUp} size="sm" />
+              )}
+              {metric.badge.type === "negative" && (
+                <FontAwesomeIcon icon={faArrowDown} size="sm" />
+              )}
               {metric.badge.label}
-              {metric.badge.type === "neutral" && <ArrowRightIcon size={16} />}
+              {metric.badge.type === "neutral" && (
+                <FontAwesomeIcon icon={faArrowRight} size="sm" />
+              )}
             </a>
           ) : (
             <div
@@ -80,10 +87,16 @@ const MetricCard = ({ metric }: { metric: MetricCardProps }) => {
                   "bg-warning-100 border-[1px] border-warning-500"
               )}
             >
-              {metric.badge.type === "positive" && <ArrowUpIcon size={16} />}
-              {metric.badge.type === "negative" && <ArrowDownIcon size={16} />}
+              {metric.badge.type === "positive" && (
+                <FontAwesomeIcon icon={faArrowUp} size="sm" />
+              )}
+              {metric.badge.type === "negative" && (
+                <FontAwesomeIcon icon={faArrowDown} size="sm" />
+              )}
               {metric.badge.label}
-              {metric.badge.type === "neutral" && <ArrowRightIcon size={16} />}
+              {metric.badge.type === "neutral" && (
+                <FontAwesomeIcon icon={faArrowRight} size="sm" />
+              )}
             </div>
           ))}
       </div>

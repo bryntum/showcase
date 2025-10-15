@@ -11,14 +11,15 @@ import {
 import { BryntumSchedulerProProps } from "@bryntum/schedulerpro-react-thin/src/BryntumSchedulerPro";
 import { Button } from "components/ui/actions/button";
 import { Calendar } from "components/ui/actions/calendar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar, faClock } from "@fortawesome/free-regular-svg-icons";
 import {
-  AlertTriangleIcon,
-  Calendar as CalendarIcon,
-  ClockIcon,
-  TrendingUpIcon,
-  TruckIcon,
-  UsersIcon,
-} from "lucide-react";
+  faTriangleExclamation,
+  faChartLine,
+  faTruck,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
+
 import { SchedulerProWrapper } from "components/ui/scheduler/SchedulerProWrapper";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { capitalize, forEach, get, isEmpty, map, toLower } from "lodash";
@@ -72,10 +73,14 @@ const Planning = () => {
               isSameDay(event.startDate, selectedDate)
             )
         ).length,
-        icon: UsersIcon,
+        icon: faUsers,
         trend: (
           <div className="flex items-center">
-            <AlertTriangleIcon className="mr-1" size={16} />
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="mr-1"
+              size="sm"
+            />
             {driversWithoutVehicle} missing{" "}
             {driversWithoutVehicle === 1 ? "vehicle" : "vehicles"}
           </div>
@@ -92,7 +97,7 @@ const Planning = () => {
           (event: Delivery) =>
             isSameDay(event.actualFrom as Date, selectedDate) && event.driverId
         ).length,
-        icon: TruckIcon,
+        icon: faTruck,
         trend: "3 more than average",
         badge: {
           type: "positive",
@@ -125,7 +130,7 @@ const Planning = () => {
                 100
             )}%`
           : "0%",
-        icon: TrendingUpIcon,
+        icon: faChartLine,
         trend: "below average",
         badge: {
           type: "negative",
@@ -159,7 +164,7 @@ const Planning = () => {
                 ).length
             )}m`
           : "Not Applicable",
-        icon: ClockIcon,
+        icon: faClock,
         trend: "above average",
         badge: {
           type: "positive",
@@ -169,9 +174,11 @@ const Planning = () => {
     ]);
   };
 
-  useEffect(() => {
-    setGrid($unplannedGridRef.current?.instance);
-  }, [$unplannedGridRef]);
+  const handleGridRef = (gridInstance: BryntumGrid | null) => {
+    if (gridInstance) {
+      setGrid(gridInstance.instance);
+    }
+  };
 
   const eventStore = useMemo(
     () =>
@@ -281,25 +288,25 @@ const Planning = () => {
     barMargin: 10,
     width: "100%",
     height: "100%",
-    eventStyle: "plain",
+    eventStyle: "filled",
     regionResizeFeature: false,
     columnLines: false,
     rowLines: false,
     allowOverlap: false,
     useInitialAnimation: false,
-    cls: "border-border border-[1px] rounded-3xl overflow-hidden",
+    cls: "!border-border !border-[1px] rounded-3xl overflow-hidden",
     eventStore,
     resourceStore,
     eventBufferFeature: {
       renderer({ eventRecord, preambleConfig, postambleConfig }) {
         if (eventRecord.preamble) {
-          preambleConfig.icon = "b-fa b-fa-truck";
+          preambleConfig.icon = "fa fa-truck";
           preambleConfig.cls = "travel-before";
           preambleConfig.text = eventRecord.preamble.toString(true);
         }
 
         if (eventRecord.postamble) {
-          postambleConfig.icon = "b-fa b-fa-truck";
+          postambleConfig.icon = "fa fa-truck";
           postambleConfig.cls = "travel-after";
           postambleConfig.text = eventRecord.postamble.toString(true);
         }
@@ -324,8 +331,8 @@ const Planning = () => {
                 tag: "img",
                 src: `/${record.getData("image")}`,
                 style: {
-                  width: "3em",
-                  height: "3em",
+                  minWidth: "3em",
+                  minHeight: "3em",
                 },
                 class: "b-resource-avatar b-resource-image",
               },
@@ -340,30 +347,67 @@ const Planning = () => {
                   },
                   {
                     tag: "dl",
-                    class:
-                      "vehicle-assignments text-teal-500 flex flex-col gap-1",
+                    class: "vehicle-assignments flex flex-col gap-1 !text-xs",
                     children: [
                       record.getData("vehicle")
                         ? {
                             tag: "dd",
-                            class: "b-fa b-fa-truck before:mr-2 font-normal",
-                            html: record.getData("vehicle"),
+                            class: "flex items-center gap-1 !font-xs",
+                            children: [
+                              {
+                                tag: "i",
+                                class: "fa fa-truck",
+                              },
+                              {
+                                tag: "span",
+                                html: record.getData("vehicle"),
+                              },
+                            ],
                           }
                         : {
                             tag: "dd",
-                            class: "!text-warning-600 font-normal",
-                            html: "No vehicle assigned",
+                            class:
+                              "flex items-center gap-1 !text-warning-600 font-normal",
+                            children: [
+                              {
+                                tag: "i",
+                                class: "fa fa-triangle-exclamation",
+                              },
+                              {
+                                tag: "span",
+                                html: "No vehicle assigned",
+                              },
+                            ],
                           },
                       record.getData("trailer")
                         ? {
                             tag: "dd",
-                            class: "b-fa b-fa-trailer before:mr-2 font-normal",
-                            html: record.getData("trailer"),
+                            class: "flex items-center gap-1 font-normal",
+                            children: [
+                              {
+                                tag: "i",
+                                class: "fa fa-trailer",
+                              },
+                              {
+                                tag: "span",
+                                html: record.getData("trailer"),
+                              },
+                            ],
                           }
                         : {
                             tag: "dd",
-                            class: "!text-warning-600 font-normal",
-                            html: "No trailer assigned",
+                            class:
+                              "flex items-center gap-1 !text-warning-600 font-normal",
+                            children: [
+                              {
+                                tag: "i",
+                                class: "fa fa-triangle-exclamation",
+                              },
+                              {
+                                tag: "span",
+                                html: "No trailer assigned",
+                              },
+                            ],
                           },
                     ],
                   },
@@ -423,10 +467,10 @@ const Planning = () => {
     eventMenuFeature: {
       items: {
         deleteEvent: {
-          text: "Delete appointment",
+          text: "Delete delivery",
         },
         unassignEvent: {
-          text: "Unschedule appointment",
+          text: "Unschedule delivery",
         },
       },
     },
@@ -434,15 +478,15 @@ const Planning = () => {
       const eventPalette = {
         URGENT: {
           class: "!bg-warning-100 !text-event-text",
-          icon: "b-fa b-fa-bell",
+          icon: "fa fa-bell text-xs",
         },
         REGULAR: {
           class: "!bg-teal-100 !text-event-text",
-          icon: "b-fa b-fa-box-open",
+          icon: "fa fa-box-open text-xs",
         },
         SPECIAL: {
           class: "!bg-cyan-100 !text-event-text",
-          icon: "b-fa b-fa-snowflake",
+          icon: "fa fa-snowflake text-xs",
         },
       };
       const eventType = eventRecord.getData(
@@ -459,6 +503,7 @@ const Planning = () => {
               class: `b-event-type`,
               style: {
                 display: "flex",
+                gap: "0.25rem",
                 alignItems: "center",
               },
               children: [
@@ -468,6 +513,7 @@ const Planning = () => {
                     .icon,
                 },
                 {
+                  tag: "span",
                   class: "b-event-name text-event-text text-base",
                   text: capitalize(
                     get(eventRecord.getData("type"), "type", "regular")
@@ -637,7 +683,7 @@ const Planning = () => {
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
+              <div className="flex items-center space-x-4 p-2 bg-card rounded-full">
                 <BryntumTextField
                   placeholder="Filter drivers..."
                   value={resourceFilter}
@@ -655,6 +701,7 @@ const Planning = () => {
                 <BryntumSlideToggle
                   label="Show detailed view"
                   labelCls="!text-teal-900"
+                  cls="!pl-2"
                   value={true}
                   onChange={({ checked }) => {
                     document
@@ -671,7 +718,7 @@ const Planning = () => {
               </div>
               <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="fa fa-chevron-left !rounded-full !bg-card !border-teal-500 !border-[1px] !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const prevDay = new Date(selectedDate);
                     prevDay.setDate(prevDay.getDate() - 1);
@@ -685,7 +732,10 @@ const Planning = () => {
                       size="sm"
                       className="rounded-full bg-card h-10 !border-teal-500 !text-teal-500 border-[1px] hover:bg-teal-50"
                     >
-                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-500" />
+                      <FontAwesomeIcon
+                        icon={faCalendar}
+                        className="h-4 w-4 mr-1 text-teal-500"
+                      />
                       <p className="text-text-base">
                         {selectedDate.toLocaleDateString() ===
                         new Date().toLocaleDateString()
@@ -716,7 +766,7 @@ const Planning = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="fa fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const nextDay = new Date(selectedDate);
                     nextDay.setDate(nextDay.getDate() + 1);
@@ -731,7 +781,7 @@ const Planning = () => {
               <SchedulerProWrapper flex={3} {...schedulerConfig} />
               <GridWrapper
                 store={eventStore.chain((event: Delivery) => !event.driverId)}
-                innerRef={$unplannedGridRef}
+                ref={handleGridRef}
                 onSelectionChange={({ selected }) => {
                   if (selected.length > 0) {
                     const event = selected[0];

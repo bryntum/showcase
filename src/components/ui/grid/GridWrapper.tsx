@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { BryntumGrid, BryntumGridProps } from "@bryntum/grid-react-thin";
+import { forwardRef } from "react";
 
 const Grid = dynamic(() => import("./Grid.tsx"), {
   ssr: false,
@@ -19,12 +20,10 @@ const Grid = dynamic(() => import("./Grid.tsx"), {
   },
 });
 
-const GridWrapper = (
-  gridConfig: BryntumGridProps & {
-    innerRef?: React.RefObject<BryntumGrid>;
-  }
-) => {
-  return <Grid {...gridConfig} ref={gridConfig.innerRef} />;
-};
+const GridWrapper = forwardRef<BryntumGrid, BryntumGridProps>((props, ref) => {
+  return <Grid {...props} ref={ref} />;
+});
+
+GridWrapper.displayName = "GridWrapper";
 
 export { GridWrapper };

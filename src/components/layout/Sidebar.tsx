@@ -3,15 +3,15 @@
 import { useState } from "react";
 import cn from "lib/utils";
 import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartBar, faUser } from "@fortawesome/free-regular-svg-icons";
 import {
-  GanttChart,
-  BarChart3,
-  User,
-  Settings,
-  ChevronRight,
-  Truck,
-  Package2,
-} from "lucide-react";
+  faChartGantt,
+  faCog,
+  faBox,
+  faChevronRight,
+  faTruck,
+} from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { AvatarImage } from "@radix-ui/react-avatar";
@@ -23,17 +23,17 @@ export const Sidebar = () => {
   const navItems = [
     {
       name: "Products",
-      icon: BarChart3,
+      icon: faChartBar,
       path: "/products",
       children: [
-        { name: "Planning", icon: GanttChart, path: "/products/planning" },
-        { name: "Deliveries", icon: Package2, path: "/products/deliveries" },
-        { name: "Vehicles", icon: Truck, path: "/products/vehicles" },
-        // { name: "Drivers", icon: Users, path: "/products/drivers" },
+        { name: "Planning", icon: faChartGantt, path: "/products/planning" },
+        { name: "Deliveries", icon: faBox, path: "/products/deliveries" },
+        { name: "Vehicles", icon: faTruck, path: "/products/vehicles" },
+        // { name: "Drivers", icon: faUsers, path: "/products/drivers" },
       ],
     },
-    { name: "Profile", icon: User, path: "/profile" },
-    { name: "Settings", icon: Settings, path: "/settings" },
+    { name: "Profile", icon: faUser, path: "/profile" },
+    { name: "Settings", icon: faCog, path: "/settings" },
   ];
 
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
@@ -85,7 +85,7 @@ export const Sidebar = () => {
                       : "text-teal-950 hover:bg-teal-200"
                   )}
                 >
-                  <item.icon size={20} />
+                  <FontAwesomeIcon icon={item.icon} size="sm" />
                   <span>{item.name}</span>
                 </Link>
               ) : (
@@ -99,11 +99,12 @@ export const Sidebar = () => {
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <item.icon size={20} />
+                      <FontAwesomeIcon icon={item.icon} size="sm" />
                       <span>{item.name}</span>
                     </div>
-                    <ChevronRight
-                      size={16}
+                    <FontAwesomeIcon
+                      icon={faChevronRight}
+                      size="sm"
                       className={cn(
                         "transition-transform",
                         expandedGroups[item.name] && "transform rotate-90"
@@ -124,7 +125,7 @@ export const Sidebar = () => {
                               : " hover:bg-teal-200 text-teal-950"
                           )}
                         >
-                          <child.icon size={16} />
+                          <FontAwesomeIcon icon={child.icon} size="sm" />
                           <span>{child.name}</span>
                         </Link>
                       ))}

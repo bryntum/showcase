@@ -5,7 +5,8 @@ import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { AjaxStore, Model, StringHelper } from "@bryntum/core-thin";
 import { Calendar } from "components/ui/actions/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { Button } from "../../../../components/ui/actions/button";
 import {
   DropdownMenu,
@@ -208,7 +209,7 @@ const VehiclesPage = () => {
       },
       {
         text: "Vehicle",
-        icon: "b-fa b-fa-truck",
+        icon: "fa fa-truck",
         field: "vehicleTag",
         width: "11em",
         editor: false,
@@ -239,7 +240,7 @@ const VehiclesPage = () => {
       },
       {
         text: "Trailer",
-        icon: "b-fa b-fa-trailer",
+        icon: "fa fa-trailer",
         field: "trailerTag",
         width: "11em",
         editor: false,
@@ -510,7 +511,7 @@ const VehiclesPage = () => {
             </div>
             <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
               <BryntumButton
-                cls="b-fa b-fa-chevron-left !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                cls="fa fa-chevron-left !rounded-full !bg-card !border-teal-500 !border-[1px] !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                 onClick={() => {
                   const prevDay = new Date(selectedDate);
                   prevDay.setDate(prevDay.getDate() - 1);
@@ -524,7 +525,10 @@ const VehiclesPage = () => {
                     size="sm"
                     className="rounded-full bg-card h-10 !border-teal-500 !text-teal-500 border-[1px] hover:bg-teal-50"
                   >
-                    <CalendarIcon className="h-4 w-4 mr-1 text-teal-500" />
+                    <FontAwesomeIcon
+                      icon={faCalendar}
+                      className="h-4 w-4 mr-1 text-teal-500"
+                    />
                     <p className="text-text-base">
                       {selectedDate.toLocaleDateString() ===
                       new Date().toLocaleDateString()
@@ -555,7 +559,7 @@ const VehiclesPage = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               <BryntumButton
-                cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                cls="fa fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                 onClick={() => {
                   const nextDay = new Date(selectedDate);
                   nextDay.setDate(nextDay.getDate() + 1);
@@ -568,7 +572,7 @@ const VehiclesPage = () => {
           <div className="h-[90%] grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="h-full flex flex-col gap-4">
               <h2 className="text-xl font-semibold text-teal-900">Drivers</h2>
-              <div className="h-full border-[1px] border-border overflow-hidden rounded-md">
+              <div className="h-full !border-[1px] border-border overflow-hidden rounded-md">
                 <BryntumGrid
                   id="driversGrid"
                   ref={$driversGridRef}

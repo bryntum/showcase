@@ -1,4 +1,5 @@
-import { LucideIcon } from "lucide-react";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import cn from "lib/utils";
 
 interface StatCardProps {
@@ -9,7 +10,7 @@ interface StatCardProps {
     value: number;
     positive?: boolean;
   };
-  icon?: LucideIcon;
+  icon?: IconDefinition;
   className?: string;
 }
 
@@ -32,7 +33,7 @@ export const StatCard = ({
         <p className="text-sm font-medium text-muted-foreground">{title}</p>
         {Icon && (
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <Icon size={16} />
+            <FontAwesomeIcon icon={Icon} size="sm" />
           </div>
         )}
       </div>

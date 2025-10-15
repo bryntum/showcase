@@ -8,14 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "components/ui/data-display/card";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  BadgeCheck,
-  Globe,
-  CreditCard,
-  Users,
-  Shield,
-  Mail,
-} from "lucide-react";
+  faCheckCircle,
+  faCreditCard,
+  faEnvelope,
+} from "@fortawesome/free-regular-svg-icons";
+import { faUsers, faShield, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import {
   Tabs,
   TabsContent,
@@ -92,7 +91,7 @@ const Settings = () => {
                 />
               </div>
               <BryntumButton
-                cls="b-fa b-fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                cls="fa fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                 onClick={handleSaveSettings}
                 text="Save Changes"
               />
@@ -133,7 +132,10 @@ const Settings = () => {
               <div className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
-                    <BadgeCheck className="h-5 w-5 text-primary" />
+                    <FontAwesomeIcon
+                      icon={faCheckCircle}
+                      className="h-5 w-5 text-primary"
+                    />
                     <h3 className="text-lg font-medium">Professional Plan</h3>
                   </div>
                   <Badge variant="outline">$499/month</Badge>
@@ -167,11 +169,11 @@ const Settings = () => {
               </div>
               <div className="flex items-center gap-2">
                 <BryntumButton
-                  cls="b-fa b-fa-arrow-up-right-from-square gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  cls="fa fa-arrow-up-right-from-square gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                   text="Change Plan"
                 />
                 <BryntumButton
-                  cls="b-fa b-fa-ban gap-2 !rounded-full !border-none !bg-destructive !text-white !text-sm !font-medium hover:!bg-destructive/80 !py-1 !min-h-9"
+                  cls="fa fa-ban gap-2 !rounded-full !border-none !bg-destructive !text-white !text-sm !font-medium hover:!bg-destructive/80 !py-1 !min-h-9"
                   text="Cancel Subscription"
                 />
               </div>
@@ -187,7 +189,7 @@ const Settings = () => {
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
-                    <CreditCard className="h-5 w-5" />
+                    <FontAwesomeIcon icon={faCreditCard} className="h-5 w-5" />
                   </div>
                   <div>
                     <p className="text-sm font-medium">Visa ending in 4242</p>
@@ -199,7 +201,7 @@ const Settings = () => {
                 <Badge variant="outline">Default</Badge>
               </div>
               <BryntumButton
-                cls="b-fa b-fa-credit-card gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                cls="fa fa-credit-card gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                 text="Add Payment Method"
               />
             </CardContent>
@@ -217,7 +219,7 @@ const Settings = () => {
                   </CardDescription>
                 </div>
                 <BryntumButton
-                  cls="b-fa b-fa-user-plus gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  cls="fa fa-user-plus gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                   text="Invite Team Member"
                 />
               </div>
@@ -247,7 +249,7 @@ const Settings = () => {
                   >
                     <div className="flex items-center space-x-4">
                       <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                        <Users className="h-5 w-5" />
+                        <FontAwesomeIcon icon={faUsers} className="h-5 w-5" />
                       </div>
                       <div>
                         <p className="text-sm font-medium">{member.name}</p>
@@ -273,7 +275,7 @@ const Settings = () => {
                   <CardDescription>Manage your API keys</CardDescription>
                 </div>
                 <BryntumButton
-                  cls="b-fa b-fa-key gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  cls="fa fa-key gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                   text="Generate New Key"
                 />
               </div>
@@ -298,7 +300,7 @@ const Settings = () => {
                   >
                     <div className="flex items-center space-x-4">
                       <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
-                        <Shield className="h-5 w-5" />
+                        <FontAwesomeIcon icon={faShield} className="h-5 w-5" />
                       </div>
                       <div>
                         <p className="text-sm font-medium">{apiKey.name}</p>
@@ -335,29 +337,32 @@ const Settings = () => {
                   {
                     title: "Email Notifications",
                     description: "Receive notifications via email",
-                    icon: Mail,
+                    icon: faEnvelope,
                   },
                   {
                     title: "Usage Alerts",
                     description: "Get alerts when approaching limits",
-                    icon: Shield,
+                    icon: faShield,
                   },
                   {
                     title: "Product Updates",
                     description: "Receive information about new features",
-                    icon: Globe,
+                    icon: faGlobe,
                   },
                   {
                     title: "Billing Updates",
                     description: "Get notified about billing changes",
-                    icon: CreditCard,
+                    icon: faCreditCard,
                   },
                 ].map((item, index, arr) => (
                   <Fragment key={index}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
-                          <item.icon className="h-5 w-5" />
+                          <FontAwesomeIcon
+                            icon={item.icon}
+                            className="h-5 w-5"
+                          />
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm font-medium">{item.title}</p>

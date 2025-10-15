@@ -5,7 +5,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Plus, Clock, Timer, Package, Check } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faCalendar } from "@fortawesome/free-regular-svg-icons";
+import {
+  faPlus,
+  faStopwatch,
+  faBox,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import { Delivery, Driver, Item } from "@prisma/client";
 import { map, toLower, every } from "lodash";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
@@ -45,7 +52,6 @@ import {
 import cn from "../../../../lib/utils";
 import { DurationColumn } from "@bryntum/scheduler-thin";
 import { Calendar } from "components/ui/actions/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -141,9 +147,11 @@ const Scheduler = () => {
 
           checks.push(
             comment?.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
-            itemName?.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
-            driverName?.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
-            type?.toLowerCase().includes(deliveryFilter.toLowerCase())
+              itemName?.toLowerCase().includes(deliveryFilter.toLowerCase()) ||
+              driverName
+                ?.toLowerCase()
+                .includes(deliveryFilter.toLowerCase()) ||
+              type?.toLowerCase().includes(deliveryFilter.toLowerCase())
           );
           return every(checks);
         });
@@ -286,7 +294,7 @@ const Scheduler = () => {
             <div className="flex w-full justify-end space-x-2">
               <div className="flex items-center space-x-2 p-2 bg-card rounded-full">
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-left !rounded-full !border-teal-500 !text-teal-500 !bg-card hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="fa fa-chevron-left !rounded-full !border-teal-500 !text-teal-500 !bg-card hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const prevDay = new Date(selectedDate);
                     prevDay.setDate(prevDay.getDate() - 1);
@@ -300,7 +308,10 @@ const Scheduler = () => {
                       size="sm"
                       className="rounded-full bg-card h-10 !border-teal-500 !text-teal-500 border-[1px] hover:bg-teal-50"
                     >
-                      <CalendarIcon className="h-4 w-4 mr-1 text-teal-500" />
+                      <FontAwesomeIcon
+                        icon={faCalendar}
+                        className="h-4 w-4 mr-1 text-teal-500"
+                      />
                       <p className="text-text-base">
                         {selectedDate.toLocaleDateString() ===
                         new Date().toLocaleDateString()
@@ -331,7 +342,7 @@ const Scheduler = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <BryntumButton
-                  cls="b-fa b-fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
+                  cls="fa fa-chevron-right !rounded-full !bg-card !border-teal-500 !text-teal-500 hover:!bg-teal-50 !min-h-10 !h-10 !w-10"
                   onClick={() => {
                     const nextDay = new Date(selectedDate);
                     nextDay.setDate(nextDay.getDate() + 1);
@@ -341,7 +352,10 @@ const Scheduler = () => {
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                   <DialogTrigger asChild>
                     <Button className="rounded-full bg-teal-300 hover:bg-teal-400">
-                      <Plus className="h-4 w-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        className="h-4 w-4 text-white"
+                      />
                       <p className="text-white">New Delivery</p>
                     </Button>
                   </DialogTrigger>
@@ -364,7 +378,7 @@ const Scheduler = () => {
                               <FormControl className="w-full">
                                 <BryntumTextField
                                   width="100%"
-                                  labelCls="b-fa b-fa-comment flex gap-2 items-center"
+                                  labelCls="fa fa-comment flex gap-2 items-center"
                                   label="Comment"
                                   labelPosition="above"
                                   {...field}
@@ -385,7 +399,7 @@ const Scheduler = () => {
                               <FormControl className="w-full">
                                 <BryntumCombo
                                   width="100%"
-                                  labelCls="b-fa b-fa-truck flex gap-2 items-center"
+                                  labelCls="fa fa-truck flex gap-2 items-center"
                                   label="Type"
                                   labelPosition="above"
                                   items={["URGENT", "REGULAR", "SPECIAL"]}
@@ -406,7 +420,10 @@ const Scheduler = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                  <Clock className="h-4 w-4" />
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    className="h-4 w-4"
+                                  />
                                   Planned Time
                                 </FormLabel>
                                 <FormControl>
@@ -426,7 +443,10 @@ const Scheduler = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                  <Timer className="h-4 w-4" />
+                                  <FontAwesomeIcon
+                                    icon={faStopwatch}
+                                    className="h-4 w-4"
+                                  />
                                   Duration
                                 </FormLabel>
                                 <FormControl>
@@ -449,7 +469,10 @@ const Scheduler = () => {
                           render={({ field }) => (
                             <FormItem className="flex flex-col">
                               <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                <Package className="h-4 w-4" />
+                                <FontAwesomeIcon
+                                  icon={faBox}
+                                  className="h-4 w-4"
+                                />
                                 Item
                               </FormLabel>
                               <Popover
@@ -471,7 +494,10 @@ const Scheduler = () => {
                                             (item) => item.id === field.value
                                           )?.name
                                         : "Select an item"}
-                                      <Package className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                      <FontAwesomeIcon
+                                        icon={faBox}
+                                        className="ml-2 h-4 w-4 shrink-0 opacity-50"
+                                      />
                                     </Button>
                                   </FormControl>
                                 </PopoverTrigger>
@@ -497,7 +523,8 @@ const Scheduler = () => {
                                           >
                                             <div className="flex flex-col w-full">
                                               <div className="flex items-center">
-                                                <Check
+                                                <FontAwesomeIcon
+                                                  icon={faCheck}
                                                   className={cn(
                                                     "mr-2 h-4 w-4",
                                                     item.id === field.value
@@ -531,7 +558,10 @@ const Scheduler = () => {
                             type="submit"
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                           >
-                            <Plus className="h-4 w-4 mr-2" />
+                            <FontAwesomeIcon
+                              icon={faPlus}
+                              className="h-4 w-4 mr-2"
+                            />
                             Create Delivery
                           </Button>
                         </DialogFooter>

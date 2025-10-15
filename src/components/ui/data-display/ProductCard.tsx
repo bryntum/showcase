@@ -1,6 +1,7 @@
 "use client";
 
-import { LucideIcon } from "lucide-react";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import cn from "lib/utils";
 
 import Link from "next/link";
@@ -10,7 +11,7 @@ import { Badge } from "./badge";
 type ProductCardProps = {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: IconDefinition;
   path: string;
   metrics: {
     usage: number;
@@ -51,7 +52,7 @@ export const ProductCard = ({
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-xl font-medium">{title}</CardTitle>
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <Icon size={18} />
+            <FontAwesomeIcon icon={Icon} size="sm" />
           </div>
         </CardHeader>
 

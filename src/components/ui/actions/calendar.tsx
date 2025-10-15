@@ -1,4 +1,8 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { DayPicker } from "react-day-picker";
 
 import cn from "lib/utils";
@@ -52,13 +56,17 @@ const Calendar = ({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: ({ ..._props }) => (
+          <FontAwesomeIcon icon={faChevronLeft} className="h-4 w-4" />
+        ),
+        IconRight: ({ ..._props }) => (
+          <FontAwesomeIcon icon={faChevronRight} className="h-4 w-4" />
+        ),
       }}
       {...props}
     />
   );
-}
+};
 Calendar.displayName = "Calendar";
 
 export { Calendar };

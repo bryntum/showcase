@@ -20,7 +20,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "components/ui/navigation/tabs";
-import { BryntumButton, BryntumSlideToggle, BryntumTextField } from "@bryntum/core-react-thin";
+import {
+  BryntumButton,
+  BryntumSlideToggle,
+  BryntumTextField,
+} from "@bryntum/core-react-thin";
 import { Toast } from "@bryntum/core-thin";
 
 const Profile = () => {
@@ -120,14 +124,14 @@ const Profile = () => {
                       <BryntumTextField
                         id="first-name"
                         label="First Name"
-                        cls="text-input !w-full"
+                        cls="!w-1/2"
                         labelPosition="above"
                         value="John"
                       />
                       <BryntumTextField
                         id="last-name"
                         label="Last Name"
-                        cls="text-input !w-full"
+                        cls="!w-1/2"
                         labelPosition="above"
                         value="Doe"
                       />
@@ -135,20 +139,20 @@ const Profile = () => {
                     <BryntumTextField
                       id="email"
                       label="Email"
-                      cls="text-input !w-full"
+                      cls="!w-1/2"
                       labelPosition="above"
                       value="john.doe@example.com"
                     />
                     <BryntumTextField
                       id="company"
                       label="Company"
-                      cls="text-input !w-full"
+                      cls="!w-1/2"
                       labelPosition="above"
                       value="Acme Inc."
                     />
                   </div>
                   <BryntumButton
-                    cls="b-fa b-fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    cls="fa fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                     onClick={handleSaveProfile}
                     text="Save Changes"
                   />
@@ -167,7 +171,7 @@ const Profile = () => {
                     <BryntumTextField
                       id="current-password"
                       label="Current Password"
-                      cls="text-input !w-full"
+                      cls="!w-1/2"
                       labelPosition="above"
                       value="********"
                     />
@@ -176,7 +180,7 @@ const Profile = () => {
                     <BryntumTextField
                       id="new-password"
                       label="New Password"
-                      cls="text-input !w-full"
+                      cls="!w-1/2"
                       labelPosition="above"
                       value="********"
                     />
@@ -185,13 +189,13 @@ const Profile = () => {
                     <BryntumTextField
                       id="confirm-password"
                       label="Confirm New Password"
-                      cls="text-input !w-full"
+                      cls="!w-1/2"
                       labelPosition="above"
                       value="********"
                     />
                   </div>
                   <BryntumButton
-                    cls="b-fa b-fa-lock gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    cls="fa fa-lock gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                     onClick={() =>
                       Toast.show({
                         html: "Password updated successfully",
@@ -263,7 +267,7 @@ const Profile = () => {
                     <BryntumSlideToggle value={true} />
                   </div>
                   <BryntumButton
-                    cls="b-fa b-fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    cls="fa fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                     text="Save Preferences"
                     onClick={() =>
                       Toast.show({
@@ -271,8 +275,7 @@ const Profile = () => {
                         timeout: 20000,
                       })
                     }
-                  >
-                  </BryntumButton>
+                  ></BryntumButton>
                 </CardContent>
               </Card>
             </TabsContent>
