@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { PrismaClient } from "@prisma/client";
+import { runSeed } from "../../../../lib/seed-utils";
 
-const execAsync = promisify(exec);
+const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,28 +16,24 @@ export async function GET(request: NextRequest) {
 
     console.log('Starting database seeding via cron job...');
 
-    // Run the seed command
-    const { stdout, stderr } = await execAsync('npm run seed');
-
-    console.log('Seed command output:', stdout);
-    if (stderr) {
-      console.error('Seed command errors:', stderr);
-    }
+    // Run the seed function directly
+    await runSeed(prisma);
 
     return NextResponse.json({
       success: true,
       message: 'Database seeded successfully',
-      timestamp: new Date().toISOString(),
-      output: stdout
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('Error running seed command:', error);
+    console.error('Error running seed:', error);
 
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

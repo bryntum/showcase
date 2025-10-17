@@ -3,7 +3,7 @@
 import mapboxgl from 'mapbox-gl';
 import { Panel, GlobalEvents, DomHelper, StringHelper, StoreListeners, Toast, EventHelper } from '@bryntum/core-thin';
 import { TimeAxis } from '@bryntum/scheduler-thin';
-import { constructParams, MarkerConfig, PopupConfig } from './Types';
+import { constructParams, MarkerConfig, PopupConfig } from '../../../lib/types';
 import Task from './Task';
 import { EventStore } from '@bryntum/schedulerpro-thin';
 

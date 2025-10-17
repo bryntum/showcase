@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import Navbar from "./Navbar";
 import { usePathname } from "next/navigation";
-import { NextLayout } from "types/appRouter";
+import { NextLayout } from "lib/appRouter";
 
 export const DashboardLayout: FC<NextLayout> = ({ children }) => {
   const pathname = usePathname();

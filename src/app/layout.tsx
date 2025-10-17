@@ -7,7 +7,7 @@ import "@bryntum/grid-thin/grid.css";
 import "@bryntum/scheduler-thin/scheduler.css";
 import "@bryntum/schedulerpro-thin/schedulerpro.css";
 import "styles/index.css";
-import { NextLayout } from "types/appRouter";
+import { NextLayout } from "lib/appRouter";
 import { FC } from "react";
 import Providers from "./providers";
 

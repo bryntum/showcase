@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "../../../../../components/ui/overlays/dialog";
+} from "../../../components/ui/overlays/dialog";
 import {
   BryntumButton,
   BryntumCombo,
@@ -20,7 +20,7 @@ import {
   BryntumTextField,
   BryntumTimeField,
 } from "@bryntum/core-react-thin";
-import { useDate } from "../../../../../contexts/date-context";
+import { useDate } from "../../../contexts/date-context";
 
 interface DeliveryFormValues {
   comment: string;
