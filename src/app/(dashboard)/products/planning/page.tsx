@@ -21,8 +21,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { SchedulerProWrapper } from "components/ui/scheduler/SchedulerProWrapper";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { capitalize, forEach, get, isEmpty, map, toLower } from "lodash";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { forEach, isEmpty, map, toLower } from "lodash";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +45,14 @@ import { SlideToggle } from "@bryntum/core-thin";
 import MetricCard, { MetricCardProps } from "./MetricCard";
 import { GridWrapper } from "components/ui/grid/GridWrapper";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
+import {
+  basicEventRenderer,
+  detailedEventRenderer,
+} from "app/(dashboard)/products/planning/renderers/eventRenderers";
+import {
+  basicDriverRenderer,
+  detailedDriverRenderer,
+} from "app/(dashboard)/products/planning/renderers/driverRenderers";
 
 const Planning = () => {
   const [metrics, setMetrics] = useState<MetricCardProps[]>([]);
@@ -52,13 +60,13 @@ const Planning = () => {
   const [eventFilter, setEventFilter] = useState<string>("");
   const [grid, setGrid] = useState<Grid>();
   const [scheduler, setScheduler] = useState<SchedulerPro>();
+  const [showDetailedView, setShowDetailedView] = useState<boolean>(true);
 
   const { selectedDate, setSelectedDate } = useDate();
 
-  const $unplannedGridRef = useRef<BryntumGrid>(null);
   const $dragRef = useRef<Drag>(null);
 
-  const updateMetrics = () => {
+  const updateMetrics = useCallback(() => {
     const driversWithoutVehicle = resourceStore.query(
       (resource: ResourceModel) => !resource.getData("vehicle")
     ).length;
@@ -172,7 +180,8 @@ const Planning = () => {
         },
       },
     ]);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate]);
 
   const handleGridRef = (gridInstance: BryntumGrid | null) => {
     if (gridInstance) {
@@ -186,8 +195,8 @@ const Planning = () => {
         readUrl: "/api/deliveries",
         autoLoad: true,
         // @ts-expect-error function is typed incorrectly
-        transformLoadedData: (data: Delivery<Client>[]) =>
-          map(data, (delivery) => ({
+        transformLoadedData: (data: Delivery<Client>[]) => {
+          return map(data, (delivery) => ({
             ...delivery,
             resourceId: delivery.driverId,
             startDate: delivery.actualFrom,
@@ -205,7 +214,8 @@ const Planning = () => {
               lat: delivery.client.lat,
               lng: delivery.client.lng,
             },
-          })),
+          }));
+        },
         autoCommit: true,
         onLoad: updateMetrics,
         onCommit: ({ changes }) => {
@@ -249,7 +259,7 @@ const Planning = () => {
           updateMetrics();
         },
       }),
-    []
+    [updateMetrics]
   );
 
   const resourceStore = useMemo(
@@ -280,7 +290,7 @@ const Planning = () => {
             };
           }),
       }),
-    []
+    [updateMetrics]
   );
 
   const schedulerConfig: BryntumSchedulerProProps = {
@@ -317,105 +327,9 @@ const Planning = () => {
         field: "name",
         text: "Driver",
         width: 320,
-        renderer: ({
-          record,
-        }: {
-          record: ResourceModel;
-          cellElement: HTMLElement;
-        }) => {
-          return {
-            tag: "div",
-            class: "b-resource-info",
-            children: [
-              {
-                tag: "img",
-                src: `/${record.getData("image")}`,
-                style: {
-                  minWidth: "3em",
-                  minHeight: "3em",
-                },
-                class: "b-resource-avatar b-resource-image",
-              },
-              {
-                tag: "dl",
-                class: "flex flex-col gap-1",
-                children: [
-                  {
-                    tag: "dt",
-                    class: "font-medium",
-                    html: record.getData("name"),
-                  },
-                  {
-                    tag: "dl",
-                    class: "vehicle-assignments flex flex-col gap-1 !text-xs",
-                    children: [
-                      record.getData("vehicle")
-                        ? {
-                            tag: "dd",
-                            class: "flex items-center gap-1 !font-xs",
-                            children: [
-                              {
-                                tag: "i",
-                                class: "fa fa-truck",
-                              },
-                              {
-                                tag: "span",
-                                html: record.getData("vehicle"),
-                              },
-                            ],
-                          }
-                        : {
-                            tag: "dd",
-                            class:
-                              "flex items-center gap-1 !text-warning-600 font-normal",
-                            children: [
-                              {
-                                tag: "i",
-                                class: "fa fa-triangle-exclamation",
-                              },
-                              {
-                                tag: "span",
-                                html: "No vehicle assigned",
-                              },
-                            ],
-                          },
-                      record.getData("trailer")
-                        ? {
-                            tag: "dd",
-                            class: "flex items-center gap-1 font-normal",
-                            children: [
-                              {
-                                tag: "i",
-                                class: "fa fa-trailer",
-                              },
-                              {
-                                tag: "span",
-                                html: record.getData("trailer"),
-                              },
-                            ],
-                          }
-                        : {
-                            tag: "dd",
-                            class:
-                              "flex items-center gap-1 !text-warning-600 font-normal",
-                            children: [
-                              {
-                                tag: "i",
-                                class: "fa fa-triangle-exclamation",
-                              },
-                              {
-                                tag: "span",
-                                html: "No trailer assigned",
-                              },
-                            ],
-                          },
-                    ],
-                  },
-                ],
-              },
-            ],
-          };
-        },
+        renderer: showDetailedView
+          ? detailedDriverRenderer
+          : basicDriverRenderer,
       },
     ] as SchedulerProColumnConfig[],
     viewPreset: {
@@ -424,7 +338,7 @@ const Planning = () => {
         {
           unit: "h",
           align: "center",
-          dateFormat: "HH",
+          dateFormat: "HH:mm",
         },
       ],
       timeResolution: {
@@ -434,13 +348,39 @@ const Planning = () => {
     },
     zoomOnMouseWheel: false,
     zoomKeepsOriginalTimespan: true,
+    timeAxisHeaderMenuFeature: false,
+
+    dependenciesFeature: {
+      showLagInTooltip: true,
+      callOnFunctions: true,
+    },
+    onDependencyCreateDrop: ({ source, target, dependency }) => {
+      dependency.set(
+        "lag",
+        (source.getData("postambleInMinutes") + target.getData("preambleInMinutes")) / (24 * 60)
+      );
+    },
+
+    taskEditFeature: {
+      items: {
+        generalTab: {
+          items: {
+            nameField: {
+              name: "comment",
+              label: "Comment",
+            },
+            percentDone: false,
+          },
+        },
+        notesTab: null,
+        advancedTab: null,
+      },
+    },
 
     eventDragFeature: {
       constrainDragToTimeline: false,
       dragHelperConfig: {
         constrain: false,
-        dropTargetCls: "b-drop-target",
-        dropTargetSelector: ".b-grid-subgrid",
         listeners: {
           drop: ({ context }) => {
             if (context.target.id === "unplannedGrid-normalSubgrid") {
@@ -474,72 +414,9 @@ const Planning = () => {
         },
       },
     },
-    eventRenderer({ eventRecord, renderData }) {
-      const eventPalette = {
-        URGENT: {
-          class: "!bg-warning-100 !text-event-text",
-          icon: "fa fa-bell text-xs",
-        },
-        REGULAR: {
-          class: "!bg-teal-100 !text-event-text",
-          icon: "fa fa-box-open text-xs",
-        },
-        SPECIAL: {
-          class: "!bg-cyan-100 !text-event-text",
-          icon: "fa fa-snowflake text-xs",
-        },
-      };
-      const eventType = eventRecord.getData(
-        "type"
-      ) as keyof typeof eventPalette;
-      renderData.cls += ` ${
-        get(eventPalette, eventType, eventPalette.REGULAR).class
-      }`;
-
-      return [
-        {
-          children: [
-            {
-              class: `b-event-type`,
-              style: {
-                display: "flex",
-                gap: "0.25rem",
-                alignItems: "center",
-              },
-              children: [
-                {
-                  tag: "div",
-                  class: get(eventPalette, eventType, eventPalette.REGULAR)
-                    .icon,
-                },
-                {
-                  tag: "span",
-                  class: "b-event-name text-event-text text-base",
-                  text: capitalize(
-                    get(eventRecord.getData("type"), "type", "regular")
-                  ),
-                },
-              ],
-            },
-            {
-              class:
-                "text-event-text overflow-ellipsis overflow-hidden text-sm/6 font-light",
-              html: eventRecord.getData("comment"),
-            },
-            {
-              class: "b-event-time text-event-text text-2xs font-light ",
-              text: `${(eventRecord.startDate as Date).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })} - ${(eventRecord.endDate as Date).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}`,
-            },
-          ],
-        },
-      ];
-    },
+    eventRenderer: showDetailedView
+      ? detailedEventRenderer
+      : basicEventRenderer,
 
     listeners: {
       paint: ({ firstPaint, source }) => {
@@ -561,10 +438,14 @@ const Planning = () => {
             animationId: "deliveryWindow",
             surround: true,
             name: "Outside delivery window",
-            startDate: selectedEvent.getData("plannedFrom"),
+            startDate: new Date(
+              selectedEvent.getData("plannedFrom").getTime() -
+                2 * 60 * 60 * 1000
+            ),
             endDate: new Date(
               selectedEvent.getData("plannedFrom").getTime() +
-                selectedEvent.getData("duration") * 60 * 1000
+                selectedEvent.getData("duration") * 60 * 1000 +
+                2 * 60 * 60 * 1000
             ),
           });
         } else {
@@ -702,16 +583,9 @@ const Planning = () => {
                   label="Show detailed view"
                   labelCls="!text-teal-900"
                   cls="!pl-2"
-                  value={true}
+                  value={showDetailedView}
                   onChange={({ checked }) => {
-                    document
-                      .querySelectorAll(
-                        ".vehicle-assignments, .b-event-type, .b-event-time, .b-resource-avatar"
-                      )
-                      .forEach((element) => {
-                        element.classList.toggle("b-hidden", !checked);
-                      });
-
+                    setShowDetailedView(checked);
                     scheduler?.setConfig({ rowHeight: checked ? 80 : 40 });
                   }}
                 />

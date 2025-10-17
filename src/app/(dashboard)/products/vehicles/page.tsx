@@ -178,6 +178,7 @@ const VehiclesPage = () => {
     cellEditFeature: true,
     sortFeature: "name",
     store: driversStore,
+    cls: "!border-border !border-[1px] rounded-3xl overflow-hidden",
     rowHeight: 60,
     cellTooltipFeature: {
       hoverDelay: 200,
@@ -274,6 +275,7 @@ const VehiclesPage = () => {
 
   const vehiclesGridConfig: BryntumGridProps = {
     cellEditFeature: true,
+    cls: "!border-border !border-[1px] rounded-3xl overflow-hidden",
     sortFeature: ["name"],
     store: vehiclesStore.chain((vehicle: Vehicle) => {
       const assignment = find(
@@ -317,6 +319,7 @@ const VehiclesPage = () => {
 
   const trailersGridConfig: BryntumGridProps = {
     cellEditFeature: true,
+    cls: "!border-border !border-[1px] rounded-3xl overflow-hidden",
     sortFeature: ["name"],
     store: trailersStore.chain((vehicle: Trailer) => {
       const assignment = find(
@@ -572,31 +575,25 @@ const VehiclesPage = () => {
           <div className="h-[90%] grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="h-full flex flex-col gap-4">
               <h2 className="text-xl font-semibold text-teal-900">Drivers</h2>
-              <div className="h-full !border-[1px] border-border overflow-hidden rounded-md">
-                <BryntumGrid
-                  id="driversGrid"
-                  ref={$driversGridRef}
-                  {...driversGridConfig}
-                />
-              </div>
+              <BryntumGrid
+                id="driversGrid"
+                ref={$driversGridRef}
+                {...driversGridConfig}
+              />
             </div>
             <div className="h-full flex flex-col gap-4">
               <h2 className="text-xl font-semibold text-teal-900">Vehicles</h2>
-              <div className="flex-1 border-[1px] border-border overflow-hidden rounded-md">
-                <BryntumGrid
-                  id="vehiclesGrid"
-                  ref={$vehiclesGridRef}
-                  {...vehiclesGridConfig}
-                />
-              </div>
+              <BryntumGrid
+                id="vehiclesGrid"
+                ref={$vehiclesGridRef}
+                {...vehiclesGridConfig}
+              />
               <h2 className="text-xl font-semibold text-teal-900">Trailers</h2>
-              <div className="flex-1 border-[1px] border-border overflow-hidden rounded-md">
-                <BryntumGrid
-                  id="trailersGrid"
-                  ref={$trailersGridRef}
-                  {...trailersGridConfig}
-                />
-              </div>
+              <BryntumGrid
+                id="trailersGrid"
+                ref={$trailersGridRef}
+                {...trailersGridConfig}
+              />
             </div>
           </div>
         </div>

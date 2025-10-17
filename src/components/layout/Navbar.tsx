@@ -1,7 +1,8 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
+import { faBell, faMoon } from "@fortawesome/free-regular-svg-icons";
+import {  faSun } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import { Button } from "components/ui/actions/button";
 import {

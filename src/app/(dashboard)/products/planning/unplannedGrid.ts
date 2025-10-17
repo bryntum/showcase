@@ -9,15 +9,15 @@ export const eventTypeCellRenderer = ({ record }: { record: Model }) => {
   const eventTypePalette = {
     URGENT: {
       iconClass: "fa fa-bell font-bold",
-      bgClass: "!bg-warning-100 !border-warning-500",
+      bgClass: "!bg-warning-200 !border-warning-400",
     },
     REGULAR: {
       iconClass: "fa fa-box-open font-bold", 
-      bgClass: "!bg-teal-100 !border-teal-500",
+      bgClass: "!bg-teal-200 !border-teal-400",
     },
     SPECIAL: {
       iconClass: "fa fa-snowflake font-bold",
-      bgClass: "!bg-cyan-100 !border-cyan-500", 
+      bgClass: "!bg-cyan-200 !border-cyan-400", 
     }
   }
   const eventType = record.getData("type") as keyof typeof eventTypePalette;

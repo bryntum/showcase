@@ -1,55 +1,16 @@
 "use client";
 
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faCalendar } from "@fortawesome/free-regular-svg-icons";
-import {
-  faPlus,
-  faStopwatch,
-  faBox,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { Delivery, Driver, Item } from "@prisma/client";
 import { map, toLower, every } from "lodash";
 import { BryntumGridProps } from "@bryntum/grid-react-thin";
 import { BryntumGrid } from "@bryntum/grid-react-thin";
 import { AjaxStore, DateHelper, Model } from "@bryntum/core-thin";
 import { Button } from "../../../../components/ui/actions/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "../../../../components/ui/overlays/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../../../../components/ui/forms/form";
-import { Input } from "../../../../components/ui/forms/input";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../../../components/ui/overlays/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../../../components/ui/overlays/popover";
-import cn from "../../../../lib/utils";
+
 import { DurationColumn } from "@bryntum/scheduler-thin";
 import { Calendar } from "components/ui/actions/calendar";
 import {
@@ -59,49 +20,15 @@ import {
 } from "components/ui/overlays/dropdown-menu";
 import { useDate } from "../../../../contexts/date-context";
 import { isSameDay } from "date-fns";
-import {
-  BryntumButton,
-  BryntumCombo,
-  BryntumTextField,
-} from "@bryntum/core-react-thin";
+import { BryntumButton, BryntumTextField } from "@bryntum/core-react-thin";
 import { eventTypeCellRenderer } from "../planning/unplannedGrid";
 import { GridWrapper } from "components/ui/grid/GridWrapper";
-
-const deliveryFormSchema = z.object({
-  comment: z.string().min(1, "Comment is required"),
-  type: z.enum(["URGENT", "REGULAR", "SPECIAL"]),
-  plannedFrom: z.string().min(1, "Planned time is required"),
-  durationInMinutes: z.string().min(1, "Duration is required"),
-  itemId: z.string().min(1, "Item is required"),
-});
-
-type DeliveryFormValues = z.infer<typeof deliveryFormSchema>;
+import CreateDeliveryModal from "./partials/CreateDeliveryModal";
 
 const Scheduler = () => {
   const $gridRef = useRef<BryntumGrid>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [items, setItems] = useState<Item[]>([]);
-  const [itemPopoverOpen, setItemPopoverOpen] = useState(false);
   const [deliveryFilter, setDeliveryFilter] = useState<string>("");
   const { selectedDate, setSelectedDate } = useDate();
-
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await fetch("/api/items");
-
-        if (!response.ok) throw new Error("Failed to fetch items");
-
-        const data = await response.json();
-
-        setItems(data);
-      } catch (error) {
-        console.error("Error fetching items:", error);
-      }
-    };
-
-    fetchItems();
-  }, []);
 
   const store = useMemo(
     () =>
@@ -120,7 +47,7 @@ const Scheduler = () => {
                 delivery.durationInMinutes >= 60
                   ? delivery.durationInMinutes / 60
                   : delivery.durationInMinutes,
-              unit: delivery.durationInMinutes >= 60 ? "h" : "m",
+              unit: delivery.durationInMinutes >= 60 ? "hour" : "minute",
             },
           })),
         autoCommit: true,
@@ -159,47 +86,9 @@ const Scheduler = () => {
     }
   }, [selectedDate, store, deliveryFilter]);
 
-  const form = useForm<DeliveryFormValues>({
-    resolver: zodResolver(deliveryFormSchema),
-    defaultValues: {
-      comment: "",
-      type: "REGULAR",
-      plannedFrom: "",
-      durationInMinutes: "",
-      itemId: "",
-    },
-  });
-
-  const onSubmit = async (data: DeliveryFormValues) => {
-    try {
-      // Combine selected date with the time value
-      const [hours, minutes] = data.plannedFrom.split(":");
-      const plannedFromDate = new Date(selectedDate);
-      plannedFromDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-      const response = await fetch("/api/deliveries", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          plannedFrom: plannedFromDate.toISOString(),
-          durationInMinutes: parseInt(data.durationInMinutes),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create delivery");
-      }
-
-      setIsOpen(false);
-      form.reset();
-      // Refresh the grid data
-      store.load();
-    } catch (error) {
-      console.error("Error creating delivery:", error);
-    }
+  const handleDeliveryCreated = () => {
+    // Refresh the grid data
+    store.load();
   };
 
   const gridConfig: BryntumGridProps = {
@@ -208,6 +97,7 @@ const Scheduler = () => {
     showDirty: true,
     store,
     height: "100%",
+    cls: "!border-border !border-[1px] rounded-3xl overflow-hidden",
     columns: [
       {
         text: "Comment",
@@ -235,6 +125,11 @@ const Scheduler = () => {
         field: DurationColumn.type,
         type: "duration",
         width: "9em",
+        sortable(d1: Model, d2: Model) {
+          return (
+            d1.getData("durationInMinutes") - d2.getData("durationInMinutes")
+          );
+        },
       },
       {
         text: "Driver",
@@ -349,232 +244,13 @@ const Scheduler = () => {
                     setSelectedDate(nextDay);
                   }}
                 />
-                <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="rounded-full bg-teal-300 hover:bg-teal-400">
-                      <FontAwesomeIcon
-                        icon={faPlus}
-                        className="h-4 w-4 text-white"
-                      />
-                      <p className="text-white">New Delivery</p>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-bold text-white">
-                        Create New Delivery
-                      </DialogTitle>
-                    </DialogHeader>
-                    <Form {...form}>
-                      <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-6 py-4"
-                      >
-                        <FormField
-                          control={form.control}
-                          name="comment"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl className="w-full">
-                                <BryntumTextField
-                                  width="100%"
-                                  labelCls="fa fa-comment flex gap-2 items-center"
-                                  label="Comment"
-                                  labelPosition="above"
-                                  {...field}
-                                  onChange={({ event }) =>
-                                    field.onChange(event)
-                                  }
-                                />
-                              </FormControl>
-                              <FormMessage className="text-xs" />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="type"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl className="w-full">
-                                <BryntumCombo
-                                  width="100%"
-                                  labelCls="fa fa-truck flex gap-2 items-center"
-                                  label="Type"
-                                  labelPosition="above"
-                                  items={["URGENT", "REGULAR", "SPECIAL"]}
-                                  {...field}
-                                  onChange={({ event }) =>
-                                    field.onChange(event)
-                                  }
-                                />
-                              </FormControl>
-                              <FormMessage className="text-xs" />
-                            </FormItem>
-                          )}
-                        />
-                        <div className="grid grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="plannedFrom"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    className="h-4 w-4"
-                                  />
-                                  Planned Time
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="time"
-                                    {...field}
-                                    className="h-11"
-                                  />
-                                </FormControl>
-                                <FormMessage className="text-xs" />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="durationInMinutes"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                  <FontAwesomeIcon
-                                    icon={faStopwatch}
-                                    className="h-4 w-4"
-                                  />
-                                  Duration
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    {...field}
-                                    className="h-11"
-                                    placeholder="Minutes"
-                                  />
-                                </FormControl>
-                                <FormMessage className="text-xs" />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <FormField
-                          control={form.control}
-                          name="itemId"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                              <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                <FontAwesomeIcon
-                                  icon={faBox}
-                                  className="h-4 w-4"
-                                />
-                                Item
-                              </FormLabel>
-                              <Popover
-                                open={itemPopoverOpen}
-                                onOpenChange={setItemPopoverOpen}
-                              >
-                                <PopoverTrigger asChild>
-                                  <FormControl>
-                                    <Button
-                                      variant="outline"
-                                      role="combobox"
-                                      className={cn(
-                                        "h-11 w-full justify-between",
-                                        !field.value && "text-muted-foreground"
-                                      )}
-                                    >
-                                      {field.value
-                                        ? items.find(
-                                            (item) => item.id === field.value
-                                          )?.name
-                                        : "Select an item"}
-                                      <FontAwesomeIcon
-                                        icon={faBox}
-                                        className="ml-2 h-4 w-4 shrink-0 opacity-50"
-                                      />
-                                    </Button>
-                                  </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-full p-0"
-                                  align="start"
-                                >
-                                  <Command>
-                                    <CommandInput placeholder="Search items..." />
-                                    <CommandList>
-                                      <CommandEmpty>
-                                        No items found.
-                                      </CommandEmpty>
-                                      <CommandGroup>
-                                        {items.map((item) => (
-                                          <CommandItem
-                                            value={item.name}
-                                            key={item.id}
-                                            onSelect={() => {
-                                              form.setValue("itemId", item.id);
-                                              setItemPopoverOpen(false);
-                                            }}
-                                          >
-                                            <div className="flex flex-col w-full">
-                                              <div className="flex items-center">
-                                                <FontAwesomeIcon
-                                                  icon={faCheck}
-                                                  className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    item.id === field.value
-                                                      ? "opacity-100"
-                                                      : "opacity-0"
-                                                  )}
-                                                />
-                                                <span className="font-medium">
-                                                  {item.name}
-                                                </span>
-                                              </div>
-                                              <span className="text-xs text-gray-500 ml-6">
-                                                {item.description} •{" "}
-                                                {item.weight}g • {item.currency}{" "}
-                                                {item.sellPrice}
-                                              </span>
-                                            </div>
-                                          </CommandItem>
-                                        ))}
-                                      </CommandGroup>
-                                    </CommandList>
-                                  </Command>
-                                </PopoverContent>
-                              </Popover>
-                              <FormMessage className="text-xs" />
-                            </FormItem>
-                          )}
-                        />
-                        <DialogFooter className="pt-4">
-                          <Button
-                            type="submit"
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                          >
-                            <FontAwesomeIcon
-                              icon={faPlus}
-                              className="h-4 w-4 mr-2"
-                            />
-                            Create Delivery
-                          </Button>
-                        </DialogFooter>
-                      </form>
-                    </Form>
-                  </DialogContent>
-                </Dialog>
+                <CreateDeliveryModal
+                  onDeliveryCreated={handleDeliveryCreated}
+                />
               </div>
             </div>
           </div>
-          <div className="flex-1 border-[1px] border-border rounded-md overflow-hidden">
-            <GridWrapper innerRef={$gridRef} {...gridConfig} />
-          </div>
+          <GridWrapper ref={$gridRef} {...gridConfig} />
         </div>
       </div>
     </div>

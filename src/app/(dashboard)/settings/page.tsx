@@ -33,7 +33,49 @@ import { Toast } from "@bryntum/core-thin";
 const Settings = () => {
   const handleSaveSettings = () => {
     Toast.show({
-      html: "Settings saved successfully",
+      html: "[Demo] Settings saved successfully",
+      timeout: 5000,
+    });
+  };
+
+  const handleChangePlan = () => {
+    Toast.show({
+      html: "[Demo] Redirecting to plan selection...",
+      timeout: 5000,
+    });
+  };
+
+  const handleCancelSubscription = () => {
+    Toast.show({
+      html: "[Demo] Subscription cancellation initiated",
+      timeout: 5000,
+    });
+  };
+
+  const handleAddPaymentMethod = () => {
+    Toast.show({
+      html: "[Demo] Opening payment method form...",
+      timeout: 5000,
+    });
+  };
+
+  const handleInviteTeamMember = () => {
+    Toast.show({
+      html: "[Demo] Opening team member invitation form...",
+      timeout: 5000,
+    });
+  };
+
+  const handleGenerateNewKey = () => {
+    Toast.show({
+      html: "[Demo] New API key generated successfully",
+      timeout: 5000,
+    });
+  };
+
+  const handleRevokeKey = () => {
+    Toast.show({
+      html: "[Demo] API key revoked successfully",
       timeout: 5000,
     });
   };
@@ -91,9 +133,14 @@ const Settings = () => {
                 />
               </div>
               <BryntumButton
-                cls="fa fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                cls="!rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                 onClick={handleSaveSettings}
-                text="Save Changes"
+                text={{
+                  children: [
+                    { tag: "i", className: "fa fa-save mr-2" },
+                    { tag: "span", html: "Save Changes" },
+                  ],
+                }}
               />
             </CardContent>
           </Card>
@@ -169,12 +216,27 @@ const Settings = () => {
               </div>
               <div className="flex items-center gap-2">
                 <BryntumButton
-                  cls="fa fa-arrow-up-right-from-square gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
-                  text="Change Plan"
+                  cls="gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  onClick={handleChangePlan}
+                  text={{
+                    children: [
+                      {
+                        tag: "i",
+                        className: "fa fa-arrow-up-right-from-square mr-2",
+                      },
+                      { tag: "span", html: "Change Plan" },
+                    ],
+                  }}
                 />
                 <BryntumButton
-                  cls="fa fa-ban gap-2 !rounded-full !border-none !bg-destructive !text-white !text-sm !font-medium hover:!bg-destructive/80 !py-1 !min-h-9"
-                  text="Cancel Subscription"
+                  cls="gap-2 !rounded-full !border-none !bg-destructive !text-white !text-sm !font-medium hover:!bg-destructive/80 !py-1 !min-h-9"
+                  onClick={handleCancelSubscription}
+                  text={{
+                    children: [
+                      { tag: "i", className: "fa fa-ban mr-2" },
+                      { tag: "span", html: "Cancel Subscription" },
+                    ],
+                  }}
                 />
               </div>
             </CardContent>
@@ -188,7 +250,7 @@ const Settings = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
-                  <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
+                  <div className="h-10 w-10 rounded-md bg-teal-100 flex items-center justify-center">
                     <FontAwesomeIcon icon={faCreditCard} className="h-5 w-5" />
                   </div>
                   <div>
@@ -201,8 +263,14 @@ const Settings = () => {
                 <Badge variant="outline">Default</Badge>
               </div>
               <BryntumButton
-                cls="fa fa-credit-card gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
-                text="Add Payment Method"
+                cls="gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                onClick={handleAddPaymentMethod}
+                text={{
+                  children: [
+                    { tag: "i", className: "fa fa-credit-card mr-2" },
+                    { tag: "span", html: "Add Payment Method" },
+                  ],
+                }}
               />
             </CardContent>
           </Card>
@@ -219,8 +287,14 @@ const Settings = () => {
                   </CardDescription>
                 </div>
                 <BryntumButton
-                  cls="fa fa-user-plus gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
-                  text="Invite Team Member"
+                  cls="gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  onClick={handleInviteTeamMember}
+                  text={{
+                    children: [
+                      { tag: "i", className: "fa fa-user-plus mr-2" },
+                      { tag: "span", html: "Invite Team Member" },
+                    ],
+                  }}
                 />
               </div>
             </CardHeader>
@@ -248,7 +322,7 @@ const Settings = () => {
                     className="flex items-center justify-between p-4 border rounded-lg"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                      <div className="h-10 w-10 rounded-md bg-teal-100 flex items-center justify-center">
                         <FontAwesomeIcon icon={faUsers} className="h-5 w-5" />
                       </div>
                       <div>
@@ -275,8 +349,14 @@ const Settings = () => {
                   <CardDescription>Manage your API keys</CardDescription>
                 </div>
                 <BryntumButton
-                  cls="fa fa-key gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
-                  text="Generate New Key"
+                  cls="gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                  onClick={handleGenerateNewKey}
+                  text={{
+                    children: [
+                      { tag: "i", className: "fa fa-key mr-2" },
+                      { tag: "span", html: "Generate New Key" },
+                    ],
+                  }}
                 />
               </div>
             </CardHeader>
@@ -299,7 +379,7 @@ const Settings = () => {
                     className="flex items-center justify-between p-4 border rounded-lg"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
+                      <div className="h-10 w-10 rounded-md bg-teal-100 flex items-center justify-center">
                         <FontAwesomeIcon icon={faShield} className="h-5 w-5" />
                       </div>
                       <div>
@@ -312,8 +392,14 @@ const Settings = () => {
                         Created {apiKey.created}
                       </p>
                       <BryntumButton
-                        cls="!rounded-full !border-none !bg-destructive !text-white !text-xs !font-medium hover:!bg-destructive/80 !py-1 !min-h-7 !px-3"
-                        text="Revoke"
+                        cls="gap-2 !rounded-full !border-none !bg-destructive !text-white !text-xs !font-medium hover:!bg-destructive/80 !py-1 !min-h-7 !px-3"
+                        onClick={handleRevokeKey}
+                        text={{
+                          children: [
+                            { tag: "i", className: "fa fa-trash mr-1" },
+                            { tag: "span", html: "Revoke" },
+                          ],
+                        }}
                       />
                     </div>
                   </div>
@@ -358,7 +444,7 @@ const Settings = () => {
                   <Fragment key={index}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
+                        <div className="h-10 w-10 rounded-md bg-teal-100 flex items-center justify-center">
                           <FontAwesomeIcon
                             icon={item.icon}
                             className="h-5 w-5"

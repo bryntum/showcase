@@ -67,6 +67,7 @@ export const Sidebar = () => {
             width={100}
             height={20}
             className="h-8 pl-4 w-auto"
+            priority
           />
         </Link>
       </div>

@@ -44,3 +44,5 @@ bryntum/*
 # Bryntum themes
 public/themes/*
 .vercel
+
+.npmrc

@@ -10,8 +10,6 @@ import "styles/index.css";
 import { NextLayout } from "types/appRouter";
 import { FC } from "react";
 import Providers from "./providers";
-import { TooltipProvider } from "components/ui/data-display/tooltip";
-import Toaster from "components/ui/feedback/toaster";
 
 export const metadata = {
   title: "Bryntum Showcase",
@@ -24,7 +22,10 @@ const RootLayout: FC<NextLayout> = (props) => {
   return (
     <html lang="en">
       <head>
-      <script src="https://kit.fontawesome.com/6f7725359c.js" crossOrigin="anonymous"></script>
+        <script
+          src="https://kit.fontawesome.com/6f7725359c.js"
+          crossOrigin="anonymous"
+        ></script>
         {/* Import style sheets with data-bryntum-theme so they can be used by the DomHelper */}
         <link
           rel="stylesheet"
@@ -77,12 +78,7 @@ const RootLayout: FC<NextLayout> = (props) => {
         />
       </head>
       <body>
-        <Providers>
-          <TooltipProvider>
-            <Toaster />
-            {children}
-          </TooltipProvider>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

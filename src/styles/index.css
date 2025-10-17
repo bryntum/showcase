@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 :root:not(.b-nothing) {
-  --b-widget-icon-font-family : 'Font Awesome 6 Pro';
+  --b-widget-icon-font-family: 'Font Awesome 6 Pro';
 }
 
 @layer base {
@@ -260,18 +260,10 @@
 }
 
 .b-grid-header {
-  text-transform: none !important;
   background-color: hsl(var(--component-background));
-  border-bottom: 1px solid #125d56;
 }
 
-.b-grid-headers,
-.b-grid-header-container,
-.b-horizontaltimeaxis {
-  border-bottom: none !important;
-}
-
-.b-text-field {
+.b-text-field, .b-date-time-field, .b-number-field {
   --b-text-field-border-radius: 100px !important;
   --b-text-field-border-color: hsl(var(--teal-500)) !important;
   --b-text-field-background-color: hsl(var(--card)) !important;
@@ -281,6 +273,10 @@
   --b-text-field-focus-ring-color: hsl(var(--teal-500)) !important;
   --b-text-field-focus-ring-width: 1px !important;
   --b-text-field-focus-ring-offset-width: 1px !important;
+
+  &.b-invalid {
+    --b-text-field-border-color: hsl(var(--destructive)) !important;
+  }
 }
 
 .b-field-inner input {
@@ -337,16 +333,12 @@
   --b-grid-cell-applied-background: var(--teal-50) !important;
 }
 
-.b-selected {
-  background-color: hsl(var(--teal-50)) !important;
-}
-
-.b-hover {
-  background-color: hsl(var(--teal-75)) !important;
+.b-grid-sub-grid:not(.b-timeline-sub-grid) .b-selected {
+  background-color: hsl(var(--teal-100)) !important;
 }
 
 .b-hover>.b-grid-cell {
-  background-color: hsl(var(--teal-75)) !important;
+  background-color: unset !important;
 }
 
 .b-label {
@@ -364,10 +356,6 @@
 
 .b-grid-header-container {
   height: 40px;
-}
-
-.b-sch-event-wrap.b-sch-style-border>.b-sch-event {
-  opacity: 1 !important;
 }
 
 .b-sch-event {
@@ -404,15 +392,24 @@
 }
 
 .b-button {
-  text-transform: capitalize !important;
+  --b-button-color: hsl(var(--teal-500)) !important;
+
+  &:hover {
+    --b-button-background: hsl(var(--teal-100)) !important;
+  }
+
+  &.b-tab.b-active:not(.b-invalid) {
+    --b-tab-indicator-color: hsl(var(--teal-500)) !important;
+  }
 }
 
-.b-button.b-raised {
-  background-color: hsl(var(--teal-500)) !important;
-}
+.b-button.b-button-filled {
+  --b-button-background: hsl(var(--teal-500)) !important;
+  --b-button-color: white !important;
 
-.b-button.b-raised:hover {
-  background-color: hsl(var(--teal-600)) !important;
+  &:hover {
+    --b-button-background: hsl(var(--teal-600)) !important;
+  }
 }
 
 .b-panel.b-floating>.b-panel-header.b-dock-top,
@@ -443,4 +440,29 @@
 
 .b-toast-progress {
   background: hsl(var(--teal-300)) !important;
+}
+
+.b-mask-text {
+  background: hsl(var(--teal-200)) !important;
+}
+
+.b-sch-terminal {
+  --b-dependency-terminal-border-color: hsl(var(--teal-200));
+}
+
+.b-tooltip-content {
+  --b-clock-hand-color: hsl(var(--teal-200));
+}
+
+.b-menu-item:not(.b-disabled):hover {
+  background-color: hsl(var(--teal-75)) !important;
+}
+
+.b-icon {
+  &.b-icon-spin-up.b-spin-up {
+line-height: 0.8rem !important
+  }
+  &.b-icon-spin-down.b-spin-down {
+    line-height: 0.8rem !important
+  }
 }

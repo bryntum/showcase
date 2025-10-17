@@ -30,7 +30,7 @@ import { Toast } from "@bryntum/core-thin";
 const Profile = () => {
   const handleSaveProfile = () => {
     Toast.show({
-      html: "Profile updated successfully",
+      html: "[Demo] Profile updated successfully",
       timeout: 5000,
     });
   };
@@ -152,9 +152,14 @@ const Profile = () => {
                     />
                   </div>
                   <BryntumButton
-                    cls="fa fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    cls="!rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                     onClick={handleSaveProfile}
-                    text="Save Changes"
+                    text={{
+                      children: [
+                        { tag: "i", className: "fa fa-save mr-2" },
+                        { tag: "span", html: "Save Changes" },
+                      ],
+                    }}
                   />
                 </CardContent>
               </Card>
@@ -195,14 +200,19 @@ const Profile = () => {
                     />
                   </div>
                   <BryntumButton
-                    cls="fa fa-lock gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    cls="gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
                     onClick={() =>
                       Toast.show({
-                        html: "Password updated successfully",
+                        html: "[Demo] Password updated successfully",
                         timeout: 20000,
                       })
                     }
-                    text="Change Password"
+                    text={{
+                      children: [
+                        { tag: "i", className: "fa fa-save mr-2" },
+                        { tag: "span", html: "Change Password" },
+                      ],
+                    }}
                   />
                 </CardContent>
               </Card>
@@ -267,11 +277,16 @@ const Profile = () => {
                     <BryntumSlideToggle value={true} />
                   </div>
                   <BryntumButton
-                    cls="fa fa-save gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
-                    text="Save Preferences"
+                    cls="gap-2 !rounded-full !border-none !bg-primary !text-white !text-sm !font-medium !bg-card hover:!bg-teal-300 !py-1 !min-h-9"
+                    text={{
+                      children: [
+                        { tag: "i", className: "fa fa-save mr-2" },
+                        { tag: "span", html: "Save Preferences" },
+                      ],
+                    }}
                     onClick={() =>
                       Toast.show({
-                        html: "Preferences updated successfully",
+                        html: "[Demo] Preferences updated successfully",
                         timeout: 20000,
                       })
                     }

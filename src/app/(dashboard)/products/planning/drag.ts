@@ -57,13 +57,13 @@ export class Drag extends DragHelper {
     console.log("createProxy", grabbedElement);
     const eventPalette = {
       URGENT: {
-        class: "!bg-warning-100",
+        class: "!bg-warning-200 !border-warning-400",
       },
       REGULAR: {
-        class: "!bg-teal-100",
+        class: "!bg-teal-200 !border-teal-400",
       },
       SPECIAL: {
-        class: "!bg-cyan-100",
+        class: "!bg-cyan-200 !border-cyan-400",
       }
     }
 
@@ -125,6 +125,7 @@ export class Drag extends DragHelper {
       { selectedRecord } = grid as Grid;
 
     context.delivery = selectedRecord;
+    console.log("onDragStart", context);
   };
 
 
@@ -133,6 +134,8 @@ export class Drag extends DragHelper {
       driver = context.target && schedule.resolveResourceRecord(context.target);
 
     context.driver = driver;
+
+    console.log("onDrag", context);
   };
 
 

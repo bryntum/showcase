@@ -10,7 +10,7 @@ interface DateContextType {
 const DateContext = createContext<DateContextType | undefined>(undefined);
 
 export const DateProvider = ({ children }: { children: ReactNode }) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date('2025-10-13'));
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   return (
     <DateContext.Provider value={{ selectedDate, setSelectedDate }}>
